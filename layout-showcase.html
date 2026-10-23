@@ -62,8 +62,8 @@
     [contenteditable="true"]{cursor:text}
     [contenteditable="true"]:focus{outline:2px dashed rgba(216,160,68,.55);outline-offset:7px}
 
-    .card[data-font-style="serif"] .title{font-family:"Arabic Editorial",serif;font-size:80px;font-weight:400;line-height:1.24;-webkit-text-stroke:.9px currentColor;paint-order:stroke fill}
-    .card[data-font-style="serif"] .subtitle{font-family:"Arabic Editorial",serif;font-size:44px;font-weight:400;line-height:1.45}
+    .card[data-font-style="serif"] .title{font-family:"Arabic Editorial",serif;font-size:80px;font-weight:400;line-height:1.24;-webkit-text-stroke:1.4px currentColor;paint-order:stroke fill}
+    .card[data-font-style="serif"] .subtitle{font-family:"Arabic Editorial",serif;font-size:40px;font-weight:400;line-height:1.5;-webkit-text-stroke:0;color:#9b897f}
     body[data-font="sans"] .card[data-font-style="serif"],body[data-font="serif"] .card[data-font-style="sans"]{display:none}
     body[data-font="serif"] .short-rule{display:none}
 
@@ -76,7 +76,7 @@
     .hero .short-rule{position:absolute;top:102px;right:0}
     .icon-row{position:absolute;right:0;left:0;bottom:80px;display:grid;grid-template-columns:repeat(3,1fr);gap:32px;direction:rtl}
     .icon-item{text-align:center}
-    .icon{display:grid;place-items:center;width:90px;height:90px;margin:0 auto 16px;border:2px solid rgba(216,160,68,.78);border-radius:50%;color:var(--accent);font:400 44px/1 Arial,sans-serif}
+    .icon{display:block;width:84px;height:84px;margin:0 auto 16px;color:var(--accent);overflow:visible}
     .icon-label{font-size:30px;font-weight:400;line-height:1.4;color:var(--muted)}
 
     .center .text-box{top:184px;right:66px;width:800px;text-align:center}
@@ -129,12 +129,21 @@
     .imported-host{position:absolute;inset:0;display:block;width:500px;height:500px;overflow:hidden;background:transparent}
     .toast{position:fixed;left:50%;bottom:24px;z-index:50;transform:translate(-50%,20px);padding:10px 15px;border-radius:999px;background:#2f2a26;color:#fff;font-size:13px;opacity:0;pointer-events:none;transition:.2s}
     .toast.show{transform:translate(-50%,0);opacity:1}
+    .preview-mode-switch{position:fixed;left:24px;bottom:24px;z-index:30;display:flex;gap:5px;padding:5px;border:1px solid rgba(87,55,37,.14);border-radius:999px;background:rgba(255,255,255,.9);box-shadow:0 7px 24px rgba(30,22,16,.14);backdrop-filter:blur(10px)}
+    .preview-mode-switch button{display:grid;place-items:center;width:34px;height:34px;padding:0;border:0;border-radius:50%;background:transparent;color:#756a62;cursor:pointer}
+    .preview-mode-switch button[aria-pressed="true"]{background:#332d28;color:#fff}
+    .preview-mode-switch svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+    body[data-preview-mode="light"] .preview{background:#fff;background-image:none}
+    body[data-preview-mode="dark"] .preview{background:#000;background-image:none}
+    body[data-preview-mode="dark"] .canvas{--ink:#fff;--muted:#ddd0c7;--accent:#FFE5A8}
+    body[data-preview-mode="dark"] .subtitle{color:#ddd0c7;background:linear-gradient(90deg,#fff 34%,#fbe17b 74%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+    body[data-preview-mode="dark"] .icon-label{color:#ddd0c7}
 
     @media(max-width:1100px){.gallery{grid-template-columns:524px}.toolbar{align-items:flex-start;gap:16px}.toolbar p{display:none}}
     @media(max-width:580px){:root{--scale:.34}.gallery{grid-template-columns:364px}.card{width:364px}.preview{width:340px;height:340px}.toolbar{padding:12px 14px}.toolbar h1{font-size:16px}.font-switch button{min-width:auto;padding:8px 11px}}
   </style>
 </head>
-<body data-font="sans">
+<body data-font="sans" data-preview-mode="transparent">
   <header class="toolbar">
     <div>
       <h1>阿语商详文字排版｜全部样式</h1>
@@ -221,9 +230,9 @@
             </div>
             <svg class="short-rule" xmlns="http://www.w3.org/2000/svg" width="64" height="8" viewBox="0 0 64 8" aria-hidden="true"><rect width="64" height="8" fill="currentColor"/></svg>
             <div class="icon-row">
-              <div class="icon-item"><span class="icon">×</span><p class="icon-label">أجواء متعددة</p></div>
-              <div class="icon-item"><span class="icon">×</span><p class="icon-label">تصاميم متنوعة</p></div>
-              <div class="icon-item"><span class="icon">×</span><p class="icon-label">إضاءة دافئة</p></div>
+              <div class="icon-item"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="84" height="84" viewBox="0 0 84 84" aria-hidden="true"><path d="M68 16.5L17 67.5M17 16.5L68 67.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><ellipse cx="42" cy="42" rx="40.5" ry="40.5" fill="none" stroke="currentColor" stroke-width="3"/></svg><p class="icon-label">أجواء متعددة</p></div>
+              <div class="icon-item"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="84" height="84" viewBox="0 0 84 84" aria-hidden="true"><path d="M68 16.5L17 67.5M17 16.5L68 67.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><ellipse cx="42" cy="42" rx="40.5" ry="40.5" fill="none" stroke="currentColor" stroke-width="3"/></svg><p class="icon-label">تصاميم متنوعة</p></div>
+              <div class="icon-item"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="84" height="84" viewBox="0 0 84 84" aria-hidden="true"><path d="M68 16.5L17 67.5M17 16.5L68 67.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><ellipse cx="42" cy="42" rx="40.5" ry="40.5" fill="none" stroke="currentColor" stroke-width="3"/></svg><p class="icon-label">إضاءة دافئة</p></div>
             </div>
           </div>
         </section>
@@ -379,6 +388,11 @@
     </article>
   </main>
 
+  <div class="preview-mode-switch" aria-label="预览背景切换">
+    <button type="button" data-preview-button="light" aria-label="亮色背景" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg></button>
+    <button type="button" data-preview-button="dark" aria-label="暗色背景" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 15.2A8.5 8.5 0 0 1 8.8 3.5 8.5 8.5 0 1 0 20.5 15.2Z"/></svg></button>
+    <button type="button" data-preview-button="transparent" aria-label="透明背景" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/></svg></button>
+  </div>
   <button class="add-template-button" type="button" aria-label="添加 HTML 模板">＋</button>
   <dialog id="template-dialog">
     <div class="dialog-head"><h2>导入 HTML 模板</h2><button class="dialog-close" type="button" aria-label="关闭">×</button></div>
@@ -479,7 +493,7 @@
     function splitTitle(lines){
       if(lines.length > 1) return lines.slice(0,2);
       const words = (lines[0] || '').split(/\s+/).filter(Boolean);
-      if(words.length < 4) return [words.join(' ')];
+      if(words.length < 4 && words.join(' ').length <= 22) return [words.join(' ')];
       const cut = Math.ceil(words.length / 2);
       return [words.slice(0,cut).join(' '),words.slice(cut).join(' ')];
     }
@@ -562,6 +576,13 @@
       });
     });
 
+    document.querySelectorAll('[data-preview-button]').forEach(button => {
+      button.addEventListener('click', () => {
+        document.body.dataset.previewMode = button.dataset.previewButton;
+        document.querySelectorAll('[data-preview-button]').forEach(item => item.setAttribute('aria-pressed',String(item === button)));
+      });
+    });
+
     function blobToDataUrl(blob){
       return new Promise((resolve,reject) => {
         const reader = new FileReader();
@@ -618,13 +639,16 @@
       }));
 
       const currentFont = document.body.dataset.font;
+      const currentPreviewMode = document.body.dataset.previewMode;
       const importedCss = shadow ? [...shadow.querySelectorAll('style')].map(style => style.textContent || '').join('\n') : '';
       const rawCss = `${documentCss(sourceDoc)}\n${importedCss}`
         .replace(/@font-face\s*\{[^}]*\}/g,'')
         .replaceAll('body[data-font="sans"]', '.export-surface[data-font="sans"]')
-        .replaceAll('body[data-font="serif"]', '.export-surface[data-font="serif"]');
+        .replaceAll('body[data-font="serif"]', '.export-surface[data-font="serif"]')
+        .replaceAll('body[data-preview-mode="light"]', '.export-surface[data-preview-mode="light"]')
+        .replaceAll('body[data-preview-mode="dark"]', '.export-surface[data-preview-mode="dark"]');
       const embeddedFonts = await loadFontCss();
-      const markup = `<div xmlns="http://www.w3.org/1999/xhtml" class="export-surface" data-font="${currentFont}" style="width:1000px;height:1000px;background:transparent;overflow:visible"><style>${embeddedFonts}\n${rawCss}\n.canvas{position:relative!important;left:0!important;top:0!important;transform:none!important;box-shadow:none!important;background:transparent!important}</style>${clone.outerHTML}</div>`;
+      const markup = `<div xmlns="http://www.w3.org/1999/xhtml" class="export-surface" data-font="${currentFont}" data-preview-mode="${currentPreviewMode}" style="width:1000px;height:1000px;background:transparent;overflow:visible"><style>${embeddedFonts}\n${rawCss}\n.canvas{position:relative!important;left:0!important;top:0!important;transform:none!important;box-shadow:none!important;background:transparent!important}</style>${clone.outerHTML}</div>`;
       const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000" viewBox="0 0 1000 1000"><foreignObject width="1000" height="1000">${markup}</foreignObject></svg>`;
       const imageUrl = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
       const image = new Image();
@@ -674,20 +698,26 @@
       return /(ae[_-]?AlYermook|Arabic Editorial|Didone|Naskh|Times New Roman|Georgia)/i.test(html) ? 'serif' : 'sans';
     }
 
-    function replaceImportedSerifMark(root){
-      const ornament = [...root.querySelectorAll('svg')].find(svg => {
-        const width = Number.parseFloat(svg.getAttribute('width'));
-        const height = Number.parseFloat(svg.getAttribute('height'));
-        return width > 0 && width < 220 && height > 0 && height < 100;
-      });
+    function setCanonicalSerifMark(ornament){
       if(!ornament) return;
       ornament.setAttribute('width','101.698');
       ornament.setAttribute('height','29.698');
       ornament.setAttribute('viewBox','0 0 101.698 29.698');
       ornament.style.width = '101.698px';
       ornament.style.height = '29.698px';
-      ornament.innerHTML = '<defs><linearGradient x1="0" y1=".5" x2="1" y2=".5" id="imported-mark-left"><stop offset="0%" stop-color="#D4B875"/><stop offset="100%" stop-color="#D4B875" stop-opacity="0"/></linearGradient><linearGradient x1="0" y1=".5" x2="1" y2=".5" id="imported-mark-right"><stop offset="0%" stop-color="#D4B875"/><stop offset="100%" stop-color="#D4B875" stop-opacity="0"/></linearGradient></defs><path d="M0 14.35H24.5v1H0Z" fill="url(#imported-mark-left)"/><path d="M101.698 14.35h-24.5v1h24.5Z" fill="url(#imported-mark-right)"/><rect x="35.21" y="8.06" width="13.58" height="13.58" transform="rotate(45 42 14.85)" fill="none" stroke="#854C0E" stroke-width="1.8"/><rect x="50.21" y="8.06" width="13.58" height="13.58" transform="rotate(45 57 14.85)" fill="none" stroke="#854C0E" stroke-width="1.8"/>';
+      ornament.innerHTML = '<defs><linearGradient x1="0" y1=".5" x2="1" y2=".5" id="canonical-mark-left"><stop offset="0%" stop-color="#D4B875"/><stop offset="100%" stop-color="#D4B875" stop-opacity="0"/></linearGradient><linearGradient x1="0" y1=".5" x2="1" y2=".5" id="canonical-mark-right"><stop offset="0%" stop-color="#D4B875"/><stop offset="100%" stop-color="#D4B875" stop-opacity="0"/></linearGradient></defs><g transform="matrix(-1 0 0 1 49 0)"><path d="M49 15.349H24.5v-1H49Z" fill="url(#canonical-mark-left)"/></g><g transform="matrix(.7071 -.7071 .7071 .7071 -2.153 24.502)"><rect x="29.4" y="15.749" width="19.2" height="19.2" fill="none" stroke="#854C0E" stroke-width="1.8"/></g><g transform="matrix(.7071 -.7071 .7071 .7071 2.241 35.108)"><rect x="44.4" y="15.749" width="19.2" height="19.2" fill="none" stroke="#854C0E" stroke-width="1.8"/></g><path d="M101.698 15.349h-24.5v-1h24.5Z" fill="url(#canonical-mark-right)"/>';
     }
+
+    function replaceImportedSerifMark(root){
+      const ornament = [...root.querySelectorAll('svg')].find(svg => {
+        const width = Number.parseFloat(svg.getAttribute('width'));
+        const height = Number.parseFloat(svg.getAttribute('height'));
+        return width > 0 && width < 220 && height > 0 && height < 100;
+      });
+      setCanonicalSerifMark(ornament);
+    }
+
+    document.querySelectorAll('.serif-mark').forEach(setCanonicalSerifMark);
 
     function centerImportedContent(host){
       const shadow = host.shadowRoot;
@@ -744,7 +774,8 @@
       const sourceHtml = source.outerHTML;
       const sourceCss = [...parsed.querySelectorAll('style')].map(style => style.textContent || '').join('\n');
       const shadow = host.attachShadow({mode:'open'});
-      shadow.innerHTML = `<style>${sourceCss}\n:host{display:block;width:500px;height:500px;overflow:hidden}.import-stage{position:absolute;left:0;top:0;width:1000px;height:1000px;transform:scale(.5);transform-origin:0 0;background:transparent}.import-source{position:relative!important;left:0!important;top:0!important;width:1000px!important;height:1000px!important;transform:none!important;background:transparent!important}[contenteditable=true]{cursor:text}[contenteditable=true]:focus{outline:2px dashed rgba(216,160,68,.55);outline-offset:7px}</style><div class="import-stage">${sourceHtml}</div>`;
+      const serifCss = fontStyle === 'serif' ? '.title{-webkit-text-stroke:1.4px currentColor!important;paint-order:stroke fill}.subtitle{-webkit-text-stroke:0!important;font-weight:400!important;color:#9b897f!important}' : '';
+      shadow.innerHTML = `<style>${sourceCss}\n${serifCss}:host{display:block;width:500px;height:500px;overflow:hidden}.import-stage{position:absolute;left:0;top:0;width:1000px;height:1000px;transform:scale(.5);transform-origin:0 0;background:transparent}.import-source{position:relative!important;left:0!important;top:0!important;width:1000px!important;height:1000px!important;transform:none!important;background:transparent!important}[contenteditable=true]{cursor:text}[contenteditable=true]:focus{outline:2px dashed rgba(216,160,68,.55);outline-offset:7px}:host-context(body[data-preview-mode="dark"]) .title,:host-context(body[data-preview-mode="dark"]) h1,:host-context(body[data-preview-mode="dark"]) h2{color:#fff!important;-webkit-text-stroke:1.4px currentColor!important}:host-context(body[data-preview-mode="dark"]) .subtitle{color:#ddd0c7!important;-webkit-text-fill-color:#ddd0c7!important;font-weight:400!important}</style><div class="import-stage">${sourceHtml}</div>`;
       const importedRoot = shadow.querySelector('.import-stage').firstElementChild;
       importedRoot.classList.add('import-source');
       if(fontStyle === 'serif') replaceImportedSerifMark(importedRoot);
