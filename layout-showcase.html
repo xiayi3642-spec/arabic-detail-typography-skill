@@ -221,8 +221,8 @@
 - مصباح بقاعدة طويلة بنقشة الشمس × ١
 - مصباحان مربعان بتموجات الماء × ٢</textarea>
         <div class="brief-actions">
-          <span class="brief-hint">支持“## 01｜模块名”与加粗字段；中文审核意会自动忽略。</span>
-          <button class="generate-button" type="button">识别并生成 5 个模块</button>
+          <span class="brief-hint">可直接粘贴文案清单；自动识别段落、Markdown 表格、主标题/副文案/标签/数值与 &lt;br&gt;，并忽略中文说明。</span>
+          <button class="generate-button" type="button">识别并生成模块</button>
         </div>
       </div>
     </details>
@@ -479,52 +479,104 @@
     makeEditable();
     document.fonts.ready.then(() => document.querySelectorAll('.card:not(.imported-card) .title').forEach(fitTitle));
 
+    function cleanCopy(value,{allowMetric=true}={}){
+      return value
+        .replace(/<br\s*\/?\s*>/gi,'\n')
+        .replace(/^[-*+]\s*/,'')
+        .replace(/[{}]/g,'')
+        .replace(/[`*_#]/g,'')
+        .split('｜')[0]
+        .replace(/[（(][^）)]*[\u3400-\u9fff][^）)]*[）)]\s*$/,'')
+        .split('\n')
+        .map(item => item.trim())
+        .filter(item => /[\u0600-\u06ff]/.test(item) || (allowMetric && /\d/.test(item) && /(?:°|kg|cm|mm|V|A|ساعات|دقيقة|سنوات)/i.test(item)));
+    }
+
+    function tableCells(line){
+      return line.trim().replace(/^\||\|$/g,'').split('|').map(cell => cell.trim());
+    }
+
+    function isTableDivider(line){
+      const cells = tableCells(line);
+      return cells.length > 1 && cells.every(cell => /^:?-{3,}:?$/.test(cell));
+    }
+
     function parseFields(block){
+      const lines = block.split(/\r?\n/);
       const fields = [];
       let current = null;
-      block.split(/\r?\n/).forEach(rawLine => {
-        const line = rawLine.trim();
-        const heading = line.match(/^\*\*(.+?)\*\*$/);
-        if(heading){
-          current = {label:heading[1],lines:[]};
+      let context = '';
+
+      for(let index = 0; index < lines.length; index += 1){
+        const line = lines[index].trim();
+        if(!line) continue;
+
+        const bold = line.match(/^\*\*(.+?)\*\*$/);
+        if(bold){
+          current = {label:bold[1].trim(),lines:[]};
           fields.push(current);
-        } else if(current && line && !line.startsWith('## ')) {
-          current.lines.push(line);
+          context = bold[1].trim();
+          continue;
         }
-      });
+
+        if(line.includes('|') && isTableDivider(lines[index + 1] || '')){
+          const headers = tableCells(line);
+          const roleIndex = headers.findIndex(cell => /层级|位置|字段|项目/.test(cell));
+          const arabicIndex = headers.findIndex(cell => /阿语(?:\/数值)?|文案|数值/.test(cell) && !/中文/.test(cell));
+          index += 2;
+          while(index < lines.length && lines[index].includes('|')){
+            const cells = tableCells(lines[index]);
+            if(cells.some(Boolean) && !isTableDivider(lines[index])){
+              const label = (roleIndex >= 0 ? cells[roleIndex] : context) || '明细';
+              const value = arabicIndex >= 0 ? cells[arabicIndex] : cells.find(cell => cleanCopy(cell).length);
+              if(value) fields.push({label,lines:[value]});
+            }
+            index += 1;
+          }
+          index -= 1;
+          current = null;
+          continue;
+        }
+
+        const inline = line.match(/^\*{0,2}\s*([^：:\n]{2,24})\s*[：:]\s*(.+?)\s*\*{0,2}$/);
+        if(inline && cleanCopy(inline[2]).length){
+          fields.push({label:inline[1].trim(),lines:[inline[2]]});
+          current = null;
+          continue;
+        }
+
+        if(current && !line.startsWith('## ')) current.lines.push(line);
+        if(!current && !/^[-*>#]/.test(line) && !/[\u0600-\u06ff]/.test(line)) context = line.replace(/[：:].*$/,'').trim();
+      }
       return fields;
     }
 
-    function arabicLines(lines){
-      return lines.map(line => line
-        .replace(/^[-*+]\s*/, '')
-        .replace(/[{}]/g, '')
-        .split('｜')[0]
-        .replace(/[`*_#]/g, '')
-        .trim())
-        .filter(line => /[\u0600-\u06ff]/.test(line));
-    }
-
-    function pickField(fields, labels){
-      for(const label of labels){
-        const field = fields.find(item => item.label.includes(label));
-        const lines = field ? arabicLines(field.lines) : [];
-        if(lines.length) return lines;
-      }
-      return [];
+    function fieldLines(fields,pattern,{allowMetric=true}={}){
+      return fields
+        .filter(field => pattern.test(field.label))
+        .flatMap(field => field.lines.flatMap(line => cleanCopy(line,{allowMetric})))
+        .filter((line,index,array) => line && array.indexOf(line) === index);
     }
 
     function parseBrief(raw){
-      const matches = [...raw.matchAll(/^##\s*(\d+)\s*[｜|]\s*(.+)$/gm)];
+      const matches = [...raw.matchAll(/^##\s*(\d{1,2})(?:\s*[｜|]\s*|\s+)(.+)$/gm)];
       return matches.map((match,index) => {
         const start = match.index + match[0].length;
         const end = matches[index + 1]?.index ?? raw.length;
         const block = raw.slice(start,end);
         const fields = parseFields(block);
-        const title = pickField(fields,['阿语主标题']);
-        const subtitle = pickField(fields,['阿语副标题','底部阿语说明','阿语补充短句','阿语包装清单','尺寸字段','三款标签','三种光色标签']);
-        const bottom = pickField(fields,['阿语底部信息']);
-        return {number:match[1],heading:match[2].trim(),title,subtitle,bottom};
+        const rawHeading = match[2].trim();
+        const status = rawHeading.match(/待排版|已上屏/)?.[0] || '';
+        const heading = rawHeading
+          .replace(/\s*[｜|]\s*(?:待排版|已上屏).*$/,'')
+          .replace(/[（(][^）)]*(?:待排版|已上屏)[^）)]*[）)]/g,'')
+          .trim();
+        const title = fieldLines(fields,/主标题/,{allowMetric:false});
+        const subtitle = fieldLines(fields,/副(?:标题|文案)|说明|补充短句|导语|描述/);
+        const bottom = fieldLines(fields,/底部信息/);
+        const labels = fieldLines(fields,/标签|配件|卖点/);
+        const facts = fieldLines(fields,/数值|尺寸|参数|电池|充电|运行|承重|年龄|明细/);
+        return {number:match[1].padStart(2,'0'),heading,status,title,subtitle,bottom,labels,facts};
       }).filter(module => module.title.length);
     }
 
@@ -591,34 +643,85 @@
       if(element.classList.contains('title')) requestAnimationFrame(() => fitTitle(element));
     }
 
+    function uniquifySvgIds(root,suffix){
+      const replacements = new Map();
+      root.querySelectorAll('[id]').forEach(element => {
+        const previous = element.id;
+        const next = `${previous}-${suffix}`;
+        replacements.set(previous,next);
+        element.id = next;
+      });
+      root.querySelectorAll('*').forEach(element => {
+        [...element.attributes].forEach(attribute => {
+          let value = attribute.value;
+          replacements.forEach((next,previous) => {
+            value = value.replaceAll(`url(#${previous})`,`url(#${next})`).replaceAll(`#${previous}`,`#${next}`);
+          });
+          if(value !== attribute.value) element.setAttribute(attribute.name,value);
+        });
+      });
+    }
+
+    function cardsForModules(font,count){
+      gallery.querySelectorAll(`.generated-card[data-font-style="${font}"]`).forEach(card => card.remove());
+      const base = [...gallery.querySelectorAll(`.card[data-font-style="${font}"]:not(.imported-card):not(.generated-card)`)];
+      const cards = base.slice(0,count);
+      let anchor = base.at(-1);
+      for(let index = base.length; index < count; index += 1){
+        const clone = base[index % base.length].cloneNode(true);
+        clone.classList.add('generated-card');
+        uniquifySvgIds(clone,`${font}-${index}-${Date.now()}`);
+        anchor.after(clone);
+        anchor = clone;
+        cards.push(clone);
+      }
+      return cards;
+    }
+
     function applyBrief(){
       const modules = parseBrief(briefInput.value);
       if(!modules.length){
-        notify('没有识别到模块，请保留“## 01｜模块名”结构');
+        notify('没有识别到模块，请使用“## 01 模块名”并提供主标题');
         return;
       }
       const activeFont = document.body.dataset.font;
-      const cards = [...gallery.querySelectorAll(`.card[data-font-style="${activeFont}"]:not(.imported-card)`)].slice(0,5);
-      modules.slice(0,cards.length).forEach((module,index) => {
+      const cards = cardsForModules(activeFont,modules.length);
+      modules.forEach((module,index) => {
         const card = cards[index];
         const title = card.querySelector('.title');
         const subtitle = card.querySelector('.subtitle');
         setLines(title,splitTitle(module.title),{highlight:true,max:2});
 
-        let subtitleLines = module.subtitle;
-        if(index === 0 && !subtitleLines.length) subtitleLines = [];
+        let subtitleLines = module.subtitle.length ? module.subtitle : [...module.labels,...module.facts];
         setLines(subtitle,subtitleLines,{max:2});
 
-        if(index === 0 && module.bottom.length){
-          const labels = module.bottom.join(' ').split(/[•・]/).map(item => item.trim()).filter(Boolean);
-          card.querySelectorAll('.icon-label').forEach((label,labelIndex) => {
-            if(labels[labelIndex]) label.textContent = labels[labelIndex];
-          });
+        const iconCopy = [...module.bottom,...module.labels,...module.facts]
+          .flatMap(line => line.split(/[•・]/))
+          .map(item => item.trim())
+          .filter(Boolean);
+        card.querySelectorAll('.icon-label').forEach((label,labelIndex) => {
+          const item = label.closest('.icon-item');
+          if(iconCopy[labelIndex]){
+            label.textContent = iconCopy[labelIndex];
+            if(item) item.hidden = false;
+          } else if(item){
+            item.hidden = true;
+          }
+        });
+
+        if(!subtitleLines.length && subtitle){
+          subtitle.hidden = true;
         }
 
         const moduleName = inferredModule(module.heading,index);
-        card.querySelector('.module-tag').textContent = `模块 · ${moduleName}`;
+        const state = module.status ? ` · ${module.status}` : '';
+        card.querySelector('.module-tag').textContent = `模块 · ${moduleName}${state}`;
         card.querySelector('.caption').textContent = module.heading.replace(/^.+?[：:]/,'').trim() || module.heading;
+        const templateName = card.querySelector('.template-name');
+        if(templateName){
+          const template = templateName.textContent.replace(/^\d+\s*·\s*/, '').trim();
+          templateName.textContent = `${module.number} · ${template}`;
+        }
         const copyButton = card.querySelector('.copy-button');
         copyButton.setAttribute('aria-label',`复制${moduleName}2倍透明图`);
       });
@@ -626,7 +729,7 @@
       const explicitlySerif = /(?:整体|阿语|主标题)[^\n]{0,12}(?:使用|为|：|:)\s*衬线体/.test(briefInput.value);
       if(explicitlySerif) document.querySelector('[data-font-button="serif"]').click();
       makeEditable();
-      notify(`已识别 ${Math.min(modules.length,cards.length)} 个模块并完成排版`);
+      notify(`已识别 ${modules.length} 个模块并完成排版`);
     }
 
     document.querySelector('.generate-button').addEventListener('click',applyBrief);
