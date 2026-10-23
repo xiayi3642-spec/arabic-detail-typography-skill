@@ -40,8 +40,8 @@
     .brief-panel details{overflow:hidden;background:rgba(255,255,255,.76);border:1px solid rgba(78,65,52,.10);border-radius:14px;box-shadow:0 5px 18px rgba(48,39,30,.05)}
     .brief-panel summary{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;cursor:pointer;font-size:14px;font-weight:700;list-style:none}
     .brief-panel summary::-webkit-details-marker{display:none}
-    .brief-panel summary::after{content:"⌄";color:#8d8177;font-size:18px}
-    .brief-panel details[open] summary::after{transform:rotate(180deg)}
+    .brief-panel summary::after{content:"";width:7px;height:7px;margin-right:3px;border-right:1.5px solid #8d8177;border-bottom:1.5px solid #8d8177;transform:rotate(45deg);transform-origin:center}
+    .brief-panel details[open] summary::after{transform:rotate(225deg)}
     .brief-editor{display:grid;gap:10px;padding:0 14px 14px}
     .brief-editor textarea{width:100%;min-height:210px;padding:14px;border:1px solid #d9d2cb;border-radius:10px;background:#fff;color:#342f2b;resize:vertical;font:13px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace}
     .brief-actions{display:flex;align-items:center;justify-content:space-between;gap:12px}
@@ -136,8 +136,10 @@
     body[data-preview-mode="light"] .preview{background:#fff;background-image:none}
     body[data-preview-mode="dark"] .preview{background:#000;background-image:none}
     body[data-preview-mode="dark"] .canvas{--ink:#fff;--muted:#ddd0c7;--accent:#FFE5A8}
-    body[data-preview-mode="dark"] .subtitle{color:#ddd0c7;background:linear-gradient(90deg,#fff 34%,#fbe17b 74%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+    body[data-preview-mode="dark"] .subtitle{color:#fff;background:linear-gradient(135deg,#FBE17B 0%,#fff 34%,#fff 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
     body[data-preview-mode="dark"] .icon-label{color:#ddd0c7}
+    body[data-preview-mode="dark"] .serif-mark rect{stroke:#FFE5A8}
+    body[data-preview-mode="dark"] .serif-mark path{fill:#D4B875}
 
     @media(max-width:1100px){.gallery{grid-template-columns:524px}.toolbar{align-items:flex-start;gap:16px}.toolbar p{display:none}}
     @media(max-width:580px){:root{--scale:.34}.gallery{grid-template-columns:364px}.card{width:364px}.preview{width:340px;height:340px}.toolbar{padding:12px 14px}.toolbar h1{font-size:16px}.font-switch button{min-width:auto;padding:8px 11px}}
@@ -639,7 +641,6 @@
       }));
 
       const currentFont = document.body.dataset.font;
-      const currentPreviewMode = document.body.dataset.previewMode;
       const importedCss = shadow ? [...shadow.querySelectorAll('style')].map(style => style.textContent || '').join('\n') : '';
       const rawCss = `${documentCss(sourceDoc)}\n${importedCss}`
         .replace(/@font-face\s*\{[^}]*\}/g,'')
@@ -648,7 +649,7 @@
         .replaceAll('body[data-preview-mode="light"]', '.export-surface[data-preview-mode="light"]')
         .replaceAll('body[data-preview-mode="dark"]', '.export-surface[data-preview-mode="dark"]');
       const embeddedFonts = await loadFontCss();
-      const markup = `<div xmlns="http://www.w3.org/1999/xhtml" class="export-surface" data-font="${currentFont}" data-preview-mode="${currentPreviewMode}" style="width:1000px;height:1000px;background:transparent;overflow:visible"><style>${embeddedFonts}\n${rawCss}\n.canvas{position:relative!important;left:0!important;top:0!important;transform:none!important;box-shadow:none!important;background:transparent!important}</style>${clone.outerHTML}</div>`;
+      const markup = `<div xmlns="http://www.w3.org/1999/xhtml" class="export-surface" data-font="${currentFont}" data-preview-mode="transparent" style="width:1000px;height:1000px;background:transparent;overflow:visible"><style>${embeddedFonts}\n${rawCss}\n.canvas{position:relative!important;left:0!important;top:0!important;transform:none!important;box-shadow:none!important;background:transparent!important}</style>${clone.outerHTML}</div>`;
       const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000" viewBox="0 0 1000 1000"><foreignObject width="1000" height="1000">${markup}</foreignObject></svg>`;
       const imageUrl = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
       const image = new Image();
@@ -775,7 +776,7 @@
       const sourceCss = [...parsed.querySelectorAll('style')].map(style => style.textContent || '').join('\n');
       const shadow = host.attachShadow({mode:'open'});
       const serifCss = fontStyle === 'serif' ? '.title{-webkit-text-stroke:1.4px currentColor!important;paint-order:stroke fill}.subtitle{-webkit-text-stroke:0!important;font-weight:400!important;color:#9b897f!important}' : '';
-      shadow.innerHTML = `<style>${sourceCss}\n${serifCss}:host{display:block;width:500px;height:500px;overflow:hidden}.import-stage{position:absolute;left:0;top:0;width:1000px;height:1000px;transform:scale(.5);transform-origin:0 0;background:transparent}.import-source{position:relative!important;left:0!important;top:0!important;width:1000px!important;height:1000px!important;transform:none!important;background:transparent!important}[contenteditable=true]{cursor:text}[contenteditable=true]:focus{outline:2px dashed rgba(216,160,68,.55);outline-offset:7px}:host-context(body[data-preview-mode="dark"]) .title,:host-context(body[data-preview-mode="dark"]) h1,:host-context(body[data-preview-mode="dark"]) h2{color:#fff!important;-webkit-text-stroke:1.4px currentColor!important}:host-context(body[data-preview-mode="dark"]) .subtitle{color:#ddd0c7!important;-webkit-text-fill-color:#ddd0c7!important;font-weight:400!important}</style><div class="import-stage">${sourceHtml}</div>`;
+      shadow.innerHTML = `<style>${sourceCss}\n${serifCss}:host{display:block;width:500px;height:500px;overflow:hidden}.import-stage{position:absolute;left:0;top:0;width:1000px;height:1000px;transform:scale(.5);transform-origin:0 0;background:transparent}.import-source{position:relative!important;left:0!important;top:0!important;width:1000px!important;height:1000px!important;transform:none!important;background:transparent!important}[contenteditable=true]{cursor:text}[contenteditable=true]:focus{outline:2px dashed rgba(216,160,68,.55);outline-offset:7px}:host-context(body[data-preview-mode="dark"]) .title,:host-context(body[data-preview-mode="dark"]) h1,:host-context(body[data-preview-mode="dark"]) h2{color:#fff!important;-webkit-text-stroke:1.4px currentColor!important}:host-context(body[data-preview-mode="dark"]) .subtitle{color:#fff!important;background:linear-gradient(135deg,#FBE17B 0%,#fff 34%,#fff 100%)!important;-webkit-background-clip:text!important;background-clip:text!important;-webkit-text-fill-color:transparent!important;font-weight:400!important}:host-context(body[data-preview-mode="dark"]) svg rect{stroke:#FFE5A8!important}:host-context(body[data-preview-mode="dark"]) svg path{fill:#D4B875!important}</style><div class="import-stage">${sourceHtml}</div>`;
       const importedRoot = shadow.querySelector('.import-stage').firstElementChild;
       importedRoot.classList.add('import-source');
       if(fontStyle === 'serif') replaceImportedSerifMark(importedRoot);
