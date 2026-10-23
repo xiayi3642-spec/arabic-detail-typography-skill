@@ -57,7 +57,7 @@
     .title,.subtitle,.icon-label{margin:0}
     .title{font-family:Almarai,Arial,sans-serif;font-size:66px;font-weight:800;line-height:1.38;text-align:right;color:var(--ink)}
     .subtitle{margin-top:28px;font-size:37px;font-weight:400;line-height:1.65;text-align:right;color:var(--muted)}
-    .line{display:block;white-space:nowrap}
+    .line{display:block;max-width:100%;white-space:nowrap}
     .highlight{color:var(--accent)}
     [contenteditable="true"]{cursor:text}
     [contenteditable="true"]:focus{outline:2px dashed rgba(216,160,68,.55);outline-offset:7px}
@@ -90,6 +90,13 @@
     .right-divider .text-box{top:190px;right:18px;width:812px}
     .right-divider .between-rule{display:block;width:596.5px;height:1px;margin:37px 0 37px auto;overflow:visible}
     .right-divider .subtitle{margin-top:0}
+
+    .sans-template .text-box{top:186px;right:18px;width:812px}
+    .sans-template .gradient-rule{display:block;width:596.5px;height:1px;margin:37px 0 37px auto;overflow:visible}
+    .sans-template .subtitle{margin-top:28px}
+    .sans-template.has-rule .subtitle{margin-top:0}
+    .sans-template .orb{top:176px;right:3px}
+    .sans-template .feature-icon{display:block;width:84px;height:84px;margin:37px 0 0 auto;color:var(--accent);overflow:visible}
 
     .serif-template .text-box{top:186px;right:18px;width:812px}
     .serif-template .gradient-rule{display:block;width:596.5px;height:1px;margin:37px 0 37px auto;overflow:visible}
@@ -140,6 +147,7 @@
     body[data-preview-mode="dark"] .icon-label{color:#ddd0c7}
     body[data-preview-mode="dark"] .serif-mark rect{stroke:#FFE5A8}
     body[data-preview-mode="dark"] .serif-mark path{fill:#D4B875}
+    body[data-preview-mode="dark"] .gradient-rule path,body[data-preview-mode="dark"] .between-rule path{filter:drop-shadow(0 0 2px rgba(255,229,168,.35))}
 
     @media(max-width:1100px){.gallery{grid-template-columns:524px}.toolbar{align-items:flex-start;gap:16px}.toolbar p{display:none}}
     @media(max-width:580px){:root{--scale:.34}.gallery{grid-template-columns:364px}.card{width:364px}.preview{width:340px;height:340px}.toolbar{padding:12px 14px}.toolbar h1{font-size:16px}.font-switch button{min-width:auto;padding:8px 11px}}
@@ -271,7 +279,7 @@
           </div>
         </section>
       </div>
-      <div class="meta"><span class="module-tag">模块 · 商品细节图</span><div class="caption">水晶细节捕捉光线</div><div class="template-name">03 · side-orb</div></div>
+      <div class="meta"><span class="module-tag">模块 · 商品细节图</span><div class="caption">主标题＋渐变圆＋副标题</div><div class="template-name">03 · side-orb</div></div>
     </article>
 
     <article class="card" data-font-style="sans">
@@ -303,7 +311,42 @@
           </div>
         </section>
       </div>
-      <div class="meta"><span class="module-tag">模块 · 商品细节图</span><div class="caption">主副标题等距分隔</div><div class="template-name">05 · right-divider</div></div>
+      <div class="meta"><span class="module-tag">模块 · 商品细节图</span><div class="caption">主标题＋横线＋副标题</div><div class="template-name">05 · right-divider</div></div>
+    </article>
+
+    <article class="card" data-font-style="sans">
+      <button class="copy-button" type="button" aria-label="复制无衬线圆线组合模板2倍透明图" title="复制 2× 透明图"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="11" height="11" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg></button>
+      <div class="preview">
+        <section class="canvas sans-template has-rule">
+          <div class="safe">
+            <div class="text-box">
+              <h2 class="title"><span class="line">تفاصيل <span class="highlight">كريستالية</span></span><span class="line">تلتقط الضوء</span></h2>
+              <svg class="gradient-rule" xmlns="http://www.w3.org/2000/svg" width="596.5" height="1" viewBox="0 0 596.5 1" aria-hidden="true"><defs><linearGradient x1="0" y1=".5" x2="1" y2=".5" id="sans-rule-6"><stop offset="0%" stop-color="#D4B875" stop-opacity="0"/><stop offset="100%" stop-color="#FFE5A8"/></linearGradient></defs><path d="M.5 0H596V1H.5Z" fill="url(#sans-rule-6)"/></svg>
+              <p class="subtitle"><span class="line">لمعان رقيق يضيف لمسة أنيقة</span></p>
+            </div>
+            <svg class="orb" xmlns="http://www.w3.org/2000/svg" width="76" height="76" viewBox="0 0 76 76" aria-hidden="true"><defs><linearGradient x1=".816" y1=".113" x2=".177" y2=".949" id="sans-orb-6"><stop offset="0%" stop-color="#FFDC96" stop-opacity=".65"/><stop offset="57.16%" stop-color="#EDCE5A" stop-opacity="0"/></linearGradient></defs><ellipse cx="38" cy="38" rx="38" ry="38" fill="url(#sans-orb-6)"/></svg>
+          </div>
+        </section>
+      </div>
+      <div class="meta"><span class="module-tag">非衬线体 · 圆线组合</span><div class="caption">主标题＋渐变圆＋横线＋副标题</div></div>
+    </article>
+
+    <article class="card" data-font-style="sans">
+      <button class="copy-button" type="button" aria-label="复制无衬线完整组合模板2倍透明图" title="复制 2× 透明图"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="11" height="11" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg></button>
+      <div class="preview">
+        <section class="canvas sans-template has-rule">
+          <div class="safe">
+            <div class="text-box">
+              <h2 class="title"><span class="line">تفاصيل <span class="highlight">كريستالية</span></span><span class="line">تلتقط الضوء</span></h2>
+              <svg class="gradient-rule" xmlns="http://www.w3.org/2000/svg" width="596.5" height="1" viewBox="0 0 596.5 1" aria-hidden="true"><defs><linearGradient x1="0" y1=".5" x2="1" y2=".5" id="sans-rule-7"><stop offset="0%" stop-color="#D4B875" stop-opacity="0"/><stop offset="100%" stop-color="#FFE5A8"/></linearGradient></defs><path d="M.5 0H596V1H.5Z" fill="url(#sans-rule-7)"/></svg>
+              <p class="subtitle"><span class="line">لمعان رقيق يضيف لمسة أنيقة</span></p>
+              <svg class="feature-icon" xmlns="http://www.w3.org/2000/svg" width="84" height="84" viewBox="0 0 84 84" aria-hidden="true"><path d="M68 16.5L17 67.5M17 16.5L68 67.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><ellipse cx="42" cy="42" rx="40.5" ry="40.5" fill="none" stroke="currentColor" stroke-width="3"/></svg>
+            </div>
+            <svg class="orb" xmlns="http://www.w3.org/2000/svg" width="76" height="76" viewBox="0 0 76 76" aria-hidden="true"><defs><linearGradient x1=".816" y1=".113" x2=".177" y2=".949" id="sans-orb-7"><stop offset="0%" stop-color="#FFDC96" stop-opacity=".65"/><stop offset="57.16%" stop-color="#EDCE5A" stop-opacity="0"/></linearGradient></defs><ellipse cx="38" cy="38" rx="38" ry="38" fill="url(#sans-orb-7)"/></svg>
+          </div>
+        </section>
+      </div>
+      <div class="meta"><span class="module-tag">非衬线体 · 完整组合</span><div class="caption">主标题＋渐变圆＋横线＋副标题＋Icon</div></div>
     </article>
 
     <article class="card" data-font-style="serif">
@@ -429,10 +472,12 @@
       root.querySelectorAll('.canvas .title,.canvas .subtitle,.canvas .icon-label').forEach(element => {
         element.contentEditable = 'true';
         element.spellcheck = false;
+        if(element.classList.contains('title')) element.addEventListener('input', () => fitTitle(element));
       });
     }
 
     makeEditable();
+    document.fonts.ready.then(() => document.querySelectorAll('.card:not(.imported-card) .title').forEach(fitTitle));
 
     function parseFields(block){
       const fields = [];
@@ -502,7 +547,25 @@
 
     function highlightWord(text){
       const preferred = ['كريستالية','الضوء','دافئة','مختلفة','المختلفة'];
-      return text.split(/\s+/).find(word => /[٠-٩]/.test(word)) || preferred.find(word => text.includes(word)) || '';
+      const words = text.split(/\s+/).filter(word => /[\u0600-\u06ff]/.test(word));
+      return words.find(word => /[٠-٩]/.test(word)) || preferred.find(word => text.includes(word)) || [...words].sort((a,b) => b.length-a.length)[0] || '';
+    }
+
+    function fitTitle(element){
+      if(!element || element.closest('.imported-card')) return;
+      element.style.removeProperty('font-size');
+      const minimum = element.closest('[data-font-style="serif"]') ? 64 : 56;
+      let size = Number.parseFloat(getComputedStyle(element).fontSize);
+      const lines = [...element.querySelectorAll('.line')];
+      const exceedsWidth = () => lines.some(line => {
+        const range = document.createRange();
+        range.selectNodeContents(line);
+        return range.getBoundingClientRect().width > element.getBoundingClientRect().width + 1;
+      });
+      while(exceedsWidth() && size > minimum){
+        size -= 2;
+        element.style.fontSize = `${size}px`;
+      }
     }
 
     function setLines(element,lines,{highlight=false,max=2}={}){
@@ -525,6 +588,7 @@
         element.append(line);
       });
       element.hidden = output.length === 0;
+      if(element.classList.contains('title')) requestAnimationFrame(() => fitTitle(element));
     }
 
     function applyBrief(){
@@ -701,20 +765,39 @@
 
     function setCanonicalSerifMark(ornament){
       if(!ornament) return;
+      ornament.classList.add('serif-mark');
+      ornament.removeAttribute('transform');
       ornament.setAttribute('width','101.698');
       ornament.setAttribute('height','29.698');
       ornament.setAttribute('viewBox','0 0 101.698 29.698');
-      ornament.style.width = '101.698px';
-      ornament.style.height = '29.698px';
+      ornament.style.setProperty('display','block','important');
+      ornament.style.setProperty('width','101.698px','important');
+      ornament.style.setProperty('height','29.698px','important');
+      ornament.style.setProperty('transform','none','important');
+      ornament.style.setProperty('overflow','visible','important');
+      ornament.style.setProperty('opacity','1','important');
+      ornament.style.setProperty('mix-blend-mode','normal','important');
       ornament.innerHTML = '<defs><linearGradient x1="0" y1=".5" x2="1" y2=".5" id="canonical-mark-left"><stop offset="0%" stop-color="#D4B875"/><stop offset="100%" stop-color="#D4B875" stop-opacity="0"/></linearGradient><linearGradient x1="0" y1=".5" x2="1" y2=".5" id="canonical-mark-right"><stop offset="0%" stop-color="#D4B875"/><stop offset="100%" stop-color="#D4B875" stop-opacity="0"/></linearGradient></defs><g transform="matrix(-1 0 0 1 49 0)"><path d="M49 15.349H24.5v-1H49Z" fill="url(#canonical-mark-left)"/></g><g transform="matrix(.7071 -.7071 .7071 .7071 -2.153 24.502)"><rect x="29.4" y="15.749" width="19.2" height="19.2" fill="none" stroke="#854C0E" stroke-width="1.8"/></g><g transform="matrix(.7071 -.7071 .7071 .7071 2.241 35.108)"><rect x="44.4" y="15.749" width="19.2" height="19.2" fill="none" stroke="#854C0E" stroke-width="1.8"/></g><path d="M101.698 15.349h-24.5v-1h24.5Z" fill="url(#canonical-mark-right)"/>';
     }
 
     function replaceImportedSerifMark(root){
-      const ornament = [...root.querySelectorAll('svg')].find(svg => {
+      let ornament = [...root.querySelectorAll('svg')].find(svg => {
         const width = Number.parseFloat(svg.getAttribute('width'));
         const height = Number.parseFloat(svg.getAttribute('height'));
         return width > 0 && width < 220 && height > 0 && height < 100;
       });
+      if(!ornament){
+        const decorativeGroup = [...root.querySelectorAll('div')].filter(element => {
+          const style = getComputedStyle(element);
+          const width = Number.parseFloat(style.width);
+          const height = Number.parseFloat(style.height);
+          return !element.textContent.trim() && element.children.length >= 2 && width >= 40 && width < 220 && height >= 10 && height < 100;
+        }).sort((a,b) => Number.parseFloat(getComputedStyle(b).width)-Number.parseFloat(getComputedStyle(a).width))[0];
+        if(decorativeGroup){
+          ornament = document.createElementNS('http://www.w3.org/2000/svg','svg');
+          decorativeGroup.replaceChildren(ornament);
+        }
+      }
       setCanonicalSerifMark(ornament);
     }
 
@@ -776,12 +859,15 @@
       const sourceCss = [...parsed.querySelectorAll('style')].map(style => style.textContent || '').join('\n');
       const shadow = host.attachShadow({mode:'open'});
       const serifCss = fontStyle === 'serif' ? '.title{-webkit-text-stroke:1.4px currentColor!important;paint-order:stroke fill}.subtitle{-webkit-text-stroke:0!important;font-weight:400!important;color:#9b897f!important}' : '';
-      shadow.innerHTML = `<style>${sourceCss}\n${serifCss}:host{display:block;width:500px;height:500px;overflow:hidden}.import-stage{position:absolute;left:0;top:0;width:1000px;height:1000px;transform:scale(.5);transform-origin:0 0;background:transparent}.import-source{position:relative!important;left:0!important;top:0!important;width:1000px!important;height:1000px!important;transform:none!important;background:transparent!important}[contenteditable=true]{cursor:text}[contenteditable=true]:focus{outline:2px dashed rgba(216,160,68,.55);outline-offset:7px}:host-context(body[data-preview-mode="dark"]) .title,:host-context(body[data-preview-mode="dark"]) h1,:host-context(body[data-preview-mode="dark"]) h2{color:#fff!important;-webkit-text-stroke:1.4px currentColor!important}:host-context(body[data-preview-mode="dark"]) .subtitle{color:#fff!important;background:linear-gradient(135deg,#FBE17B 0%,#fff 34%,#fff 100%)!important;-webkit-background-clip:text!important;background-clip:text!important;-webkit-text-fill-color:transparent!important;font-weight:400!important}:host-context(body[data-preview-mode="dark"]) svg rect{stroke:#FFE5A8!important}:host-context(body[data-preview-mode="dark"]) svg path{fill:#D4B875!important}</style><div class="import-stage">${sourceHtml}</div>`;
+      shadow.innerHTML = `<style>${sourceCss}\n${serifCss}:host{display:block;width:500px;height:500px;overflow:hidden}.import-stage{position:absolute;left:0;top:0;width:1000px;height:1000px;transform:scale(.5);transform-origin:0 0;background:transparent}.import-source{position:relative!important;left:0!important;top:0!important;width:1000px!important;height:1000px!important;transform:none!important;background:transparent!important}.serif-mark,.serif-mark *{opacity:1!important;mix-blend-mode:normal!important}.serif-mark{display:block!important;width:101.698px!important;height:29.698px!important;transform:none!important;overflow:visible!important}[contenteditable=true]{cursor:text}[contenteditable=true]:focus{outline:2px dashed rgba(216,160,68,.55);outline-offset:7px}:host-context(body[data-preview-mode="dark"]) .title,:host-context(body[data-preview-mode="dark"]) h1,:host-context(body[data-preview-mode="dark"]) h2{color:#fff!important;-webkit-text-stroke:1.4px currentColor!important}:host-context(body[data-preview-mode="dark"]) .subtitle{color:#fff!important;background:linear-gradient(135deg,#FBE17B 0%,#fff 34%,#fff 100%)!important;-webkit-background-clip:text!important;background-clip:text!important;-webkit-text-fill-color:transparent!important;font-weight:400!important}:host-context(body[data-preview-mode="dark"]) .serif-mark rect{stroke:#FFE5A8!important}:host-context(body[data-preview-mode="dark"]) .serif-mark path{fill:#D4B875!important}</style><div class="import-stage">${sourceHtml}</div>`;
       const importedRoot = shadow.querySelector('.import-stage').firstElementChild;
       importedRoot.classList.add('import-source');
       if(fontStyle === 'serif') replaceImportedSerifMark(importedRoot);
       preview.append(host);
-      requestAnimationFrame(() => requestAnimationFrame(() => centerImportedContent(host)));
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        if(fontStyle === 'serif') replaceImportedSerifMark(importedRoot);
+        centerImportedContent(host);
+      }));
       setTimeout(() => centerImportedContent(host),250);
       const meta = document.createElement('div');
       meta.className = 'meta';
