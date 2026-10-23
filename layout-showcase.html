@@ -1,0 +1,785 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>阿语商详文字排版｜全部样式</title>
+  <style>
+    @font-face{font-family:Almarai;src:url('./fonts/Almarai-Regular.ttf') format('truetype');font-weight:400;font-style:normal;font-display:block}
+    @font-face{font-family:Almarai;src:url('./fonts/Almarai-Bold.ttf') format('truetype');font-weight:700;font-style:normal;font-display:block}
+    @font-face{font-family:Almarai;src:url('./fonts/Almarai-ExtraBold.ttf') format('truetype');font-weight:800;font-style:normal;font-display:block}
+    @font-face{font-family:"Arabic Editorial";src:url('./fonts/ae_AlYermook.ttf') format('truetype');font-weight:400;font-style:normal;font-display:block}
+
+    :root{
+      --canvas:1000px;
+      --scale:.5;
+      --ink:#573725;
+      --muted:#8a776b;
+      --accent:#d8a044;
+      --paper:#fff;
+      --workspace:#e8e5df;
+      --line:#e6e0d8;
+    }
+    *{box-sizing:border-box}
+    html{background:var(--workspace)}
+    body{margin:0;color:#302b27;background:var(--workspace);font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif}
+    button,select,textarea,input{font:inherit}
+
+    .toolbar{
+      position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;
+      min-height:76px;padding:14px 28px;background:rgba(255,255,255,.94);border-bottom:1px solid var(--line);
+      backdrop-filter:blur(16px)
+    }
+    .toolbar h1{margin:0;font-size:20px;line-height:1.2}
+    .toolbar p{margin:5px 0 0;color:#887f78;font-size:13px}
+    .font-switch{display:flex;padding:4px;background:#f1efec;border:1px solid #e5e0da;border-radius:999px}
+    .font-switch button{min-width:96px;padding:9px 16px;border:0;border-radius:999px;background:transparent;color:#6f6760;cursor:pointer}
+    .font-switch button[aria-pressed="true"]{background:#fff;color:#2f2b28;box-shadow:0 1px 5px rgba(45,36,27,.13)}
+
+    .brief-panel{width:1072px;max-width:calc(100vw - 48px);margin:18px auto 0;padding:0}
+    .brief-panel details{overflow:hidden;background:rgba(255,255,255,.76);border:1px solid rgba(78,65,52,.10);border-radius:14px;box-shadow:0 5px 18px rgba(48,39,30,.05)}
+    .brief-panel summary{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;cursor:pointer;font-size:14px;font-weight:700;list-style:none}
+    .brief-panel summary::-webkit-details-marker{display:none}
+    .brief-panel summary::after{content:"⌄";color:#8d8177;font-size:18px}
+    .brief-panel details[open] summary::after{transform:rotate(180deg)}
+    .brief-editor{display:grid;gap:10px;padding:0 14px 14px}
+    .brief-editor textarea{width:100%;min-height:210px;padding:14px;border:1px solid #d9d2cb;border-radius:10px;background:#fff;color:#342f2b;resize:vertical;font:13px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace}
+    .brief-actions{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .brief-hint{color:#8f857c;font-size:12px}
+    .generate-button{padding:9px 16px;border:0;border-radius:9px;background:#332d28;color:#fff;font-weight:700;cursor:pointer}
+
+    .gallery{display:grid;grid-template-columns:repeat(2,524px);gap:24px;justify-content:center;padding:24px 24px 60px}
+    .card{position:relative;padding:12px;background:#fff;border:1px solid rgba(78,65,52,.08);border-radius:16px;box-shadow:0 8px 24px rgba(48,39,30,.06)}
+    .preview{position:relative;width:500px;height:500px;overflow:hidden;background-color:#fff;background-image:linear-gradient(45deg,#f0f0f0 25%,transparent 25%),linear-gradient(-45deg,#f0f0f0 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#f0f0f0 75%),linear-gradient(-45deg,transparent 75%,#f0f0f0 75%);background-size:28px 28px;background-position:0 0,0 14px,14px -14px,-14px 0;border-radius:9px}
+    .canvas{position:absolute;left:0;top:0;width:var(--canvas);height:var(--canvas);transform:scale(var(--scale));transform-origin:0 0;color:var(--ink);direction:rtl;font-family:Almarai,Arial,sans-serif;font-synthesis:none;isolation:isolate}
+    .safe{position:absolute;inset:68px}
+    .text-box{position:absolute;z-index:2}
+    .title,.subtitle,.icon-label{margin:0}
+    .title{font-family:Almarai,Arial,sans-serif;font-size:66px;font-weight:800;line-height:1.38;text-align:right;color:var(--ink)}
+    .subtitle{margin-top:28px;font-size:37px;font-weight:400;line-height:1.65;text-align:right;color:var(--muted)}
+    .line{display:block;white-space:nowrap}
+    .highlight{color:var(--accent)}
+    [contenteditable="true"]{cursor:text}
+    [contenteditable="true"]:focus{outline:2px dashed rgba(216,160,68,.55);outline-offset:7px}
+
+    .card[data-font-style="serif"] .title{font-family:"Arabic Editorial",serif;font-size:80px;font-weight:400;line-height:1.24;-webkit-text-stroke:.9px currentColor;paint-order:stroke fill}
+    .card[data-font-style="serif"] .subtitle{font-family:"Arabic Editorial",serif;font-size:44px;font-weight:400;line-height:1.45}
+    body[data-font="sans"] .card[data-font-style="serif"],body[data-font="serif"] .card[data-font-style="sans"]{display:none}
+    body[data-font="serif"] .short-rule{display:none}
+
+    .orb{position:absolute;width:76px;height:76px;overflow:visible;opacity:1;z-index:0;pointer-events:none}
+    .short-rule{display:block;width:64px;height:8px;color:var(--accent);overflow:visible}
+    .center-ornament{display:block;width:277px;height:24px;overflow:visible}
+
+    .hero .text-box{top:126px;right:0;width:826px}
+    .hero .subtitle{width:760px}
+    .hero .short-rule{position:absolute;top:102px;right:0}
+    .icon-row{position:absolute;right:0;left:0;bottom:80px;display:grid;grid-template-columns:repeat(3,1fr);gap:32px;direction:rtl}
+    .icon-item{text-align:center}
+    .icon{display:grid;place-items:center;width:90px;height:90px;margin:0 auto 16px;border:2px solid rgba(216,160,68,.78);border-radius:50%;color:var(--accent);font:400 44px/1 Arial,sans-serif}
+    .icon-label{font-size:30px;font-weight:400;line-height:1.4;color:var(--muted)}
+
+    .center .text-box{top:184px;right:66px;width:800px;text-align:center}
+    .center .title,.center .subtitle{text-align:center}
+    .center .center-ornament{margin:34px auto 24px}
+    .center .subtitle{margin-top:0}
+
+    .side .text-box{top:186px;right:18px;width:812px}
+    .side .orb{top:176px;right:3px}
+
+    .right-divider .text-box{top:190px;right:18px;width:812px}
+    .right-divider .between-rule{display:block;width:596.5px;height:1px;margin:37px 0 37px auto;overflow:visible}
+    .right-divider .subtitle{margin-top:0}
+
+    .serif-template .text-box{top:186px;right:18px;width:812px}
+    .serif-template .gradient-rule{display:block;width:596.5px;height:1px;margin:37px 0 37px auto;overflow:visible}
+    .serif-template .subtitle{margin-top:28px}
+    .serif-template.has-rule .subtitle{margin-top:0}
+    .serif-template .orb{top:176px;right:3px}
+    .serif-template .feature-icon{display:block;width:84px;height:84px;margin:37px 0 0 auto;overflow:visible}
+    .serif-center .text-box{top:182px;right:68px;width:796px;text-align:center}
+    .serif-center .title,.serif-center .subtitle{text-align:center}
+    .serif-center .serif-mark{display:block;width:101.7px;height:29.7px;margin:0 auto 37px;overflow:visible}
+
+    .minimal .text-box{top:206px;right:68px;width:796px;text-align:center}
+    .minimal .title,.minimal .subtitle{text-align:center}
+    .minimal .center-ornament{margin:34px auto 24px}
+    .minimal .subtitle{margin-top:0}
+    .meta{display:grid;grid-template-columns:max-content minmax(0,1fr);align-items:center;gap:8px;margin-top:10px;direction:ltr}
+    .module-tag{padding:3px 7px;background:#8f8277;color:#fff;border-radius:4px;font-size:11px;font-weight:400;white-space:nowrap}
+    .caption{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#151515;font-size:15px;font-weight:700}
+    .template-name{display:none}
+    .copy-button{position:absolute;top:22px;right:22px;z-index:10;display:grid;place-items:center;width:36px;height:36px;padding:0;border:1px solid rgba(87,55,37,.16);border-radius:8px;background:rgba(255,255,255,.90);color:#554a42;box-shadow:0 2px 8px rgba(50,38,28,.10);cursor:pointer;backdrop-filter:blur(8px)}
+    .copy-button svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+    .copy-button:hover{background:#fff;border-color:rgba(216,160,68,.6)}
+    .copy-button[data-state="done"]{color:#317b49}
+    .add-template-button{position:fixed;right:24px;bottom:24px;z-index:30;width:54px;height:54px;border:0;border-radius:50%;background:#332d28;color:#fff;font-size:30px;line-height:1;box-shadow:0 10px 28px rgba(30,22,16,.25);cursor:pointer}
+    dialog{width:min(680px,calc(100vw - 32px));padding:0;border:0;border-radius:18px;box-shadow:0 24px 80px rgba(28,22,17,.26)}
+    dialog::backdrop{background:rgba(35,30,26,.48);backdrop-filter:blur(4px)}
+    .dialog-head{display:flex;align-items:center;justify-content:space-between;padding:20px 22px;border-bottom:1px solid var(--line)}
+    .dialog-head h2{margin:0;font-size:18px}
+    .dialog-close{border:0;background:transparent;color:#766d65;font-size:24px;cursor:pointer}
+    .dialog-body{display:grid;gap:14px;padding:20px 22px}
+    .dialog-body label{font-size:13px;font-weight:700;color:#5d544d}
+    .dialog-body textarea{width:100%;min-height:260px;padding:12px;border:1px solid #d9d2cb;border-radius:10px;resize:vertical;font:13px/1.55 ui-monospace,SFMono-Regular,Menlo,monospace}
+    .file-row{display:flex;align-items:center;gap:10px}
+    .dialog-actions{display:flex;justify-content:flex-end;gap:10px;padding:0 22px 22px}
+    .dialog-actions button{padding:9px 16px;border:1px solid #d6cec6;border-radius:9px;background:#fff;cursor:pointer}
+    .dialog-actions .primary{border-color:#332d28;background:#332d28;color:#fff}
+    .imported-host{position:absolute;inset:0;display:block;width:500px;height:500px;overflow:hidden;background:transparent}
+    .toast{position:fixed;left:50%;bottom:24px;z-index:50;transform:translate(-50%,20px);padding:10px 15px;border-radius:999px;background:#2f2a26;color:#fff;font-size:13px;opacity:0;pointer-events:none;transition:.2s}
+    .toast.show{transform:translate(-50%,0);opacity:1}
+
+    @media(max-width:1100px){.gallery{grid-template-columns:524px}.toolbar{align-items:flex-start;gap:16px}.toolbar p{display:none}}
+    @media(max-width:580px){:root{--scale:.34}.gallery{grid-template-columns:364px}.card{width:364px}.preview{width:340px;height:340px}.toolbar{padding:12px 14px}.toolbar h1{font-size:16px}.font-switch button{min-width:auto;padding:8px 11px}}
+  </style>
+</head>
+<body data-font="sans">
+  <header class="toolbar">
+    <div>
+      <h1>阿语商详文字排版｜全部样式</h1>
+      <p>透明画布预览 · 1000 × 1000 · 点击右侧切换字体</p>
+    </div>
+    <div class="font-switch" aria-label="字体切换">
+      <button type="button" data-font-button="sans" aria-pressed="true">非衬线体</button>
+      <button type="button" data-font-button="serif" aria-pressed="false">衬线体</button>
+    </div>
+  </header>
+
+  <section class="brief-panel">
+    <details open>
+      <summary>输入模块文案，自动识别并排版</summary>
+      <div class="brief-editor">
+        <textarea id="brief-input" aria-label="模块文案" spellcheck="false"># 水晶氛围灯套组｜5模块画面文案
+
+> 目标语言：现代标准阿拉伯语（RTL）
+> 文案结构：五个模块都不使用英文眉题。首图阿语信息整体右对齐；第2至第5页完全不出现英文。
+> 产品事实：4盏、3种造型——长款玫瑰纹灯×1、高脚太阳纹灯×1、方块水波纹灯×2。
+
+## 01｜首图：4件套氛围主视觉
+
+**阿语主标题（右对齐）**
+مجموعة مصابيح كريستالية للأجواء
+
+**阿语底部信息**
+{ ٤ مصابيح • ٣ تصاميم • أجواء متعددة }
+
+## 02｜三种纹理：分别认识四盏灯
+
+**阿语主标题（右对齐）**
+ثلاثة نقوش ضوئية، لكل منها طابعها الخاص
+
+**三款标签**
+- نقشة الوردة｜玫瑰纹
+- نقشة الشمس｜太阳纹
+- تموجات الماء｜水波纹
+
+## 03｜操作与续航：轻拍换色，长按调光
+
+**阿语主标题（两行）**
+نقرة خفيفة لتغيير لون الضوء
+وضغط مطوّل لضبط السطوع
+
+**底部阿语说明（两行）**
+إضاءة تدوم نحو ١٣ ساعة
+عند أعلى مستوى سطوع
+
+## 04｜三种光色：同一盏灯的三种状态
+
+**阿语主标题**
+ثلاثة ألوان للضوء تناسب أجواءً مختلفة
+
+**阿语补充短句**
+إضاءة مناسبة للضيافة والقراءة والاسترخاء
+
+## 05｜尺寸与包装清单
+
+**阿语主标题**
+المقاسات ومحتويات العبوة
+
+**阿语包装清单**
+- مصباح طويل بنقشة الوردة × ١
+- مصباح بقاعدة طويلة بنقشة الشمس × ١
+- مصباحان مربعان بتموجات الماء × ٢</textarea>
+        <div class="brief-actions">
+          <span class="brief-hint">支持“## 01｜模块名”与加粗字段；中文审核意会自动忽略。</span>
+          <button class="generate-button" type="button">识别并生成 5 个模块</button>
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <main class="gallery">
+    <article class="card" data-font-style="sans">
+      <button class="copy-button" type="button" aria-label="复制首屏主视觉2倍透明图" title="复制 2× 透明图"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="11" height="11" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg></button>
+      <div class="preview">
+        <section class="canvas hero">
+          <div class="safe">
+            <div class="text-box">
+              <h2 class="title"><span class="line">مجموعة مصابيح</span><span class="line"><span class="highlight">كريستالية</span> للأجواء</span></h2>
+              <p class="subtitle"><span class="line">إضاءة دافئة تناسب كل مساحة</span></p>
+            </div>
+            <svg class="short-rule" xmlns="http://www.w3.org/2000/svg" width="64" height="8" viewBox="0 0 64 8" aria-hidden="true"><rect width="64" height="8" fill="currentColor"/></svg>
+            <div class="icon-row">
+              <div class="icon-item"><span class="icon">×</span><p class="icon-label">أجواء متعددة</p></div>
+              <div class="icon-item"><span class="icon">×</span><p class="icon-label">تصاميم متنوعة</p></div>
+              <div class="icon-item"><span class="icon">×</span><p class="icon-label">إضاءة دافئة</p></div>
+            </div>
+          </div>
+        </section>
+      </div>
+      <div class="meta"><span class="module-tag">模块 · 首屏主视觉</span><div class="caption">水晶氛围灯套装</div><div class="template-name">01 · hero-icons</div></div>
+    </article>
+
+    <article class="card" data-font-style="sans">
+      <button class="copy-button" type="button" aria-label="复制核心卖点图2倍透明图" title="复制 2× 透明图"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="11" height="11" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg></button>
+      <div class="preview">
+        <section class="canvas center">
+          <div class="safe">
+            <div class="text-box">
+              <h2 class="title"><span class="line">وهج <span class="highlight">هادئ</span></span><span class="line">يغيّر أجواء المكان</span></h2>
+              <svg class="center-ornament" xmlns="http://www.w3.org/2000/svg" width="276.856" height="23.106" viewBox="0 0 276.856 23.106" aria-hidden="true"><defs><linearGradient x1="0" y1=".5" x2="1" y2=".5" id="center-right"><stop offset="0%" stop-color="#EEC57D"/><stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/></linearGradient><linearGradient x1="0" y1=".5" x2="1" y2=".5" id="center-left"><stop offset="0%" stop-color="#EEC57D"/><stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/></linearGradient></defs><path d="M128.474 11.908C132.096 7.807 136.009 3.966 139.782 0C143.607 3.904 147.277 7.958 151.169 11.794C147.329 15.527 143.581 19.353 139.757 23.106C135.963 19.415 132.049 15.817 128.474 11.908Z" fill="#EEC57D"/><path d="M276.856 12.744H158.856V10.744H276.856V12.744Z" fill="url(#center-right)"/><g transform="matrix(-1 0 0 1 236 0)"><path d="M236 12.762H118V10.762H236V12.762Z" fill="url(#center-left)"/></g></svg>
+              <p class="subtitle"><span class="line">إضاءة ناعمة تضيف الدفء والراحة</span></p>
+            </div>
+          </div>
+        </section>
+      </div>
+      <div class="meta"><span class="module-tag">模块 · 核心卖点图</span><div class="caption">柔和光线改变空间氛围</div><div class="template-name">02 · center-divider</div></div>
+    </article>
+
+    <article class="card" data-font-style="sans">
+      <button class="copy-button" type="button" aria-label="复制商品细节图2倍透明图" title="复制 2× 透明图"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="11" height="11" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg></button>
+      <div class="preview">
+        <section class="canvas side">
+          <div class="safe">
+            <div class="text-box">
+              <h2 class="title"><span class="line">تفاصيل <span class="highlight">كريستالية</span></span><span class="line">تلتقط الضوء</span></h2>
+              <p class="subtitle"><span class="line">لمعان رقيق يضيف لمسة أنيقة</span></p>
+            </div>
+            <svg class="orb" xmlns="http://www.w3.org/2000/svg" fill="none" width="76" height="76" viewBox="0 0 76 76" aria-hidden="true"><defs><linearGradient x1="0.81591796875" y1="0.11284437030553818" x2="0.17730873823165894" y2="0.9486083984375" id="orb-gradient"><stop offset="0%" stop-color="#FFDC96" stop-opacity="0.65"/><stop offset="57.163238525390625%" stop-color="#EDCE5A" stop-opacity="0"/></linearGradient></defs><ellipse cx="38" cy="38" rx="38" ry="38" fill="url(#orb-gradient)"/></svg>
+          </div>
+        </section>
+      </div>
+      <div class="meta"><span class="module-tag">模块 · 商品细节图</span><div class="caption">水晶细节捕捉光线</div><div class="template-name">03 · side-orb</div></div>
+    </article>
+
+    <article class="card" data-font-style="sans">
+      <button class="copy-button" type="button" aria-label="复制场景氛围图2倍透明图" title="复制 2× 透明图"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="11" height="11" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg></button>
+      <div class="preview">
+        <section class="canvas minimal">
+          <div class="safe">
+            <div class="text-box">
+              <h2 class="title"><span class="line">ضوء يناسب</span><span class="line">لحظاتك <span class="highlight">المختلفة</span></span></h2>
+              <svg class="center-ornament" xmlns="http://www.w3.org/2000/svg" width="276.856" height="23.106" viewBox="0 0 276.856 23.106" aria-hidden="true"><defs><linearGradient x1="0" y1=".5" x2="1" y2=".5" id="minimal-right"><stop offset="0%" stop-color="#EEC57D"/><stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/></linearGradient><linearGradient x1="0" y1=".5" x2="1" y2=".5" id="minimal-left"><stop offset="0%" stop-color="#EEC57D"/><stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/></linearGradient></defs><path d="M128.474 11.908C132.096 7.807 136.009 3.966 139.782 0C143.607 3.904 147.277 7.958 151.169 11.794C147.329 15.527 143.581 19.353 139.757 23.106C135.963 19.415 132.049 15.817 128.474 11.908Z" fill="#EEC57D"/><path d="M276.856 12.744H158.856V10.744H276.856V12.744Z" fill="url(#minimal-right)"/><g transform="matrix(-1 0 0 1 236 0)"><path d="M236 12.762H118V10.762H236V12.762Z" fill="url(#minimal-left)"/></g></svg>
+              <p class="subtitle"><span class="line">من الهدوء اليومي إلى اللقاءات الدافئة</span></p>
+            </div>
+          </div>
+        </section>
+      </div>
+      <div class="meta"><span class="module-tag">模块 · 场景氛围图</span><div class="caption">适配不同生活时刻</div><div class="template-name">04 · minimal-mark</div></div>
+    </article>
+
+    <article class="card" data-font-style="sans">
+      <button class="copy-button" type="button" aria-label="复制标题分隔版2倍透明图" title="复制 2× 透明图"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="11" height="11" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg></button>
+      <div class="preview">
+        <section class="canvas right-divider">
+          <div class="safe">
+            <div class="text-box">
+              <h2 class="title"><span class="line">تفاصيل <span class="highlight">كريستالية</span></span><span class="line">تلتقط الضوء</span></h2>
+              <svg class="between-rule" xmlns="http://www.w3.org/2000/svg" width="596.5" height="1" viewBox="0 0 596.5 1" aria-hidden="true"><defs><linearGradient x1="0" y1=".5" x2="1" y2=".5" id="right-divider-gradient"><stop offset="0%" stop-color="#D4B875" stop-opacity="0"/><stop offset="100%" stop-color="#FFE5A8"/></linearGradient></defs><path d="M.5 0H596V1H.5Z" fill="url(#right-divider-gradient)"/></svg>
+              <p class="subtitle"><span class="line">لمعان رقيق يضيف لمسة أنيقة</span></p>
+            </div>
+          </div>
+        </section>
+      </div>
+      <div class="meta"><span class="module-tag">模块 · 商品细节图</span><div class="caption">主副标题等距分隔</div><div class="template-name">05 · right-divider</div></div>
+    </article>
+
+    <article class="card" data-font-style="serif">
+      <button class="copy-button" type="button" aria-label="复制衬线渐变圆模板2倍透明图" title="复制 2× 透明图"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="11" height="11" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg></button>
+      <div class="preview">
+        <section class="canvas serif-template">
+          <div class="safe">
+            <div class="text-box">
+              <h2 class="title"><span class="line">تفاصيل <span class="highlight">كريستالية</span></span><span class="line">تلتقط الضوء</span></h2>
+              <p class="subtitle"><span class="line">لمعان رقيق يضيف لمسة أنيقة</span></p>
+            </div>
+            <svg class="orb" xmlns="http://www.w3.org/2000/svg" width="76" height="76" viewBox="0 0 76 76" aria-hidden="true"><defs><linearGradient x1=".816" y1=".113" x2=".177" y2=".949" id="serif-orb-1"><stop offset="0%" stop-color="#FFDC96" stop-opacity=".65"/><stop offset="57.16%" stop-color="#EDCE5A" stop-opacity="0"/></linearGradient></defs><ellipse cx="38" cy="38" rx="38" ry="38" fill="url(#serif-orb-1)"/></svg>
+          </div>
+        </section>
+      </div>
+      <div class="meta"><span class="module-tag">衬线体 · 渐变圆</span><div class="caption">主标题＋渐变圆＋副标题</div></div>
+    </article>
+
+    <article class="card" data-font-style="serif">
+      <button class="copy-button" type="button" aria-label="复制衬线渐变横线模板2倍透明图" title="复制 2× 透明图"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="11" height="11" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg></button>
+      <div class="preview">
+        <section class="canvas serif-template has-rule">
+          <div class="safe">
+            <div class="text-box">
+              <h2 class="title"><span class="line">تفاصيل <span class="highlight">كريستالية</span></span><span class="line">تلتقط الضوء</span></h2>
+              <svg class="gradient-rule" xmlns="http://www.w3.org/2000/svg" width="596.5" height="1" viewBox="0 0 596.5 1" aria-hidden="true"><defs><linearGradient x1="0" y1=".5" x2="1" y2=".5" id="serif-rule-2"><stop offset="0%" stop-color="#D4B875" stop-opacity="0"/><stop offset="100%" stop-color="#FFE5A8"/></linearGradient></defs><path d="M.5 0H596V1H.5Z" fill="url(#serif-rule-2)"/></svg>
+              <p class="subtitle"><span class="line">لمعان رقيق يضيف لمسة أنيقة</span></p>
+            </div>
+          </div>
+        </section>
+      </div>
+      <div class="meta"><span class="module-tag">衬线体 · 渐变横线</span><div class="caption">主标题＋横线＋副标题</div></div>
+    </article>
+
+    <article class="card" data-font-style="serif">
+      <button class="copy-button" type="button" aria-label="复制衬线圆线组合模板2倍透明图" title="复制 2× 透明图"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="11" height="11" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg></button>
+      <div class="preview">
+        <section class="canvas serif-template has-rule">
+          <div class="safe">
+            <div class="text-box">
+              <h2 class="title"><span class="line">تفاصيل <span class="highlight">كريستالية</span></span><span class="line">تلتقط الضوء</span></h2>
+              <svg class="gradient-rule" xmlns="http://www.w3.org/2000/svg" width="596.5" height="1" viewBox="0 0 596.5 1" aria-hidden="true"><defs><linearGradient x1="0" y1=".5" x2="1" y2=".5" id="serif-rule-3"><stop offset="0%" stop-color="#D4B875" stop-opacity="0"/><stop offset="100%" stop-color="#FFE5A8"/></linearGradient></defs><path d="M.5 0H596V1H.5Z" fill="url(#serif-rule-3)"/></svg>
+              <p class="subtitle"><span class="line">لمعان رقيق يضيف لمسة أنيقة</span></p>
+            </div>
+            <svg class="orb" xmlns="http://www.w3.org/2000/svg" width="76" height="76" viewBox="0 0 76 76" aria-hidden="true"><defs><linearGradient x1=".816" y1=".113" x2=".177" y2=".949" id="serif-orb-3"><stop offset="0%" stop-color="#FFDC96" stop-opacity=".65"/><stop offset="57.16%" stop-color="#EDCE5A" stop-opacity="0"/></linearGradient></defs><ellipse cx="38" cy="38" rx="38" ry="38" fill="url(#serif-orb-3)"/></svg>
+          </div>
+        </section>
+      </div>
+      <div class="meta"><span class="module-tag">衬线体 · 圆线组合</span><div class="caption">主标题＋渐变圆＋横线＋副标题</div></div>
+    </article>
+
+    <article class="card" data-font-style="serif">
+      <button class="copy-button" type="button" aria-label="复制衬线完整组合模板2倍透明图" title="复制 2× 透明图"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="11" height="11" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg></button>
+      <div class="preview">
+        <section class="canvas serif-template has-rule">
+          <div class="safe">
+            <div class="text-box">
+              <h2 class="title"><span class="line">تفاصيل <span class="highlight">كريستالية</span></span><span class="line">تلتقط الضوء</span></h2>
+              <svg class="gradient-rule" xmlns="http://www.w3.org/2000/svg" width="596.5" height="1" viewBox="0 0 596.5 1" aria-hidden="true"><defs><linearGradient x1="0" y1=".5" x2="1" y2=".5" id="serif-rule-4"><stop offset="0%" stop-color="#D4B875" stop-opacity="0"/><stop offset="100%" stop-color="#FFE5A8"/></linearGradient></defs><path d="M.5 0H596V1H.5Z" fill="url(#serif-rule-4)"/></svg>
+              <p class="subtitle"><span class="line">لمعان رقيق يضيف لمسة أنيقة</span></p>
+              <svg class="feature-icon" xmlns="http://www.w3.org/2000/svg" width="84" height="84" viewBox="0 0 84 84" aria-hidden="true"><path d="M68 16.5L17 67.5M17 16.5L68 67.5" fill="none" stroke="#FFEAD6" stroke-width="3" stroke-linecap="round"/><ellipse cx="42" cy="42" rx="40.5" ry="40.5" fill="none" stroke="#FFEAD6" stroke-width="3"/></svg>
+            </div>
+            <svg class="orb" xmlns="http://www.w3.org/2000/svg" width="76" height="76" viewBox="0 0 76 76" aria-hidden="true"><defs><linearGradient x1=".816" y1=".113" x2=".177" y2=".949" id="serif-orb-4"><stop offset="0%" stop-color="#FFDC96" stop-opacity=".65"/><stop offset="57.16%" stop-color="#EDCE5A" stop-opacity="0"/></linearGradient></defs><ellipse cx="38" cy="38" rx="38" ry="38" fill="url(#serif-orb-4)"/></svg>
+          </div>
+        </section>
+      </div>
+      <div class="meta"><span class="module-tag">衬线体 · 完整组合</span><div class="caption">主标题＋渐变圆＋横线＋副标题＋Icon</div></div>
+    </article>
+
+    <article class="card" data-font-style="serif">
+      <button class="copy-button" type="button" aria-label="复制衬线双菱形模板2倍透明图" title="复制 2× 透明图"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="11" height="11" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg></button>
+      <div class="preview">
+        <section class="canvas serif-center">
+          <div class="safe">
+            <div class="text-box">
+              <svg class="serif-mark" xmlns="http://www.w3.org/2000/svg" width="101.698" height="29.698" viewBox="0 0 101.698 29.698" aria-hidden="true"><defs><linearGradient x1="0" y1=".5" x2="1" y2=".5" id="serif-mark-left"><stop offset="0%" stop-color="#D4B875"/><stop offset="100%" stop-color="#D4B875" stop-opacity="0"/></linearGradient><linearGradient x1="0" y1=".5" x2="1" y2=".5" id="serif-mark-right"><stop offset="0%" stop-color="#D4B875"/><stop offset="100%" stop-color="#D4B875" stop-opacity="0"/></linearGradient></defs><path d="M0 14.35H24.5v1H0Z" fill="url(#serif-mark-left)"/><path d="M101.698 14.35h-24.5v1h24.5Z" fill="url(#serif-mark-right)"/><rect x="35.21" y="8.06" width="13.58" height="13.58" transform="rotate(45 42 14.85)" fill="none" stroke="#854C0E" stroke-width="1.8"/><rect x="50.21" y="8.06" width="13.58" height="13.58" transform="rotate(45 57 14.85)" fill="none" stroke="#854C0E" stroke-width="1.8"/></svg>
+              <h2 class="title"><span class="line">ضوء يناسب</span><span class="line">لحظاتك <span class="highlight">المختلفة</span></span></h2>
+              <p class="subtitle"><span class="line">من الهدوء اليومي إلى اللقاءات الدافئة</span></p>
+            </div>
+          </div>
+        </section>
+      </div>
+      <div class="meta"><span class="module-tag">衬线体 · 双菱形</span><div class="caption">居中主标题＋双菱形＋副标题</div></div>
+    </article>
+  </main>
+
+  <button class="add-template-button" type="button" aria-label="添加 HTML 模板">＋</button>
+  <dialog id="template-dialog">
+    <div class="dialog-head"><h2>导入 HTML 模板</h2><button class="dialog-close" type="button" aria-label="关闭">×</button></div>
+    <div class="dialog-body">
+      <label for="template-file">选择 HTML 文件</label>
+      <div class="file-row"><input id="template-file" type="file" accept=".html,.htm,text/html"><span>或直接粘贴下面</span></div>
+      <label for="template-html">HTML 内容</label>
+      <textarea id="template-html" placeholder="粘贴完整 HTML，或包含 .canvas 的模板片段"></textarea>
+    </div>
+    <div class="dialog-actions"><button class="dialog-cancel" type="button">取消</button><button class="primary dialog-import" type="button">导入模板</button></div>
+  </dialog>
+  <div class="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    const STORAGE_KEY = 'arabic-typography-imported-templates-v1';
+    const gallery = document.querySelector('.gallery');
+    const dialog = document.querySelector('#template-dialog');
+    const htmlInput = document.querySelector('#template-html');
+    const fileInput = document.querySelector('#template-file');
+    const briefInput = document.querySelector('#brief-input');
+    const toast = document.querySelector('.toast');
+    let fontCssPromise;
+
+    function notify(message){
+      toast.textContent = message;
+      toast.classList.add('show');
+      clearTimeout(notify.timer);
+      notify.timer = setTimeout(() => toast.classList.remove('show'), 1800);
+    }
+
+    function makeEditable(root=document){
+      root.querySelectorAll('.canvas .title,.canvas .subtitle,.canvas .icon-label').forEach(element => {
+        element.contentEditable = 'true';
+        element.spellcheck = false;
+      });
+    }
+
+    makeEditable();
+
+    function parseFields(block){
+      const fields = [];
+      let current = null;
+      block.split(/\r?\n/).forEach(rawLine => {
+        const line = rawLine.trim();
+        const heading = line.match(/^\*\*(.+?)\*\*$/);
+        if(heading){
+          current = {label:heading[1],lines:[]};
+          fields.push(current);
+        } else if(current && line && !line.startsWith('## ')) {
+          current.lines.push(line);
+        }
+      });
+      return fields;
+    }
+
+    function arabicLines(lines){
+      return lines.map(line => line
+        .replace(/^[-*+]\s*/, '')
+        .replace(/[{}]/g, '')
+        .split('｜')[0]
+        .replace(/[`*_#]/g, '')
+        .trim())
+        .filter(line => /[\u0600-\u06ff]/.test(line));
+    }
+
+    function pickField(fields, labels){
+      for(const label of labels){
+        const field = fields.find(item => item.label.includes(label));
+        const lines = field ? arabicLines(field.lines) : [];
+        if(lines.length) return lines;
+      }
+      return [];
+    }
+
+    function parseBrief(raw){
+      const matches = [...raw.matchAll(/^##\s*(\d+)\s*[｜|]\s*(.+)$/gm)];
+      return matches.map((match,index) => {
+        const start = match.index + match[0].length;
+        const end = matches[index + 1]?.index ?? raw.length;
+        const block = raw.slice(start,end);
+        const fields = parseFields(block);
+        const title = pickField(fields,['阿语主标题']);
+        const subtitle = pickField(fields,['阿语副标题','底部阿语说明','阿语补充短句','阿语包装清单','尺寸字段','三款标签','三种光色标签']);
+        const bottom = pickField(fields,['阿语底部信息']);
+        return {number:match[1],heading:match[2].trim(),title,subtitle,bottom};
+      }).filter(module => module.title.length);
+    }
+
+    function inferredModule(heading,index){
+      if(index === 0 || /首图|主视觉/.test(heading)) return '首屏主视觉';
+      if(/尺寸|包装|容量|重量/.test(heading)) return '尺寸/容量/重量图';
+      if(/操作|续航|功能|调光|换色/.test(heading)) return '核心卖点图';
+      if(/光色|氛围|场景|状态/.test(heading)) return '场景氛围图';
+      if(/纹理|细节|材质|造型/.test(heading)) return '商品细节图';
+      return '核心卖点图';
+    }
+
+    function splitTitle(lines){
+      if(lines.length > 1) return lines.slice(0,2);
+      const words = (lines[0] || '').split(/\s+/).filter(Boolean);
+      if(words.length < 4) return [words.join(' ')];
+      const cut = Math.ceil(words.length / 2);
+      return [words.slice(0,cut).join(' '),words.slice(cut).join(' ')];
+    }
+
+    function highlightWord(text){
+      const preferred = ['كريستالية','الضوء','دافئة','مختلفة','المختلفة'];
+      return text.split(/\s+/).find(word => /[٠-٩]/.test(word)) || preferred.find(word => text.includes(word)) || '';
+    }
+
+    function setLines(element,lines,{highlight=false,max=2}={}){
+      element.replaceChildren();
+      const output = lines.slice(0,max);
+      output.forEach(text => {
+        const line = document.createElement('span');
+        line.className = 'line';
+        const chosen = highlight ? highlightWord(text) : '';
+        if(chosen){
+          const at = text.indexOf(chosen);
+          line.append(document.createTextNode(text.slice(0,at)));
+          const accent = document.createElement('span');
+          accent.className = 'highlight';
+          accent.textContent = chosen;
+          line.append(accent,document.createTextNode(text.slice(at + chosen.length)));
+        } else {
+          line.textContent = text;
+        }
+        element.append(line);
+      });
+      element.hidden = output.length === 0;
+    }
+
+    function applyBrief(){
+      const modules = parseBrief(briefInput.value);
+      if(!modules.length){
+        notify('没有识别到模块，请保留“## 01｜模块名”结构');
+        return;
+      }
+      const activeFont = document.body.dataset.font;
+      const cards = [...gallery.querySelectorAll(`.card[data-font-style="${activeFont}"]:not(.imported-card)`)].slice(0,5);
+      modules.slice(0,cards.length).forEach((module,index) => {
+        const card = cards[index];
+        const title = card.querySelector('.title');
+        const subtitle = card.querySelector('.subtitle');
+        setLines(title,splitTitle(module.title),{highlight:true,max:2});
+
+        let subtitleLines = module.subtitle;
+        if(index === 0 && !subtitleLines.length) subtitleLines = [];
+        setLines(subtitle,subtitleLines,{max:2});
+
+        if(index === 0 && module.bottom.length){
+          const labels = module.bottom.join(' ').split(/[•・]/).map(item => item.trim()).filter(Boolean);
+          card.querySelectorAll('.icon-label').forEach((label,labelIndex) => {
+            if(labels[labelIndex]) label.textContent = labels[labelIndex];
+          });
+        }
+
+        const moduleName = inferredModule(module.heading,index);
+        card.querySelector('.module-tag').textContent = `模块 · ${moduleName}`;
+        card.querySelector('.caption').textContent = module.heading.replace(/^.+?[：:]/,'').trim() || module.heading;
+        const copyButton = card.querySelector('.copy-button');
+        copyButton.setAttribute('aria-label',`复制${moduleName}2倍透明图`);
+      });
+
+      const explicitlySerif = /(?:整体|阿语|主标题)[^\n]{0,12}(?:使用|为|：|:)\s*衬线体/.test(briefInput.value);
+      if(explicitlySerif) document.querySelector('[data-font-button="serif"]').click();
+      makeEditable();
+      notify(`已识别 ${Math.min(modules.length,cards.length)} 个模块并完成排版`);
+    }
+
+    document.querySelector('.generate-button').addEventListener('click',applyBrief);
+
+    document.querySelectorAll('[data-font-button]').forEach(button => {
+      button.addEventListener('click', () => {
+        const font = button.dataset.fontButton;
+        document.body.dataset.font = font;
+        document.querySelectorAll('[data-font-button]').forEach(item => item.setAttribute('aria-pressed', String(item === button)));
+        requestAnimationFrame(() => document.querySelectorAll('.imported-card').forEach(card => {
+          if(getComputedStyle(card).display !== 'none') centerImportedContent(card.querySelector('.imported-host'));
+        }));
+      });
+    });
+
+    function blobToDataUrl(blob){
+      return new Promise((resolve,reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+    }
+
+    function loadFontCss(){
+      if(fontCssPromise) return fontCssPromise;
+      const fonts = [
+        ['Almarai','./fonts/Almarai-Regular.ttf',400],
+        ['Almarai','./fonts/Almarai-Bold.ttf',700],
+        ['Almarai','./fonts/Almarai-ExtraBold.ttf',800],
+        ['Arabic Editorial','./fonts/ae_AlYermook.ttf',400]
+      ];
+      fontCssPromise = Promise.all(fonts.map(async ([family,url,weight]) => {
+        const data = await blobToDataUrl(await fetch(url).then(response => response.blob()));
+        return `@font-face{font-family:"${family}";src:url("${data}");font-weight:${weight};font-style:normal}`;
+      })).then(lines => lines.join('\n'));
+      return fontCssPromise;
+    }
+
+    function documentCss(doc){
+      return [...doc.querySelectorAll('style')].map(style => style.textContent || '').join('\n');
+    }
+
+    async function exportCard(card){
+      const importedHost = card.querySelector('.imported-host');
+      const shadow = importedHost?.shadowRoot;
+      const sourceDoc = document;
+      const sourceRoot = shadow ? shadow.querySelector('.import-source') : card.querySelector('.canvas');
+      if(!sourceRoot) throw new Error('模板中没有可导出的内容');
+
+      const clone = sourceRoot.cloneNode(true);
+      clone.querySelectorAll?.('script,button').forEach(node => node.remove());
+      clone.style.position = 'relative';
+      clone.style.left = '0';
+      clone.style.top = '0';
+      clone.style.transform = 'none';
+      clone.style.transformOrigin = '0 0';
+      clone.style.width = '1000px';
+      clone.style.height = '1000px';
+      clone.style.background = 'transparent';
+      await Promise.all([...clone.querySelectorAll('img')].map(async image => {
+        const src = image.getAttribute('src');
+        if(!src || src.startsWith('data:')) return;
+        try{
+          image.setAttribute('src',await blobToDataUrl(await fetch(src).then(response => response.blob())));
+        } catch {
+          image.remove();
+        }
+      }));
+
+      const currentFont = document.body.dataset.font;
+      const importedCss = shadow ? [...shadow.querySelectorAll('style')].map(style => style.textContent || '').join('\n') : '';
+      const rawCss = `${documentCss(sourceDoc)}\n${importedCss}`
+        .replace(/@font-face\s*\{[^}]*\}/g,'')
+        .replaceAll('body[data-font="sans"]', '.export-surface[data-font="sans"]')
+        .replaceAll('body[data-font="serif"]', '.export-surface[data-font="serif"]');
+      const embeddedFonts = await loadFontCss();
+      const markup = `<div xmlns="http://www.w3.org/1999/xhtml" class="export-surface" data-font="${currentFont}" style="width:1000px;height:1000px;background:transparent;overflow:visible"><style>${embeddedFonts}\n${rawCss}\n.canvas{position:relative!important;left:0!important;top:0!important;transform:none!important;box-shadow:none!important;background:transparent!important}</style>${clone.outerHTML}</div>`;
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000" viewBox="0 0 1000 1000"><foreignObject width="1000" height="1000">${markup}</foreignObject></svg>`;
+      const imageUrl = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+      const image = new Image();
+      await new Promise((resolve,reject) => { image.onload = resolve; image.onerror = reject; image.src = imageUrl; });
+      const canvas = document.createElement('canvas');
+      canvas.width = 2000;
+      canvas.height = 2000;
+      const context = canvas.getContext('2d');
+      context.clearRect(0,0,2000,2000);
+      context.drawImage(image,0,0,2000,2000);
+      return await new Promise((resolve,reject) => canvas.toBlob(blob => blob ? resolve(blob) : reject(new Error('PNG 生成失败')),'image/png'));
+    }
+
+    async function copyCard(button){
+      button.disabled = true;
+      button.dataset.state = 'working';
+      try{
+        const png = await exportCard(button.closest('.card'));
+        await navigator.clipboard.write([new ClipboardItem({'image/png':png})]);
+        button.dataset.state = 'done';
+        notify('已复制 2000×2000 透明 PNG');
+      } catch(error){
+        console.error(error);
+        button.dataset.state = 'error';
+        notify('复制失败，请检查浏览器剪贴板权限');
+      } finally {
+        setTimeout(() => { button.disabled = false; delete button.dataset.state; }, 1500);
+      }
+    }
+
+    gallery.addEventListener('click', event => {
+      const button = event.target.closest('.copy-button');
+      if(button) copyCard(button);
+    });
+
+    function normalizedHtml(raw){
+      const base = `<base href="${location.href}"><style>html,body{margin:0!important;width:1000px;height:1000px;background:transparent!important;overflow:hidden}</style>`;
+      if(/<html[\s>]/i.test(raw)) return raw.replace(/<head([^>]*)>/i, `<head$1>${base}`);
+      return `<!doctype html><html><head><meta charset="utf-8">${base}</head><body>${raw}</body></html>`;
+    }
+
+    function importedTemplates(){
+      try{return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]')}catch{return []}
+    }
+
+    function detectFontStyle(html){
+      return /(ae[_-]?AlYermook|Arabic Editorial|Didone|Naskh|Times New Roman|Georgia)/i.test(html) ? 'serif' : 'sans';
+    }
+
+    function replaceImportedSerifMark(root){
+      const ornament = [...root.querySelectorAll('svg')].find(svg => {
+        const width = Number.parseFloat(svg.getAttribute('width'));
+        const height = Number.parseFloat(svg.getAttribute('height'));
+        return width > 0 && width < 220 && height > 0 && height < 100;
+      });
+      if(!ornament) return;
+      ornament.setAttribute('width','101.698');
+      ornament.setAttribute('height','29.698');
+      ornament.setAttribute('viewBox','0 0 101.698 29.698');
+      ornament.style.width = '101.698px';
+      ornament.style.height = '29.698px';
+      ornament.innerHTML = '<defs><linearGradient x1="0" y1=".5" x2="1" y2=".5" id="imported-mark-left"><stop offset="0%" stop-color="#D4B875"/><stop offset="100%" stop-color="#D4B875" stop-opacity="0"/></linearGradient><linearGradient x1="0" y1=".5" x2="1" y2=".5" id="imported-mark-right"><stop offset="0%" stop-color="#D4B875"/><stop offset="100%" stop-color="#D4B875" stop-opacity="0"/></linearGradient></defs><path d="M0 14.35H24.5v1H0Z" fill="url(#imported-mark-left)"/><path d="M101.698 14.35h-24.5v1h24.5Z" fill="url(#imported-mark-right)"/><rect x="35.21" y="8.06" width="13.58" height="13.58" transform="rotate(45 42 14.85)" fill="none" stroke="#854C0E" stroke-width="1.8"/><rect x="50.21" y="8.06" width="13.58" height="13.58" transform="rotate(45 57 14.85)" fill="none" stroke="#854C0E" stroke-width="1.8"/>';
+    }
+
+    function centerImportedContent(host){
+      const shadow = host.shadowRoot;
+      if(!shadow) return;
+      const root = shadow.querySelector('.import-source');
+      if(!root) return;
+      const textElements = [...root.querySelectorAll('*')].filter(element => {
+        const directText = [...element.childNodes].filter(node => node.nodeType === Node.TEXT_NODE).map(node => node.textContent).join('').trim();
+        const rect = element.getBoundingClientRect();
+        return directText && rect.width > 0 && rect.height > 0 && rect.width < 900 && rect.height < 400;
+      }).sort((a,b) => parseFloat(getComputedStyle(b).fontSize)-parseFloat(getComputedStyle(a).fontSize));
+      if(!root.querySelector('.title') && textElements[0]) textElements[0].classList.add('title');
+      if(!root.querySelector('.subtitle')){
+        const titleSize = textElements[0] ? parseFloat(getComputedStyle(textElements[0]).fontSize) : 0;
+        const subtitle = textElements.find(element => parseFloat(getComputedStyle(element).fontSize) < titleSize - 2);
+        if(subtitle) subtitle.classList.add('subtitle');
+      }
+      root.querySelectorAll('.title,.subtitle,.icon-label,h1,h2').forEach(element => {
+        element.contentEditable = 'true';
+        element.spellcheck = false;
+      });
+      const mover = root.querySelector('.safe') || root.firstElementChild || root;
+      const rootRect = root.getBoundingClientRect();
+      const parts = [...root.querySelectorAll('.title,.subtitle,h1,h2,.center-ornament,.rule,.mark,.short-rule,.orb,img,svg')]
+        .map(node => node.getBoundingClientRect())
+        .filter(rect => rect.width > 0 && rect.height > 0 && rect.width < 900 && rect.height < 400);
+      if(!parts.length) return;
+      const bounds = parts.reduce((box,rect) => ({left:Math.min(box.left,rect.left),top:Math.min(box.top,rect.top),right:Math.max(box.right,rect.right),bottom:Math.max(box.bottom,rect.bottom)}), {left:Infinity,top:Infinity,right:-Infinity,bottom:-Infinity});
+      const currentCenterX = (bounds.left + bounds.right) / 2;
+      const currentCenterY = (bounds.top + bounds.bottom) / 2;
+      const targetCenterX = rootRect.left + rootRect.width / 2;
+      const targetCenterY = rootRect.top + rootRect.height / 2;
+      mover.style.transform = `translate(${Math.round(targetCenterX-currentCenterX)}px,${Math.round(targetCenterY-currentCenterY)}px)`;
+    }
+
+    function renderImportedTemplate(item,index){
+      const card = document.createElement('article');
+      card.className = 'card imported-card';
+      const fontStyle = item.fontStyle || detectFontStyle(item.html);
+      card.dataset.fontStyle = fontStyle;
+      const button = document.createElement('button');
+      button.className = 'copy-button';
+      button.type = 'button';
+      button.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="11" height="11" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>';
+      button.title = '复制 2× 透明图';
+      button.setAttribute('aria-label',`复制导入模板${index + 1}的2倍透明图`);
+      const preview = document.createElement('div');
+      preview.className = 'preview';
+      const host = document.createElement('div');
+      host.className = 'imported-host';
+      host.setAttribute('aria-label',`导入模板 ${index + 1}`);
+      const parsed = new DOMParser().parseFromString(normalizedHtml(item.html),'text/html');
+      const source = parsed.querySelector('.canvas') || parsed.body.firstElementChild || parsed.body;
+      const sourceHtml = source.outerHTML;
+      const sourceCss = [...parsed.querySelectorAll('style')].map(style => style.textContent || '').join('\n');
+      const shadow = host.attachShadow({mode:'open'});
+      shadow.innerHTML = `<style>${sourceCss}\n:host{display:block;width:500px;height:500px;overflow:hidden}.import-stage{position:absolute;left:0;top:0;width:1000px;height:1000px;transform:scale(.5);transform-origin:0 0;background:transparent}.import-source{position:relative!important;left:0!important;top:0!important;width:1000px!important;height:1000px!important;transform:none!important;background:transparent!important}[contenteditable=true]{cursor:text}[contenteditable=true]:focus{outline:2px dashed rgba(216,160,68,.55);outline-offset:7px}</style><div class="import-stage">${sourceHtml}</div>`;
+      const importedRoot = shadow.querySelector('.import-stage').firstElementChild;
+      importedRoot.classList.add('import-source');
+      if(fontStyle === 'serif') replaceImportedSerifMark(importedRoot);
+      preview.append(host);
+      requestAnimationFrame(() => requestAnimationFrame(() => centerImportedContent(host)));
+      setTimeout(() => centerImportedContent(host),250);
+      const meta = document.createElement('div');
+      meta.className = 'meta';
+      meta.innerHTML = `<span class="module-tag">模板库 · ${fontStyle === 'serif' ? '衬线体' : '非衬线体'}</span><div class="caption">${item.name || `导入模板 ${index + 1}`}</div><div class="template-name">标题＋副标题＋装饰 · imported-html</div>`;
+      card.append(button,preview,meta);
+      gallery.append(card);
+    }
+
+    importedTemplates().forEach(renderImportedTemplate);
+
+    document.querySelector('.add-template-button').addEventListener('click', () => dialog.showModal());
+    document.querySelector('.dialog-close').addEventListener('click', () => dialog.close());
+    document.querySelector('.dialog-cancel').addEventListener('click', () => dialog.close());
+    fileInput.addEventListener('change', async () => {
+      const file = fileInput.files?.[0];
+      if(file) htmlInput.value = await file.text();
+    });
+    document.querySelector('.dialog-import').addEventListener('click', () => {
+      const html = htmlInput.value.trim();
+      if(!html){ notify('请先选择或粘贴 HTML'); return; }
+      const items = importedTemplates();
+      const item = {id:Date.now(),name:`导入模板 ${items.length + 1}`,html,fontStyle:detectFontStyle(html)};
+      items.push(item);
+      localStorage.setItem(STORAGE_KEY,JSON.stringify(items));
+      renderImportedTemplate(item,items.length - 1);
+      htmlInput.value = '';
+      fileInput.value = '';
+      dialog.close();
+      notify('模板已添加并保存在本机浏览器');
+    });
+  </script>
+</body>
+</html>

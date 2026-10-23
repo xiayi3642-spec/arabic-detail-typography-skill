@@ -1,0 +1,37 @@
+{
+  "project": "crystal-lamps-demo-v2",
+  "copy_status": "draft-needs-native-review",
+  "font_style": "sans",
+  "fontLoaded": true,
+  "handwritingLoaded": null,
+  "pages": [
+    {
+      "id": "01-hero",
+      "template": "hero-icons",
+      "spills": [],
+      "clipped": [],
+      "file": "01-01-hero.png"
+    },
+    {
+      "id": "02-atmosphere",
+      "template": "center-divider",
+      "spills": [],
+      "clipped": [],
+      "file": "02-02-atmosphere.png"
+    },
+    {
+      "id": "03-crystal",
+      "template": "side-orb",
+      "spills": [],
+      "clipped": [],
+      "file": "03-03-crystal.png"
+    },
+    {
+      "id": "04-flexible",
+      "template": "minimal-mark",
+      "spills": [],
+      "clipped": [],
+      "file": "04-04-flexible.png"
+    }
+  ]
+}
