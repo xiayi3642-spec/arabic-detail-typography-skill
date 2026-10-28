@@ -1,0 +1,58 @@
+{
+  "project": "crystal-lamps-demo-v2",
+  "canvas": { "width": 1000, "height": 1000 },
+  "font_style": "sans",
+  "theme": {
+    "ink": "#573725",
+    "muted": "#8A776B",
+    "accent": "#D8A044"
+  },
+  "copy_status": "draft-needs-native-review",
+  "pages": [
+    {
+      "id": "01-hero",
+      "role": "hero",
+      "template": "hero-icons",
+      "title_lines": ["مجموعة مصابيح", "كريستالية للأجواء"],
+      "subtitle_lines": ["إضاءة دافئة تناسب كل مساحة"],
+      "highlights": ["كريستالية", "للأجواء"],
+      "decoration": "sparkles",
+      "icons": [
+        { "icon": "lamp", "label": "٤ مصابيح" },
+        { "icon": "shapes", "label": "٣ تصاميم" },
+        { "icon": "sparkles", "label": "أجواء متعددة" }
+      ],
+      "zh_audit": "水晶氛围灯套组｜温暖每一处空间｜4盏灯・3种造型・多重氛围"
+    },
+    {
+      "id": "02-atmosphere",
+      "role": "feature",
+      "template": "center-divider",
+      "title_lines": ["وهج هادئ", "يغيّر أجواء المكان"],
+      "subtitle_lines": ["إضاءة ناعمة تضيف الدفء والراحة"],
+      "highlights": ["هادئ", "الدفء"],
+      "decoration": "diamond",
+      "zh_audit": "柔和光晕，改变空间氛围｜柔光为空间增加温暖与舒适"
+    },
+    {
+      "id": "03-crystal",
+      "role": "feature",
+      "template": "side-orb",
+      "title_lines": ["تفاصيل كريستالية", "تلتقط الضوء"],
+      "subtitle_lines": ["لمعان رقيق يضيف لمسة أنيقة"],
+      "highlights": ["كريستالية", "أنيقة"],
+      "decoration": "orb",
+      "zh_audit": "水晶细节捕捉光线｜细腻光泽增添优雅质感"
+    },
+    {
+      "id": "04-flexible",
+      "role": "feature",
+      "template": "minimal-mark",
+      "title_lines": ["ضوء يناسب", "لحظاتك المختلفة"],
+      "subtitle_lines": ["من الهدوء اليومي إلى اللقاءات الدافئة"],
+      "highlights": ["المختلفة", "الدافئة"],
+      "decoration": "double-diamond",
+      "zh_audit": "适合不同生活时刻的灯光｜从日常独处到温暖相聚"
+    }
+  ]
+}

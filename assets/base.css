@@ -1,0 +1,61 @@
+@font-face{font-family:Almarai;src:url('./fonts/Almarai-Light.ttf') format('truetype');font-weight:300;font-style:normal;font-display:block}
+@font-face{font-family:Almarai;src:url('./fonts/Almarai-Regular.ttf') format('truetype');font-weight:400;font-style:normal;font-display:block}
+@font-face{font-family:Almarai;src:url('./fonts/Almarai-Bold.ttf') format('truetype');font-weight:700;font-style:normal;font-display:block}
+@font-face{font-family:Almarai;src:url('./fonts/Almarai-ExtraBold.ttf') format('truetype');font-weight:800;font-style:normal;font-display:block}
+@font-face{font-family:"Stay Dreaming";src:url('./fonts/Stay-Dreaming.otf') format('opentype');font-weight:400;font-style:normal;font-display:block}
+@font-face{font-family:"Arabic Editorial";src:url('./fonts/ae_AlYermook.ttf') format('truetype');font-weight:400;font-style:normal;font-display:block}
+
+:root{--w:1000px;--h:1000px;--ink:#573725;--muted:#8a776b;--accent:#d8a044;--safe:68px;--title-size:66px;--subtitle-size:37px}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;font-family:Almarai,Arial,sans-serif;font-synthesis:none}
+body{display:grid;grid-template-columns:repeat(2,var(--w));gap:36px;padding:36px;background:#dedbd5}
+body.capture{display:block;padding:0;background:transparent}
+body.capture .canvas{display:none}
+body.capture .canvas.capture-target{display:block;box-shadow:none}
+.canvas{position:relative;width:var(--w);height:var(--h);overflow:visible;background:transparent;color:var(--ink);direction:rtl;isolation:isolate;box-shadow:0 16px 44px rgba(30,20,10,.14)}
+.safe{position:absolute;inset:var(--safe)}
+.title,.subtitle,.icon-label{margin:0}
+.title{font-size:var(--title-size);font-weight:800;line-height:1.38;letter-spacing:0;text-align:right;color:var(--ink)}
+.title .line,.subtitle .line{display:block;white-space:nowrap}
+.subtitle{font-size:var(--subtitle-size);font-weight:400;line-height:1.65;letter-spacing:0;text-align:right;color:var(--muted)}
+.highlight{color:var(--accent)}
+.style-serif .title{font-family:"Arabic Editorial","DecoType Naskh",serif;font-size:78px;font-weight:400;line-height:1.28}
+.style-serif .subtitle{font-family:"Arabic Editorial","DecoType Naskh",serif;font-weight:400}
+.latin-accent{position:absolute;display:none;direction:ltr;font-family:"Stay Dreaming",cursive;font-size:62px;font-weight:400;line-height:1;color:var(--accent);opacity:.7;white-space:nowrap}
+.style-serif .latin-accent{display:block}
+.rule-diamond,.rule-double{display:flex;align-items:center;justify-content:center;gap:14px;direction:ltr;color:var(--accent)}
+.rule-diamond::before,.rule-diamond::after,.rule-double::before,.rule-double::after{content:"";display:block;width:95px;height:1px;background:currentColor;opacity:.72}
+.diamond{width:16px;height:16px;border:2px solid currentColor;transform:rotate(45deg)}
+.rule-double .diamond+ .diamond{margin-left:-23px}
+.orb{position:absolute;width:128px;height:128px;border-radius:50%;background:radial-gradient(circle at 28% 28%,color-mix(in srgb,var(--accent) 92%,white),color-mix(in srgb,var(--accent) 54%,transparent) 48%,transparent 72%);opacity:.72;filter:blur(.2px);z-index:0}
+.sparkle-cluster{position:absolute;width:90px;height:70px;color:var(--accent)}
+.sparkle-cluster::before,.sparkle-cluster::after{content:"✦";position:absolute;font-size:31px;line-height:1}.sparkle-cluster::before{right:0;top:0}.sparkle-cluster::after{left:8px;bottom:0;font-size:17px;opacity:.55}
+
+.hero-icons .title{position:absolute;top:176px;right:0;width:820px;z-index:2}
+.hero-icons .subtitle{position:absolute;top:385px;right:0;width:760px}
+.hero-icons .sparkle-cluster{top:142px;left:46px}
+.hero-icons .latin-accent{top:334px;right:230px;z-index:1}
+.hero-icons .icon-row{position:absolute;right:0;left:0;bottom:90px;display:grid;grid-template-columns:repeat(var(--icon-count),minmax(0,1fr));gap:26px;direction:rtl}
+.hero-icons .icon-item{min-width:0;text-align:center;color:var(--ink)}
+.hero-icons .icon{display:grid;place-items:center;width:72px;height:72px;margin:0 auto 18px;border:1.5px solid color-mix(in srgb,var(--accent) 78%,transparent);border-radius:50%;color:var(--accent)}
+.hero-icons .icon svg{width:40px;height:40px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.hero-icons .icon-label{font-size:23px;font-weight:700;line-height:1.45;color:var(--muted)}
+
+.center-divider .title{position:absolute;top:225px;right:70px;width:792px;text-align:center}
+.center-divider .subtitle{position:absolute;top:485px;right:95px;width:742px;text-align:center}
+.center-divider .rule-diamond{position:absolute;top:425px;right:286px;width:360px}
+.center-divider .latin-accent{top:386px;right:300px}
+
+.side-orb .title{position:absolute;top:230px;right:22px;width:825px;z-index:2}
+.side-orb .subtitle{position:absolute;top:470px;right:22px;width:760px;z-index:2}
+.side-orb .orb{top:170px;left:48px}
+.side-orb .rule-diamond{position:absolute;top:620px;right:22px;justify-content:flex-start}
+.side-orb .latin-accent{top:418px;right:250px;z-index:1}
+
+.minimal-mark .title{position:absolute;top:222px;right:70px;width:792px;text-align:center}
+.minimal-mark .rule-double{position:absolute;top:420px;right:286px;width:360px}
+.minimal-mark .subtitle{position:absolute;top:500px;right:95px;width:742px;text-align:center}
+.minimal-mark .latin-accent{top:382px;right:315px}
+
+.title-long .title{font-size:62px;font-weight:700}
+.title-long .subtitle{font-size:35px}

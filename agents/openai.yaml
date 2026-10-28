@@ -1,0 +1,4 @@
+interface:
+  display_name: "阿语商详排版"
+  short_description: "从任意格式原料提炼文案并生成透明、可编辑的阿语文字图层"
+  default_prompt: "Use $arabic-detail-typography to understand this arbitrarily formatted ecommerce source, extract evidence-backed layout copy, and create a transparent Arabic typography image set."

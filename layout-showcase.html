@@ -16,6 +16,12 @@
       --ink:#573725;
       --muted:#8a776b;
       --accent:#d8a044;
+      --accent-2:#6bb9e8;
+      --ink-on-light:#573725;
+      --muted-on-light:#8a776b;
+      --ink-on-dark:#ffffff;
+      --muted-on-dark:#ddd0c7;
+      --text-shadow:none;
       --paper:#fff;
       --workspace:#e8e5df;
       --line:#e6e0d8;
@@ -37,6 +43,10 @@
     .font-switch button[aria-pressed="true"]{background:#fff;color:#2f2b28;box-shadow:0 1px 5px rgba(45,36,27,.13)}
 
     .brief-panel{width:1072px;max-width:calc(100vw - 48px);margin:18px auto 0;padding:0}
+    .suite-panel{display:flex;align-items:center;justify-content:space-between;gap:14px;width:1072px;max-width:calc(100vw - 48px);margin:18px auto 0;padding:13px 15px;background:rgba(255,255,255,.76);border:1px solid rgba(78,65,52,.10);border-radius:14px;box-shadow:0 5px 18px rgba(48,39,30,.05)}
+    .suite-copy{min-width:0}.suite-copy strong{display:block;font-size:14px}.suite-copy span{display:block;margin-top:4px;color:#8f857c;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .suite-controls{display:flex;align-items:center;gap:10px;flex:0 0 auto}.suite-upload{display:inline-flex;align-items:center;gap:7px;padding:9px 14px;border:0;border-radius:9px;background:#332d28;color:#fff;font-size:13px;font-weight:700;cursor:pointer}.suite-upload input{display:none}
+    .suite-palette{display:none;align-items:center;gap:7px}.suite-palette.show{display:flex}.suite-swatch{width:30px;height:30px;border:2px solid #fff;border-radius:50%;box-shadow:0 0 0 1px rgba(61,48,38,.16)}.suite-mode{padding:5px 8px;border-radius:999px;background:#eee9e3;color:#6d6259;font-size:11px;font-weight:700;white-space:nowrap}
     .brief-panel details{overflow:hidden;background:rgba(255,255,255,.76);border:1px solid rgba(78,65,52,.10);border-radius:14px;box-shadow:0 5px 18px rgba(48,39,30,.05)}
     .brief-panel summary{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;cursor:pointer;font-size:14px;font-weight:700;list-style:none}
     .brief-panel summary::-webkit-details-marker{display:none}
@@ -46,7 +56,12 @@
     .brief-editor textarea{width:100%;min-height:210px;padding:14px;border:1px solid #d9d2cb;border-radius:10px;background:#fff;color:#342f2b;resize:vertical;font:13px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace}
     .brief-actions{display:flex;align-items:center;justify-content:space-between;gap:12px}
     .brief-hint{color:#8f857c;font-size:12px}
-    .generate-button{padding:9px 16px;border:0;border-radius:9px;background:#332d28;color:#fff;font-weight:700;cursor:pointer}
+    .brief-buttons{display:flex;align-items:center;gap:8px;flex:0 0 auto}
+    .generate-button,.local-parse-button{padding:9px 16px;border-radius:9px;font-weight:700;cursor:pointer}
+    .generate-button{min-width:142px;border:0;background:#332d28;color:#fff}
+    .generate-button:disabled{cursor:wait;opacity:.65}
+    .local-parse-button{border:1px solid #d6cec6;background:#fff;color:#6f6760;font-weight:600}
+    body[data-generated="true"] .card:not(.generated-card):not(.imported-card){display:none}
 
     .gallery{display:grid;grid-template-columns:repeat(2,524px);gap:24px;justify-content:center;padding:24px 24px 60px}
     .card{position:relative;padding:12px;background:#fff;border:1px solid rgba(78,65,52,.08);border-radius:16px;box-shadow:0 8px 24px rgba(48,39,30,.06)}
@@ -54,16 +69,17 @@
     .canvas{position:absolute;left:0;top:0;width:var(--canvas);height:var(--canvas);transform:scale(var(--scale));transform-origin:0 0;color:var(--ink);direction:rtl;font-family:Almarai,Arial,sans-serif;font-synthesis:none;isolation:isolate}
     .safe{position:absolute;inset:68px}
     .text-box{position:absolute;z-index:2}
-    .title,.subtitle,.icon-label{margin:0}
+    .title,.subtitle,.icon-label{margin:0;text-shadow:none!important}
     .title{font-family:Almarai,Arial,sans-serif;font-size:66px;font-weight:800;line-height:1.38;text-align:right;color:var(--ink)}
     .subtitle{margin-top:28px;font-size:37px;font-weight:400;line-height:1.65;text-align:right;color:var(--muted)}
     .line{display:block;max-width:100%;white-space:nowrap}
+    .subtitle .line{white-space:normal;overflow-wrap:normal;word-break:normal}
     .highlight{color:var(--accent)}
     [contenteditable="true"]{cursor:text}
     [contenteditable="true"]:focus{outline:2px dashed rgba(216,160,68,.55);outline-offset:7px}
 
-    .card[data-font-style="serif"] .title{font-family:"Arabic Editorial",serif;font-size:80px;font-weight:400;line-height:1.24;-webkit-text-stroke:1.4px currentColor;paint-order:stroke fill}
-    .card[data-font-style="serif"] .subtitle{font-family:"Arabic Editorial",serif;font-size:40px;font-weight:400;line-height:1.5;-webkit-text-stroke:0;color:#9b897f}
+    .card[data-font-style="serif"] .title,.export-surface[data-font="serif"] .title{font-family:"Arabic Editorial",serif;font-size:80px;font-weight:400;line-height:1.24;-webkit-text-stroke:1.4px currentColor;paint-order:stroke fill}
+    .card[data-font-style="serif"] .subtitle,.export-surface[data-font="serif"] .subtitle{font-family:"Arabic Editorial",serif;font-size:40px;font-weight:400;line-height:1.5;-webkit-text-stroke:0;color:#9b897f}
     body[data-font="sans"] .card[data-font-style="serif"],body[data-font="serif"] .card[data-font-style="sans"]{display:none}
     body[data-font="serif"] .short-rule{display:none}
 
@@ -78,8 +94,9 @@
     .icon-item{text-align:center}
     .icon{display:block;width:84px;height:84px;margin:0 auto 16px;color:var(--accent);overflow:visible}
     .icon-label{font-size:30px;font-weight:400;line-height:1.4;color:var(--muted)}
+    .icon-item:nth-child(even) .icon{color:var(--accent-2)}
 
-    .center .text-box{top:184px;right:66px;width:800px;text-align:center}
+    .center .text-box{top:184px;right:auto;left:50%;width:800px;transform:translateX(-50%);text-align:center}
     .center .title,.center .subtitle{text-align:center}
     .center .center-ornament{margin:34px auto 24px}
     .center .subtitle{margin-top:0}
@@ -104,22 +121,59 @@
     .serif-template.has-rule .subtitle{margin-top:0}
     .serif-template .orb{top:176px;right:3px}
     .serif-template .feature-icon{display:block;width:84px;height:84px;margin:37px 0 0 auto;overflow:visible}
-    .serif-center .text-box{top:182px;right:68px;width:796px;text-align:center}
+    .serif-center .text-box{top:182px;right:auto;left:50%;width:796px;transform:translateX(-50%);text-align:center}
     .serif-center .title,.serif-center .subtitle{text-align:center}
-    .serif-center .serif-mark{display:block;width:101.7px;height:29.7px;margin:0 auto 37px;overflow:visible}
+    .serif-mark{display:block;width:101.7px;height:29.7px;margin:0 auto 37px;color:var(--accent);overflow:visible}
+    .serif-mark.css-mark{position:relative}
+    .serif-mark.css-mark::before,.serif-mark.css-mark::after{content:"";position:absolute;top:14px;width:24.5px;height:1.4px;border-radius:2px;background:currentColor;opacity:.62}
+    .serif-mark.css-mark::before{left:0}.serif-mark.css-mark::after{right:0}
+    .serif-mark.css-mark i{position:absolute;top:5.3px;width:19.2px;height:19.2px;border:1.8px solid currentColor;transform:rotate(45deg);box-sizing:border-box}
+    .serif-mark.css-mark i:first-child{left:32.4px}.serif-mark.css-mark i:last-child{left:47.4px;color:var(--accent-2)}
 
-    .minimal .text-box{top:206px;right:68px;width:796px;text-align:center}
+    .minimal .text-box{top:206px;right:auto;left:50%;width:796px;transform:translateX(-50%);text-align:center}
     .minimal .title,.minimal .subtitle{text-align:center}
     .minimal .center-ornament{margin:34px auto 24px}
     .minimal .subtitle{margin-top:0}
-    .meta{display:grid;grid-template-columns:max-content minmax(0,1fr);align-items:center;gap:8px;margin-top:10px;direction:ltr}
+    .detail-list{position:absolute;top:390px;right:18px;width:812px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px 34px;margin:0;padding:0;list-style:none}
+    .detail-list li{position:relative;min-height:76px;padding:0 28px 18px 0;border-bottom:1px solid rgba(216,160,68,.38);color:var(--muted);font-size:29px;font-weight:400;line-height:1.55;text-align:right}
+    .detail-list li::before{content:"";position:absolute;top:18px;right:0;width:9px;height:9px;border:2px solid var(--accent);transform:rotate(45deg)}
+    .detail-list li:nth-child(even)::before{border-color:var(--accent-2)}
+    .canvas.randomized-layout .short-rule,.canvas.randomized-layout .orb,.canvas.randomized-layout .center-ornament,.canvas.randomized-layout .between-rule,.canvas.randomized-layout .gradient-rule,.canvas.randomized-layout .feature-icon,.canvas.randomized-layout .serif-mark{display:none!important}
+    .canvas.randomized-layout .subtitle{margin-top:28px!important}
+    .canvas.randomized-layout .text-box::before{content:"";display:block;margin:0 0 30px auto;color:var(--accent)}
+    .canvas.randomized-layout.decor-line .text-box::before{width:64px;height:7px;background:currentColor}
+    .canvas.randomized-layout.decor-diamond .text-box::before{width:17px;height:17px;border:3px solid currentColor;transform:rotate(45deg);transform-origin:center}
+    .canvas.randomized-layout.decor-dots .text-box::before{width:58px;height:12px;background:radial-gradient(circle,currentColor 0 4px,transparent 4.5px) 0 50%/19px 12px repeat-x}
+    .canvas.randomized-layout.decor-serif-mark .text-box::before{display:none}
+    .canvas.randomized-layout.decor-serif-mark .serif-mark{display:block!important}
+    .canvas.randomized-layout.hero-center .text-box{right:auto;left:50%;width:796px;transform:translateX(-50%);text-align:center}
+    .canvas.randomized-layout.hero-center .title,.canvas.randomized-layout.hero-center .subtitle{text-align:center}
+    .canvas.randomized-layout.hero-center .subtitle{width:100%;margin-right:auto;margin-left:auto}
+    .canvas.randomized-layout.hero-center .text-box::before{margin-right:auto;margin-left:auto}
+    .canvas.randomized-layout.hero-right .text-box{right:0;left:auto;width:826px;transform:none}
+    .canvas.randomized-layout.hero-right .title,.canvas.randomized-layout.hero-right .subtitle{text-align:right}
+    .canvas.randomized-layout.hero-right .text-box::before{margin-right:0;margin-left:auto}
+    .canvas.randomized-layout.content-right .text-box{top:186px;right:18px;left:auto;width:812px;transform:none;text-align:right}
+    .canvas.randomized-layout.content-right .title,.canvas.randomized-layout.content-right .subtitle{text-align:right}
+    .canvas.randomized-layout.content-right .text-box::before{margin-right:0;margin-left:auto}
+    .canvas.randomized-layout.content-center .text-box{top:184px;right:auto;left:50%;width:796px;transform:translateX(-50%);text-align:center}
+    .canvas.randomized-layout.content-center .title,.canvas.randomized-layout.content-center .subtitle{text-align:center}
+    .canvas.randomized-layout.content-center .text-box::before{margin-right:auto;margin-left:auto}
+    .center-ornament stop:first-child,.gradient-rule stop:first-child,.between-rule stop:last-child{stop-color:var(--accent)}
+    .serif-mark rect:nth-of-type(even){stroke:var(--accent-2)}
+    .meta{display:grid;grid-template-columns:max-content minmax(0,1fr) auto;align-items:center;gap:8px;margin-top:10px;direction:ltr}
     .module-tag{padding:3px 7px;background:#8f8277;color:#fff;border-radius:4px;font-size:11px;font-weight:400;white-space:nowrap}
     .caption{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#151515;font-size:15px;font-weight:700}
     .template-name{display:none}
-    .copy-button{position:absolute;top:22px;right:22px;z-index:10;display:grid;place-items:center;width:36px;height:36px;padding:0;border:1px solid rgba(87,55,37,.16);border-radius:8px;background:rgba(255,255,255,.90);color:#554a42;box-shadow:0 2px 8px rgba(50,38,28,.10);cursor:pointer;backdrop-filter:blur(8px)}
-    .copy-button svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
-    .copy-button:hover{background:#fff;border-color:rgba(216,160,68,.6)}
+    .card-palette{display:flex;align-items:center;gap:4px;direction:ltr}
+    .palette-value{width:58px;height:26px;padding:0 3px 0 7px;border:1px solid #ddd4cb;border-radius:6px;background:#fff;color:#3e3731;box-shadow:inset 4px 0 0 var(--field-color,#8f8277);font:10px/1 ui-monospace,SFMono-Regular,Menlo,monospace;text-align:center;text-transform:uppercase;box-sizing:border-box;outline:none}
+    .palette-value:focus{border-color:var(--field-color,#8f8277);box-shadow:inset 4px 0 0 var(--field-color,#8f8277),0 0 0 2px color-mix(in srgb,var(--field-color,#8f8277) 22%,transparent)}
+    .copy-button,.random-button{position:absolute;top:22px;z-index:10;display:grid;place-items:center;width:36px;height:36px;padding:0;border:1px solid rgba(87,55,37,.16);border-radius:8px;background:rgba(255,255,255,.90);color:#554a42;box-shadow:0 2px 8px rgba(50,38,28,.10);cursor:pointer;backdrop-filter:blur(8px)}
+    .copy-button{right:22px}.random-button{right:66px}
+    .copy-button svg,.random-button svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+    .copy-button:hover,.random-button:hover{background:#fff;border-color:rgba(216,160,68,.6);color:var(--accent)}
     .copy-button[data-state="done"]{color:#317b49}
+    .card[data-overflow="true"] .preview{outline:2px solid #d75546;outline-offset:3px}
     .add-template-button{position:fixed;right:24px;bottom:24px;z-index:30;width:54px;height:54px;border:0;border-radius:50%;background:#332d28;color:#fff;font-size:30px;line-height:1;box-shadow:0 10px 28px rgba(30,22,16,.25);cursor:pointer}
     dialog{width:min(680px,calc(100vw - 32px));padding:0;border:0;border-radius:18px;box-shadow:0 24px 80px rgba(28,22,17,.26)}
     dialog::backdrop{background:rgba(35,30,26,.48);backdrop-filter:blur(4px)}
@@ -142,15 +196,18 @@
     .preview-mode-switch svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
     body[data-preview-mode="light"] .preview{background:#fff;background-image:none}
     body[data-preview-mode="dark"] .preview{background:#000;background-image:none}
-    body[data-preview-mode="dark"] .canvas{--ink:#fff;--muted:#ddd0c7;--accent:#FFE5A8}
+    body[data-preview-mode="light"] .canvas{--ink:var(--ink-on-light);--muted:var(--muted-on-light);--text-shadow:none}
+    body[data-preview-mode="dark"] .canvas{--ink:var(--ink-on-dark);--muted:var(--muted-on-dark);--text-shadow:none}
+    body[data-preview-mode="light"] .title,body[data-preview-mode="light"] .subtitle,body[data-preview-mode="light"] .icon-label,
+    body[data-preview-mode="dark"] .title,body[data-preview-mode="dark"] .subtitle,body[data-preview-mode="dark"] .icon-label{text-shadow:none!important}
     body[data-preview-mode="dark"] .subtitle{color:#fff;background:linear-gradient(135deg,#FBE17B 0%,#fff 34%,#fff 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
     body[data-preview-mode="dark"] .icon-label{color:#ddd0c7}
-    body[data-preview-mode="dark"] .serif-mark rect{stroke:#FFE5A8}
-    body[data-preview-mode="dark"] .serif-mark path{fill:#D4B875}
-    body[data-preview-mode="dark"] .gradient-rule path,body[data-preview-mode="dark"] .between-rule path{filter:drop-shadow(0 0 2px rgba(255,229,168,.35))}
+    body[data-preview-mode="dark"] .serif-mark rect{stroke:var(--accent)}
+    body[data-preview-mode="dark"] .serif-mark path{fill:var(--accent)}
+    body[data-preview-mode="dark"] .gradient-rule path,body[data-preview-mode="dark"] .between-rule path{filter:none}
 
-    @media(max-width:1100px){.gallery{grid-template-columns:524px}.toolbar{align-items:flex-start;gap:16px}.toolbar p{display:none}}
-    @media(max-width:580px){:root{--scale:.34}.gallery{grid-template-columns:364px}.card{width:364px}.preview{width:340px;height:340px}.toolbar{padding:12px 14px}.toolbar h1{font-size:16px}.font-switch button{min-width:auto;padding:8px 11px}}
+    @media(max-width:1100px){.gallery{width:100%;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding-inline:12px}.card{width:auto;min-width:0}.preview{width:100%;height:auto;aspect-ratio:1}.toolbar{align-items:flex-start;gap:16px}.toolbar p{display:none}}
+    @media(max-width:580px){:root{--scale:.34}.suite-panel{align-items:flex-start;flex-direction:column}.suite-controls{width:100%;justify-content:space-between}.gallery{grid-template-columns:364px}.card{width:364px}.preview{width:340px;height:340px}.toolbar{padding:12px 14px}.toolbar h1{font-size:16px}.font-switch button{min-width:auto;padding:8px 11px}}
   </style>
 </head>
 <body data-font="sans" data-preview-mode="transparent">
@@ -165,64 +222,111 @@
     </div>
   </header>
 
+  <section class="suite-panel" aria-label="套图配色分析">
+    <div class="suite-copy"><strong>上传套图，自动设计文字配色</strong><span id="suite-status">分析图片头部明暗，从原图提取正文色、关键词色和装饰色</span></div>
+    <div class="suite-controls">
+      <div class="suite-palette" id="suite-palette"><span class="suite-mode" id="suite-mode"></span><i class="suite-swatch" data-swatch="ink" title="正文色"></i><i class="suite-swatch" data-swatch="accent" title="关键词色"></i><i class="suite-swatch" data-swatch="accent2" title="装饰色"></i></div>
+      <label class="suite-upload">上传套图<input id="suite-images" type="file" accept="image/*" multiple></label>
+    </div>
+  </section>
+
   <section class="brief-panel">
     <details open>
-      <summary>输入模块文案，自动识别并排版</summary>
+      <summary>粘贴任意格式内容，AI 识别并排版</summary>
       <div class="brief-editor">
-        <textarea id="brief-input" aria-label="模块文案" spellcheck="false"># 水晶氛围灯套组｜5模块画面文案
+        <textarea id="brief-input" aria-label="模块文案" spellcheck="false"># 叠放式户外柴火炉｜5模块画面文案
 
 > 目标语言：现代标准阿拉伯语（RTL）
-> 文案结构：五个模块都不使用英文眉题。首图阿语信息整体右对齐；第2至第5页完全不出现英文。
-> 产品事实：4盏、3种造型——长款玫瑰纹灯×1、高脚太阳纹灯×1、方块水波纹灯×2。
+> 中文仅作审核，不上屏；阿语为已提供文案。
 
-## 01｜首图：4件套氛围主视觉
+## 01｜户外主视觉
 
-**阿语主标题（右对齐）**
-مجموعة مصابيح كريستالية للأجواء
+**中文主标题**
+叠放式户外柴火炉
 
-**阿语底部信息**
-{ ٤ مصابيح • ٣ تصاميم • أجواء متعددة }
-
-## 02｜三种纹理：分别认识四盏灯
-
-**阿语主标题（右对齐）**
-ثلاثة نقوش ضوئية، لكل منها طابعها الخاص
-
-**三款标签**
-- نقشة الوردة｜玫瑰纹
-- نقشة الشمس｜太阳纹
-- تموجات الماء｜水波纹
-
-## 03｜操作与续航：轻拍换色，长按调光
-
-**阿语主标题（两行）**
-نقرة خفيفة لتغيير لون الضوء
-وضغط مطوّل لضبط السطوع
-
-**底部阿语说明（两行）**
-إضاءة تدوم نحو ١٣ ساعة
-عند أعلى مستوى سطوع
-
-## 04｜三种光色：同一盏灯的三种状态
+**中文副标题**
+适合露营与户外烹饪
 
 **阿语主标题**
-ثلاثة ألوان للضوء تناسب أجواءً مختلفة
+موقد حطب خارجي
+قابل للتكديس
 
-**阿语补充短句**
-إضاءة مناسبة للضيافة والقراءة والاسترخاء
+**阿语副标题**
+للتخييم والطهي في الهواء الطلق
 
-## 05｜尺寸与包装清单
+**中文卖点**
+- 高筒双层炉身
+- 锯齿锅具支架
+- 分体套叠收纳
+
+**阿语卖点**
+- جسم مرتفع مزدوج الطبقة
+- حوامل قدر مسننة
+- تصميم متداخل للتخزين
+
+## 02｜防风不灭
+
+**中文主标题**
+强风不灭
+
+**中文副标题**
+31 cm 加高炉身，镂空底座隔热防烫，适合沙地与庭院
 
 **阿语主标题**
-المقاسات ومحتويات العبوة
+لا تنطفئ
+في الرياح القوية
 
-**阿语包装清单**
-- مصباح طويل بنقشة الوردة × ١
-- مصباح بقاعدة طويلة بنقشة الشمس × ١
-- مصباحان مربعان بتموجات الماء × ٢</textarea>
+**阿语副标题**
+جسم بارتفاع ٣١ سم وقاعدة مفرغة
+عازلة للحرارة، مناسب للرمال والفناء
+
+## 03｜锯齿支架与锅具使用
+
+**中文主标题**
+锯齿支架，帮助稳固锅具
+
+**中文副标题**
+可搭配常见户外水壶、煮锅与煎锅
+
+**阿语主标题**
+حوامل مسننة
+لثبات أفضل للأواني
+
+**阿语副标题**
+مناسبة لأباريق وأواني ومقالي التخييم الشائعة
+
+## 04｜分体套叠收纳
+
+**中文主标题**
+分体套叠，方便收纳
+
+**中文副标题**
+炉身组件可拆分套叠，并收入网眼收纳袋
+
+**阿语主标题**
+تصميم متداخل
+لسهولة التخزين
+
+**阿语副标题**
+تُجمع أجزاء الموقد داخل حقيبة شبكية مرفقة
+
+## 05｜结构与配件
+
+**中文主标题**
+结构与配件一目了然
+
+**中文副标题**
+不锈钢炉身，配网眼收纳袋
+
+**阿语主标题**
+المكونات والملحقات
+بوضوح
+
+**阿语副标题**
+هيكل من الفولاذ المقاوم للصدأ مع حقيبة شبكية</textarea>
         <div class="brief-actions">
-          <span class="brief-hint">可直接粘贴文案清单；自动识别段落、Markdown 表格、主标题/副文案/标签/数值与 &lt;br&gt;，并忽略中文说明。</span>
-          <button class="generate-button" type="button">识别并生成模块</button>
+          <span class="brief-hint">AI 会理解自然语言、表格、会议稿、聊天记录和中阿混排；头图自动提炼 3 个有依据的卖点。</span>
+          <div class="brief-buttons"><button class="local-parse-button" type="button">本地格式解析</button><button class="generate-button" type="button">AI 识别并生成</button></div>
         </div>
       </div>
     </details>
@@ -453,13 +557,302 @@
 
   <script>
     const STORAGE_KEY = 'arabic-typography-imported-templates-v1';
+    const THEME_STORAGE_KEY = 'arabic-typography-suite-theme-v1';
+    const BRIEF_STORAGE_KEY = 'arabic-typography-brief-v1';
+    const MODULES_STORAGE_KEY = 'arabic-typography-modules-v1';
+    const PALETTE_STORAGE_KEY = 'arabic-typography-palette-v1';
     const gallery = document.querySelector('.gallery');
     const dialog = document.querySelector('#template-dialog');
     const htmlInput = document.querySelector('#template-html');
     const fileInput = document.querySelector('#template-file');
     const briefInput = document.querySelector('#brief-input');
+    const generateButton = document.querySelector('.generate-button');
+    const suiteImages = document.querySelector('#suite-images');
+    const suiteStatus = document.querySelector('#suite-status');
+    const suitePalette = document.querySelector('#suite-palette');
+    const suiteMode = document.querySelector('#suite-mode');
     const toast = document.querySelector('.toast');
     let fontCssPromise;
+    let activeSuiteTheme = null;
+
+    function syncResponsiveScale(){
+      const preview = [...document.querySelectorAll('.preview')].find(element => element.getBoundingClientRect().width > 0);
+      if(window.innerWidth <= 1100 && window.innerWidth > 580 && preview){
+        document.documentElement.style.setProperty('--scale',String(preview.getBoundingClientRect().width / 1000));
+      } else {
+        document.documentElement.style.removeProperty('--scale');
+      }
+    }
+
+    requestAnimationFrame(syncResponsiveScale);
+    window.addEventListener('resize',syncResponsiveScale);
+
+    function relativeLuminance({r,g,b}){
+      const channel = value => {
+        const unit = value / 255;
+        return unit <= .04045 ? unit / 12.92 : ((unit + .055) / 1.055) ** 2.4;
+      };
+      return .2126 * channel(r) + .7152 * channel(g) + .0722 * channel(b);
+    }
+
+    function contrastRatio(a,b){
+      const light = Math.max(relativeLuminance(a),relativeLuminance(b));
+      const dark = Math.min(relativeLuminance(a),relativeLuminance(b));
+      return (light + .05) / (dark + .05);
+    }
+
+    function colorDistance(a,b){
+      return Math.hypot(a.r-b.r,a.g-b.g,a.b-b.b);
+    }
+
+    function saturation(color){
+      const max = Math.max(color.r,color.g,color.b) / 255;
+      const min = Math.min(color.r,color.g,color.b) / 255;
+      const light = (max + min) / 2;
+      return max === min ? 0 : (max - min) / (1 - Math.abs(2 * light - 1));
+    }
+
+    function hue(color){
+      const r=color.r/255,g=color.g/255,b=color.b/255;
+      const max=Math.max(r,g,b),min=Math.min(r,g,b),delta=max-min;
+      if(!delta) return 0;
+      const raw = max===r ? ((g-b)/delta)%6 : max===g ? (b-r)/delta+2 : (r-g)/delta+4;
+      return (raw*60+360)%360;
+    }
+
+    function hueDistance(a,b){
+      const difference = Math.abs(hue(a)-hue(b));
+      return Math.min(difference,360-difference);
+    }
+
+    function rgbHex(color){
+      return `#${[color.r,color.g,color.b].map(value => Math.round(value).toString(16).padStart(2,'0')).join('').toUpperCase()}`;
+    }
+
+    function normalizeHex(value){
+      const raw = String(value || '').trim().toUpperCase();
+      if(/^#[0-9A-F]{6}$/.test(raw)) return raw;
+      if(/^[0-9A-F]{6}$/.test(raw)) return `#${raw}`;
+      if(/^#[0-9A-F]{3}$/.test(raw)) return `#${[...raw.slice(1)].map(char => char + char).join('')}`;
+      const match = raw.match(/^RGB\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)$/);
+      if(match) return rgbHex({r:Number(match[1]),g:Number(match[2]),b:Number(match[3])});
+      return '';
+    }
+
+    function hexColor(value){
+      const hex = normalizeHex(value);
+      return hex ? {r:parseInt(hex.slice(1,3),16),g:parseInt(hex.slice(3,5),16),b:parseInt(hex.slice(5,7),16)} : null;
+    }
+
+    function mixColor(a,b,amount){
+      return {r:a.r*(1-amount)+b.r*amount,g:a.g*(1-amount)+b.g*amount,b:a.b*(1-amount)+b.b*amount};
+    }
+
+    function averageColor(samples){
+      const total = samples.reduce((sum,color) => ({r:sum.r+color.r,g:sum.g+color.g,b:sum.b+color.b}),{r:0,g:0,b:0});
+      const count = Math.max(samples.length,1);
+      return {r:total.r/count,g:total.g/count,b:total.b/count};
+    }
+
+    async function sampleSuiteImage(file){
+      const bitmap = await createImageBitmap(file);
+      const width = 96;
+      const height = Math.max(48,Math.round(width * bitmap.height / bitmap.width));
+      const canvas = document.createElement('canvas');
+      canvas.width = width; canvas.height = height;
+      const context = canvas.getContext('2d',{willReadFrequently:true});
+      context.drawImage(bitmap,0,0,width,height);
+      bitmap.close();
+      const pixels = context.getImageData(0,0,width,height).data;
+      const all = [];
+      const top = [];
+      const topLimit = Math.max(1,Math.floor(height * .34));
+      for(let y=0;y<height;y+=1){
+        for(let x=0;x<width;x+=1){
+          const at = (y * width + x) * 4;
+          if(pixels[at+3] < 220) continue;
+          const color = {r:pixels[at],g:pixels[at+1],b:pixels[at+2]};
+          all.push(color);
+          if(y < topLimit) top.push(color);
+        }
+      }
+      return {name:file.name,all,top,topAverage:averageColor(top)};
+    }
+
+    function paletteBins(samples){
+      const bins = new Map();
+      samples.forEach(color => {
+        const key = `${color.r>>4}-${color.g>>4}-${color.b>>4}`;
+        const bin = bins.get(key) || {count:0,r:0,g:0,b:0};
+        bin.count += 1; bin.r += color.r; bin.g += color.g; bin.b += color.b;
+        bins.set(key,bin);
+      });
+      const threshold = Math.max(3,Math.floor(samples.length * .0015));
+      return [...bins.values()].filter(bin => bin.count >= threshold).map(bin => ({
+        count:bin.count,r:bin.r/bin.count,g:bin.g/bin.count,b:bin.b/bin.count
+      }));
+    }
+
+    function designSuiteTheme(results){
+      const samples = results.flatMap(result => result.all);
+      const palette = paletteBins(samples);
+      const topAverage = averageColor(results.map(result => result.topAverage));
+      const darkest = [...palette].sort((a,b) => relativeLuminance(a)-relativeLuminance(b))[0] || {r:30,g:30,b:30};
+      const lightest = [...palette].sort((a,b) => relativeLuminance(b)-relativeLuminance(a))[0] || {r:250,g:250,b:250};
+      const perImage = results.map(result => {
+        const darkContrast = contrastRatio(darkest,result.topAverage);
+        const lightContrast = contrastRatio(lightest,result.topAverage);
+        return {...result,mode:darkContrast >= lightContrast ? 'dark' : 'light',darkContrast,lightContrast};
+      });
+      const darkCount = perImage.filter(item => item.mode === 'dark').length;
+      const globalMode = darkCount >= Math.ceil(perImage.length / 2) ? 'dark' : 'light';
+      const ink = globalMode === 'dark' ? darkest : lightest;
+      const accentCandidates = palette.filter(color => saturation(color) > .34 && relativeLuminance(color) > .06 && relativeLuminance(color) < .82);
+      const accentScore = color => saturation(color) * Math.log2(color.count + 2) * (colorDistance(color,topAverage) + 40) * Math.min(contrastRatio(color,topAverage),5);
+      const accent = [...accentCandidates].sort((a,b) => accentScore(b)-accentScore(a))[0] || {r:216,g:160,b:68};
+      const secondCandidates = accentCandidates.filter(color => colorDistance(color,accent) > 85 && hueDistance(color,accent) > 55 && relativeLuminance(color) < .72);
+      const accent2 = [...secondCandidates].sort((a,b) => accentScore(b)-accentScore(a))[0] || mixColor(accent,globalMode === 'dark' ? lightest : darkest,.45);
+      const muted = mixColor(ink,topAverage,globalMode === 'dark' ? .38 : .28);
+      return {ink,muted,accent,accent2,darkest,lightest,topAverage,globalMode,perImage,mixed:perImage.some(item => item.mode !== globalMode)};
+    }
+
+    function applySuiteTheme(theme){
+      activeSuiteTheme = theme;
+      const root = document.documentElement;
+      root.style.setProperty('--ink',rgbHex(theme.ink));
+      root.style.setProperty('--muted',rgbHex(theme.muted));
+      root.style.setProperty('--accent',rgbHex(theme.accent));
+      root.style.setProperty('--accent-2',rgbHex(theme.accent2));
+      root.style.setProperty('--ink-on-light',rgbHex(theme.darkest));
+      root.style.setProperty('--muted-on-light',rgbHex(mixColor(theme.darkest,{r:255,g:255,b:255},.38)));
+      root.style.setProperty('--ink-on-dark',rgbHex(theme.lightest));
+      root.style.setProperty('--muted-on-dark',rgbHex(mixColor(theme.lightest,{r:0,g:0,b:0},.18)));
+      root.style.setProperty('--text-shadow','none');
+      const cards = [...gallery.querySelectorAll('.card')];
+      cards.forEach((card,index) => {
+        const image = theme.perImage[index % theme.perImage.length];
+        const mode = theme.mixed ? image.mode : theme.globalMode;
+        const cardInk = mode === 'dark' ? theme.perImage[0].darkContrast >= 1 ? theme.ink : theme.ink : paletteLight(theme);
+        card.style.setProperty('--ink',rgbHex(cardInk));
+        card.style.setProperty('--muted',rgbHex(mixColor(cardInk,image.topAverage,mode === 'dark' ? .38 : .28)));
+        card.style.setProperty('--text-shadow','none');
+      });
+      document.body.dataset.previewMode = 'transparent';
+      syncPaletteEditors(paletteFromTheme(theme));
+      document.querySelectorAll('[data-preview-button]').forEach(button => button.setAttribute('aria-pressed',String(button.dataset.previewButton === 'transparent')));
+    }
+
+    function compactSuiteTheme(theme){
+      return {
+        ink:theme.ink,muted:theme.muted,accent:theme.accent,accent2:theme.accent2,
+        darkest:theme.darkest,lightest:theme.lightest,topAverage:theme.topAverage,
+        globalMode:theme.globalMode,mixed:theme.mixed,fileCount:theme.fileCount,topLight:theme.topLight,
+        perImage:theme.perImage.map(({name,topAverage,mode,darkContrast,lightContrast}) => ({name,topAverage,mode,darkContrast,lightContrast}))
+      };
+    }
+
+    function showSuiteTheme(theme){
+      const count = theme.fileCount || theme.perImage.length;
+      const topLight = Number.isFinite(theme.topLight) ? theme.topLight : Math.round(relativeLuminance(theme.topAverage) * 100);
+      const modeText = theme.mixed ? '逐图深浅适配' : theme.globalMode === 'dark' ? '深色正文' : '浅色正文';
+      suiteMode.textContent = modeText;
+      suitePalette.querySelector('[data-swatch="ink"]').style.background = rgbHex(theme.ink);
+      suitePalette.querySelector('[data-swatch="accent"]').style.background = rgbHex(theme.accent);
+      suitePalette.querySelector('[data-swatch="accent2"]').style.background = rgbHex(theme.accent2);
+      suitePalette.classList.add('show');
+      suiteStatus.textContent = `${count} 张图 · 头部亮度约 ${topLight}% · 正文 ${rgbHex(theme.ink)} · 关键词 ${rgbHex(theme.accent)} · 装饰 ${rgbHex(theme.accent2)}`;
+    }
+
+    function paletteLight(theme){
+      if(theme.lightest) return theme.lightest;
+      const candidates = paletteBins(theme.perImage.flatMap(result => result.all));
+      return [...candidates].sort((a,b) => relativeLuminance(b)-relativeLuminance(a))[0] || {r:255,g:255,b:255};
+    }
+
+    function paletteFromTheme(theme){
+      return {ink:rgbHex(theme.ink),accent:rgbHex(theme.accent),accent2:rgbHex(theme.accent2)};
+    }
+
+    function currentPalette(){
+      if(activeSuiteTheme) return paletteFromTheme(activeSuiteTheme);
+      const style = getComputedStyle(document.documentElement);
+      return {
+        ink:normalizeHex(style.getPropertyValue('--ink')) || '#151515',
+        accent:normalizeHex(style.getPropertyValue('--accent')) || '#D8A044',
+        accent2:normalizeHex(style.getPropertyValue('--accent-2')) || '#6BB9E8'
+      };
+    }
+
+    function syncPaletteEditors(palette=currentPalette()){
+      document.querySelectorAll('.palette-value').forEach(input => {
+        const value = palette[input.dataset.colorRole];
+        if(!value) return;
+        input.value = value;
+        input.style.setProperty('--field-color',value);
+      });
+    }
+
+    function applyPaletteValues(palette,{persist=true}={}){
+      const normalized = {
+        ink:normalizeHex(palette.ink),accent:normalizeHex(palette.accent),accent2:normalizeHex(palette.accent2)
+      };
+      if(!normalized.ink || !normalized.accent || !normalized.accent2) return false;
+      const root = document.documentElement;
+      root.style.setProperty('--ink',normalized.ink);
+      root.style.setProperty('--accent',normalized.accent);
+      root.style.setProperty('--accent-2',normalized.accent2);
+      gallery.querySelectorAll('.card').forEach(card => {
+        card.style.setProperty('--ink',normalized.ink);
+        card.style.setProperty('--accent',normalized.accent);
+        card.style.setProperty('--accent-2',normalized.accent2);
+      });
+      if(activeSuiteTheme){
+        activeSuiteTheme.ink = hexColor(normalized.ink);
+        activeSuiteTheme.accent = hexColor(normalized.accent);
+        activeSuiteTheme.accent2 = hexColor(normalized.accent2);
+        if(activeSuiteTheme.globalMode === 'dark') activeSuiteTheme.darkest = activeSuiteTheme.ink;
+        else activeSuiteTheme.lightest = activeSuiteTheme.ink;
+        activeSuiteTheme.muted = mixColor(activeSuiteTheme.ink,activeSuiteTheme.topAverage,activeSuiteTheme.globalMode === 'dark' ? .38 : .28);
+        root.style.setProperty('--muted',rgbHex(activeSuiteTheme.muted));
+        root.style.setProperty('--ink-on-light',rgbHex(activeSuiteTheme.darkest));
+        root.style.setProperty('--ink-on-dark',rgbHex(activeSuiteTheme.lightest));
+        showSuiteTheme(activeSuiteTheme);
+        if(persist) localStorage.setItem(THEME_STORAGE_KEY,JSON.stringify(compactSuiteTheme(activeSuiteTheme)));
+      }
+      if(persist) localStorage.setItem(PALETTE_STORAGE_KEY,JSON.stringify(normalized));
+      syncPaletteEditors(normalized);
+      return true;
+    }
+
+    suiteImages.addEventListener('change',async () => {
+      const files = [...suiteImages.files];
+      if(!files.length) return;
+      suiteStatus.textContent = `正在分析 ${files.length} 张图片的头部明暗与整套配色…`;
+      try{
+        const results = await Promise.all(files.map(sampleSuiteImage));
+        const theme = designSuiteTheme(results);
+        theme.fileCount = files.length;
+        theme.topLight = Math.round(relativeLuminance(theme.topAverage) * 100);
+        applySuiteTheme(theme);
+        showSuiteTheme(theme);
+        localStorage.setItem(THEME_STORAGE_KEY,JSON.stringify(compactSuiteTheme(theme)));
+        localStorage.setItem(PALETTE_STORAGE_KEY,JSON.stringify(paletteFromTheme(theme)));
+        notify('已根据套图应用文字配色');
+      }catch(error){
+        suiteStatus.textContent = `套图分析失败：${error.message}`;
+        notify('套图分析失败');
+      }
+    });
+
+    try{
+      const savedTheme = JSON.parse(localStorage.getItem(THEME_STORAGE_KEY) || 'null');
+      if(savedTheme?.perImage?.length && savedTheme.darkest && savedTheme.lightest){
+        applySuiteTheme(savedTheme);
+        showSuiteTheme(savedTheme);
+      }
+    }catch(error){
+      localStorage.removeItem(THEME_STORAGE_KEY);
+    }
 
     function notify(message){
       toast.textContent = message;
@@ -472,11 +865,96 @@
       root.querySelectorAll('.canvas .title,.canvas .subtitle,.canvas .icon-label').forEach(element => {
         element.contentEditable = 'true';
         element.spellcheck = false;
-        if(element.classList.contains('title')) element.addEventListener('input', () => fitTitle(element));
+        if(element.matches('.title,.subtitle')) element.addEventListener('input', () => {
+          cancelAnimationFrame(element._fitFrame);
+          element._fitFrame = requestAnimationFrame(() => fitCardText(element.closest('.card')));
+        });
+      });
+    }
+
+    function ensureRandomButtons(root=document){
+      root.querySelectorAll('.card').forEach(card => {
+        if(card.querySelector('.random-button')) return;
+        const button = document.createElement('button');
+        button.className = 'random-button';
+        button.type = 'button';
+        button.setAttribute('aria-label','随机切换位置与装饰');
+        button.title = '随机切换位置与装饰';
+        button.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h3.5c3.5 0 4.5 10 8 10H21"/><path d="m18 14 3 3-3 3"/><path d="M3 17h3.5c1.7 0 2.8-2.3 3.8-4.7M14.5 7H21"/><path d="m18 4 3 3-3 3"/></svg>';
+        const copy = card.querySelector('.copy-button');
+        copy ? copy.before(button) : card.prepend(button);
+      });
+    }
+
+    function ensureCardPalettes(root=document){
+      const palette = currentPalette();
+      const fields = [
+        ['ink','正文色'],['accent','关键词色'],['accent2','装饰色']
+      ];
+      root.querySelectorAll('.card').forEach(card => {
+        const meta = card.querySelector('.meta');
+        if(!meta || meta.querySelector('.card-palette')) return;
+        const editor = document.createElement('div');
+        editor.className = 'card-palette';
+        fields.forEach(([role,label]) => {
+          const input = document.createElement('input');
+          input.className = 'palette-value';
+          input.type = 'text';
+          input.inputMode = 'text';
+          input.maxLength = 7;
+          input.spellcheck = false;
+          input.dataset.colorRole = role;
+          input.setAttribute('aria-label',`${label}，可复制或修改`);
+          input.title = `${label}：点击后可复制或输入新的 HEX 色值`;
+          input.value = palette[role];
+          input.style.setProperty('--field-color',palette[role]);
+          editor.append(input);
+        });
+        meta.append(editor);
       });
     }
 
     makeEditable();
+    ensureRandomButtons();
+    ensureCardPalettes();
+    try{
+      const savedPalette = JSON.parse(localStorage.getItem(PALETTE_STORAGE_KEY) || 'null');
+      if(savedPalette) applyPaletteValues(savedPalette,{persist:false});
+    }catch(error){
+      localStorage.removeItem(PALETTE_STORAGE_KEY);
+    }
+    const savedBrief = localStorage.getItem(BRIEF_STORAGE_KEY);
+    if(savedBrief) briefInput.value = savedBrief;
+    briefInput.addEventListener('input',() => localStorage.setItem(BRIEF_STORAGE_KEY,briefInput.value));
+    gallery.addEventListener('focusin',event => {
+      if(event.target.matches('.palette-value')) event.target.select();
+    });
+    gallery.addEventListener('keydown',event => {
+      if(event.target.matches('.palette-value') && event.key === 'Enter') event.target.blur();
+    });
+    gallery.addEventListener('input',event => {
+      const input = event.target.closest('.palette-value');
+      if(!input) return;
+      const value = normalizeHex(input.value);
+      if(!value) return;
+      const palette = currentPalette();
+      palette[input.dataset.colorRole] = value;
+      applyPaletteValues(palette);
+    });
+    gallery.addEventListener('change',event => {
+      const input = event.target.closest('.palette-value');
+      if(!input) return;
+      const value = normalizeHex(input.value);
+      if(!value){
+        syncPaletteEditors(currentPalette());
+        notify('请输入 6 位 HEX 色值，例如 #FD9509');
+        return;
+      }
+      const palette = currentPalette();
+      palette[input.dataset.colorRole] = value;
+      applyPaletteValues(palette);
+      notify(`已更新并保存${input.getAttribute('aria-label').split('，')[0]}`);
+    });
     document.fonts.ready.then(() => document.querySelectorAll('.card:not(.imported-card) .title').forEach(fitTitle));
 
     function cleanCopy(value,{allowMetric=true}={}){
@@ -489,7 +967,7 @@
         .replace(/[（(][^）)]*[\u3400-\u9fff][^）)]*[）)]\s*$/,'')
         .split('\n')
         .map(item => item.trim())
-        .filter(item => /[\u0600-\u06ff]/.test(item) || (allowMetric && /\d/.test(item) && /(?:°|kg|cm|mm|V|A|ساعات|دقيقة|سنوات)/i.test(item)));
+        .filter(item => /[\u0600-\u06ff]/.test(item) || (allowMetric && !/[\u3400-\u9fff]/.test(item) && /\d/.test(item) && /(?:°|kg|cm|mm|V|A|ساعات|دقيقة|سنوات)/i.test(item)));
     }
 
     function tableCells(line){
@@ -603,21 +1081,104 @@
       return words.find(word => /[٠-٩]/.test(word)) || preferred.find(word => text.includes(word)) || [...words].sort((a,b) => b.length-a.length)[0] || '';
     }
 
-    function fitTitle(element){
-      if(!element || element.closest('.imported-card')) return;
-      element.style.removeProperty('font-size');
-      const minimum = element.closest('[data-font-style="serif"]') ? 64 : 56;
-      let size = Number.parseFloat(getComputedStyle(element).fontSize);
-      const lines = [...element.querySelectorAll('.line')];
-      const exceedsWidth = () => lines.some(line => {
-        const range = document.createRange();
-        range.selectNodeContents(line);
-        return range.getBoundingClientRect().width > element.getBoundingClientRect().width + 1;
+    function textFragmentLines(element){
+      const range = document.createRange();
+      range.selectNodeContents(element);
+      const tops = [...range.getClientRects()]
+        .filter(rect => rect.width > 1 && rect.height > 1)
+        .map(rect => rect.top)
+        .sort((a,b) => a - b);
+      const rows = [];
+      tops.forEach(top => {
+        if(!rows.some(row => Math.abs(row - top) < 8)) rows.push(top);
       });
-      while(exceedsWidth() && size > minimum){
-        size -= 2;
+      return rows.length;
+    }
+
+    function contentRect(element){
+      if(!element || !element.getClientRects().length) return null;
+      const range = document.createRange();
+      range.selectNodeContents(element);
+      const rect = range.getBoundingClientRect();
+      return rect.width > 0 && rect.height > 0 ? rect : element.getBoundingClientRect();
+    }
+
+    function rectsOverlap(a,b,tolerance=1){
+      return Boolean(a && b &&
+        a.left < b.right - tolerance && a.right > b.left + tolerance &&
+        a.top < b.bottom - tolerance && a.bottom > b.top + tolerance);
+    }
+
+    function fitTextElement(element,{minimum,maxLines}){
+      if(!element || element.hidden || element.closest('.imported-card') || !element.getClientRects().length) return false;
+      element.style.removeProperty('font-size');
+      let size = Number.parseFloat(getComputedStyle(element).fontSize);
+      const safe = element.closest('.safe');
+      const logicalLines = [...element.querySelectorAll('.line')];
+      const overflows = () => {
+        const elementRect = element.getBoundingClientRect();
+        const textRect = contentRect(element) || elementRect;
+        const safeRect = safe?.getBoundingClientRect();
+        const nowrapOverflow = logicalLines.some(line => {
+          if(getComputedStyle(line).whiteSpace !== 'nowrap') return false;
+          const range = document.createRange();
+          range.selectNodeContents(line);
+          return range.getBoundingClientRect().width > elementRect.width + 1;
+        });
+        const outsideSafe = safeRect && (
+          textRect.top < safeRect.top - 1 ||
+          textRect.left < safeRect.left - 1 ||
+          textRect.right > safeRect.right + 1 ||
+          textRect.bottom > safeRect.bottom + 1
+        );
+        return nowrapOverflow || outsideSafe || textFragmentLines(element) > maxLines;
+      };
+      while(overflows() && size > minimum){
+        size -= 1;
         element.style.fontSize = `${size}px`;
       }
+      return overflows();
+    }
+
+    function cardStructureOverflows(card){
+      const safe = card.querySelector('.safe');
+      const safeRect = safe?.getBoundingClientRect();
+      if(!safeRect) return false;
+      const auxiliary = [...card.querySelectorAll('.icon-label,.detail-list li')]
+        .filter(element => !element.hidden && element.getClientRects().length);
+      const outsideOrClipped = auxiliary.some(element => {
+        const rect = contentRect(element) || element.getBoundingClientRect();
+        const style = getComputedStyle(element);
+        return rect.top < safeRect.top - 1 || rect.left < safeRect.left - 1 ||
+          rect.right > safeRect.right + 1 || rect.bottom > safeRect.bottom + 1 ||
+          (style.overflowX !== 'visible' && element.scrollWidth > element.clientWidth + 1) ||
+          (style.overflowY !== 'visible' && element.scrollHeight > element.clientHeight + 1);
+      });
+      const titleRect = contentRect(card.querySelector('.title'));
+      const subtitleRect = contentRect(card.querySelector('.subtitle'));
+      const occupied = [...card.querySelectorAll('.icon-row,.detail-list')]
+        .filter(element => !element.hidden && element.getClientRects().length)
+        .map(element => element.getBoundingClientRect());
+      return outsideOrClipped || occupied.some(rect =>
+        rectsOverlap(titleRect,rect) || rectsOverlap(subtitleRect,rect));
+    }
+
+    function fitCardText(card){
+      if(!card || card.classList.contains('imported-card')) return false;
+      const serif = card.dataset.fontStyle === 'serif';
+      const titleOverflow = fitTextElement(card.querySelector('.title'),{minimum:serif ? 64 : 56,maxLines:2});
+      const subtitleOverflow = fitTextElement(card.querySelector('.subtitle'),{minimum:serif ? 31 : 28,maxLines:2});
+      const hasOverflow = titleOverflow || subtitleOverflow || cardStructureOverflows(card);
+      card.dataset.overflow = String(hasOverflow);
+      return hasOverflow;
+    }
+
+    function fitAllCards(root=document){
+      root.querySelectorAll('.card:not(.imported-card)').forEach(fitCardText);
+    }
+
+    function fitTitle(element){
+      return fitCardText(element?.closest('.card'));
     }
 
     function setLines(element,lines,{highlight=false,max=2}={}){
@@ -640,7 +1201,7 @@
         element.append(line);
       });
       element.hidden = output.length === 0;
-      if(element.classList.contains('title')) requestAnimationFrame(() => fitTitle(element));
+      if(element.matches('.title,.subtitle')) requestAnimationFrame(() => fitCardText(element.closest('.card')));
     }
 
     function uniquifySvgIds(root,suffix){
@@ -662,38 +1223,65 @@
       });
     }
 
-    function cardsForModules(font,count){
-      gallery.querySelectorAll(`.generated-card[data-font-style="${font}"]`).forEach(card => card.remove());
-      const base = [...gallery.querySelectorAll(`.card[data-font-style="${font}"]:not(.imported-card):not(.generated-card)`)];
-      const cards = base.slice(0,count);
-      let anchor = base.at(-1);
-      for(let index = base.length; index < count; index += 1){
-        const clone = base[index % base.length].cloneNode(true);
-        clone.classList.add('generated-card');
-        uniquifySvgIds(clone,`${font}-${index}-${Date.now()}`);
-        anchor.after(clone);
-        anchor = clone;
-        cards.push(clone);
-      }
-      return cards;
+    function cardForTemplate(template,index){
+      const selectors = {
+        hero:'.canvas.hero',
+        center:'.canvas.center',
+        side:'.canvas.side',
+        minimal:'.canvas.minimal',
+        'right-divider':'.canvas.right-divider'
+      };
+      const originals = [...gallery.querySelectorAll('.card:not(.imported-card):not(.generated-card)')];
+      return originals.find(card => card.querySelector(selectors[template] || '')) || originals[index % originals.length];
     }
 
-    function applyBrief(){
-      const modules = parseBrief(briefInput.value);
+    function cardsForModules(font,modules){
+      const first = gallery.querySelector('.card');
+      return modules.map((module,index) => {
+        const fallback = index === 0 ? 'hero' : ['center','side','minimal','right-divider'][(index - 1) % 4];
+        const source = cardForTemplate(module.template || fallback,index);
+        const clone = source.cloneNode(true);
+        clone.classList.add('generated-card');
+        clone.dataset.fontStyle = font;
+        clone.dataset.template = module.template || fallback;
+        clone._moduleData = module;
+        uniquifySvgIds(clone,`${font}-${index}-${Date.now()}`);
+        gallery.insertBefore(clone,first);
+        return clone;
+      });
+    }
+
+    function applyModules(modules,{persist=true,notifyUser=true}={}){
       if(!modules.length){
-        notify('没有识别到模块，请使用“## 01 模块名”并提供主标题');
+        notify('没有识别到可排版模块');
         return;
       }
-      const activeFont = document.body.dataset.font;
-      const cards = cardsForModules(activeFont,modules.length);
-      modules.forEach((module,index) => {
+      gallery.querySelectorAll('.generated-card').forEach(card => card.remove());
+      ['sans','serif'].forEach(font => {
+        const cards = cardsForModules(font,modules);
+        modules.forEach((module,index) => {
         const card = cards[index];
         const title = card.querySelector('.title');
         const subtitle = card.querySelector('.subtitle');
         setLines(title,splitTitle(module.title),{highlight:true,max:2});
 
-        let subtitleLines = module.subtitle.length ? module.subtitle : [...module.labels,...module.facts];
+        const detailCopy = [...module.labels,...module.facts];
+        const usesHeroIcons = index === 0 && card.querySelector('.canvas.hero');
+        const usesDetailList = !usesHeroIcons && ['spec','instruction'].includes(module.role) && detailCopy.length > 2;
+        let subtitleLines = module.subtitle.length ? module.subtitle : usesDetailList ? [] : detailCopy;
         setLines(subtitle,subtitleLines,{max:2});
+
+        card.querySelector('.detail-list')?.remove();
+        if(usesDetailList){
+          const list = document.createElement('ul');
+          list.className = 'detail-list';
+          detailCopy.forEach(copy => {
+            const item = document.createElement('li');
+            item.textContent = copy;
+            list.append(item);
+          });
+          card.querySelector('.safe').append(list);
+        }
 
         const iconCopy = [...module.bottom,...module.labels,...module.facts]
           .flatMap(line => line.split(/[•・]/))
@@ -713,7 +1301,8 @@
           subtitle.hidden = true;
         }
 
-        const moduleName = inferredModule(module.heading,index);
+        const roleNames = {hero:'首屏主视觉',feature:'核心卖点图',spec:'参数/配件图',instruction:'使用说明图'};
+        const moduleName = roleNames[module.role] || inferredModule(module.heading,index);
         const state = module.status ? ` · ${module.status}` : '';
         card.querySelector('.module-tag').textContent = `模块 · ${moduleName}${state}`;
         card.querySelector('.caption').textContent = module.heading.replace(/^.+?[：:]/,'').trim() || module.heading;
@@ -724,23 +1313,130 @@
         }
         const copyButton = card.querySelector('.copy-button');
         copyButton.setAttribute('aria-label',`复制${moduleName}2倍透明图`);
+        });
       });
 
       const explicitlySerif = /(?:整体|阿语|主标题)[^\n]{0,12}(?:使用|为|：|:)\s*衬线体/.test(briefInput.value);
       if(explicitlySerif) document.querySelector('[data-font-button="serif"]').click();
+      document.body.dataset.generated = 'true';
+      ensureRandomButtons(gallery);
+      ensureCardPalettes(gallery);
+      if(activeSuiteTheme) applySuiteTheme(activeSuiteTheme);
+      else syncPaletteEditors(currentPalette());
       makeEditable();
-      notify(`已识别 ${modules.length} 个模块并完成排版`);
+      if(persist){
+        localStorage.setItem(BRIEF_STORAGE_KEY,briefInput.value);
+        localStorage.setItem(MODULES_STORAGE_KEY,JSON.stringify({modules,font:document.body.dataset.font || 'sans'}));
+      }
+      requestAnimationFrame(() => {
+        syncResponsiveScale();
+        fitAllCards(gallery);
+      });
+      if(notifyUser) notify(`已识别 ${modules.length} 个模块并完成排版`);
     }
 
-    document.querySelector('.generate-button').addEventListener('click',applyBrief);
+    function applyBriefLocally(){
+      const modules = parseBrief(briefInput.value).map((module,index) => ({
+        ...module,
+        role:index === 0 ? 'hero' : 'feature',
+        template:index === 0 ? 'hero' : ['center','side','minimal','right-divider'][(index - 1) % 4]
+      }));
+      if(!modules.length){
+        notify('本地解析只支持“## 01 模块名”等结构化格式，请使用 AI 识别');
+        return;
+      }
+      applyModules(modules);
+      notify(`本地解析了 ${modules.length} 个模块`);
+    }
+
+    async function applyBriefWithAI(){
+      const source = briefInput.value.trim();
+      if(!source){ notify('请先粘贴文案或商品资料'); return; }
+      const previous = generateButton.textContent;
+      generateButton.disabled = true;
+      generateButton.setAttribute('aria-busy','true');
+      generateButton.textContent = 'AI 正在识别…';
+      try{
+        const response = await fetch('http://127.0.0.1:8765/api/extract-copy',{
+          method:'POST',
+          headers:{'content-type':'application/json'},
+          body:JSON.stringify({source})
+        });
+        const payload = await response.json().catch(() => ({}));
+        if(!response.ok) throw new Error(payload.error || `服务返回 ${response.status}`);
+        const modules = (payload.modules || []).map((module,index) => ({
+          number:String(module.number || index + 1).padStart(2,'0'),
+          heading:module.heading || `模块 ${index + 1}`,
+          role:module.role,
+          template:module.template,
+          status:(module.needs_confirmation || []).length ? '待确认' : '',
+          title:module.title || [],
+          subtitle:module.subtitle || [],
+          bottom:[],
+          labels:module.selling_points || [],
+          facts:module.facts || [],
+          sourceEvidence:module.source_evidence || [],
+          needsConfirmation:module.needs_confirmation || []
+        }));
+        applyModules(modules);
+        notify(`AI 已识别 ${modules.length} 个模块并完成排版`);
+      }catch(error){
+        notify(`AI 服务未连接：${error.message}`);
+      }finally{
+        generateButton.disabled = false;
+        generateButton.removeAttribute('aria-busy');
+        generateButton.textContent = previous;
+      }
+    }
+
+    generateButton.addEventListener('click',applyBriefWithAI);
+    document.querySelector('.local-parse-button').addEventListener('click',applyBriefLocally);
+
+    try{
+      const savedWork = JSON.parse(localStorage.getItem(MODULES_STORAGE_KEY) || 'null');
+      if(savedWork?.modules?.length){
+        applyModules(savedWork.modules,{persist:false,notifyUser:false});
+        const fontButton = document.querySelector(`[data-font-button="${savedWork.font || 'sans'}"]`);
+        if(fontButton) fontButton.click();
+      }
+    }catch(error){
+      localStorage.removeItem(MODULES_STORAGE_KEY);
+    }
+
+    gallery.addEventListener('click',event => {
+      const button = event.target.closest('.random-button');
+      if(!button) return;
+      const card = button.closest('.card');
+      const canvas = card.querySelector('.canvas');
+      if(!canvas){ notify('导入模板暂不支持视觉变体切换'); return; }
+      const isHero = canvas.classList.contains('hero') || Boolean(canvas.querySelector('.icon-row')) || card._moduleData?.role === 'hero';
+      const alignments = isHero ? ['hero-right','hero-center'] : ['content-right','content-center'];
+      const decorations = card.dataset.fontStyle === 'serif'
+        ? ['decor-line','decor-diamond','decor-dots','decor-serif-mark']
+        : ['decor-line','decor-diamond','decor-dots'];
+      const combinations = alignments.flatMap(alignment => decorations.map(decoration => `${alignment}|${decoration}`));
+      const current = card.dataset.visualVariant || '';
+      const choices = combinations.filter(item => item !== current);
+      const next = choices[Math.floor(Math.random() * choices.length)];
+      const [alignment,decoration] = next.split('|');
+      canvas.classList.remove('hero-right','hero-center','content-right','content-center','decor-line','decor-diamond','decor-dots','decor-serif-mark');
+      if(decoration === 'decor-serif-mark') ensureSerifMark(card);
+      canvas.classList.add('randomized-layout',alignment,decoration);
+      card.dataset.visualVariant = next;
+      requestAnimationFrame(() => fitCardText(card));
+      notify(isHero ? '已切换首屏居右/居中与装饰，3 个卖点保持不变' : '已切换标题对齐与装饰，文案保持不变');
+    });
 
     document.querySelectorAll('[data-font-button]').forEach(button => {
       button.addEventListener('click', () => {
         const font = button.dataset.fontButton;
         document.body.dataset.font = font;
         document.querySelectorAll('[data-font-button]').forEach(item => item.setAttribute('aria-pressed', String(item === button)));
-        requestAnimationFrame(() => document.querySelectorAll('.imported-card').forEach(card => {
-          if(getComputedStyle(card).display !== 'none') centerImportedContent(card.querySelector('.imported-host'));
+        document.fonts.ready.then(() => requestAnimationFrame(() => {
+          document.querySelectorAll('.imported-card').forEach(card => {
+            if(getComputedStyle(card).display !== 'none') centerImportedContent(card.querySelector('.imported-host'));
+          });
+          fitAllCards(gallery);
         }));
       });
     });
@@ -797,6 +1493,11 @@
       clone.style.width = '1000px';
       clone.style.height = '1000px';
       clone.style.background = 'transparent';
+      const computedTheme = getComputedStyle(sourceRoot);
+      ['--ink','--muted','--accent','--accent-2','--text-shadow'].forEach(name => {
+        const value = computedTheme.getPropertyValue(name).trim();
+        if(value) clone.style.setProperty(name,value);
+      });
       await Promise.all([...clone.querySelectorAll('img')].map(async image => {
         const src = image.getAttribute('src');
         if(!src || src.startsWith('data:')) return;
@@ -807,7 +1508,8 @@
         }
       }));
 
-      const currentFont = document.body.dataset.font;
+      const currentFont = card.dataset.fontStyle || document.body.dataset.font || 'sans';
+      const currentPreviewMode = document.body.dataset.previewMode || 'transparent';
       const importedCss = shadow ? [...shadow.querySelectorAll('style')].map(style => style.textContent || '').join('\n') : '';
       const rawCss = `${documentCss(sourceDoc)}\n${importedCss}`
         .replace(/@font-face\s*\{[^}]*\}/g,'')
@@ -816,7 +1518,7 @@
         .replaceAll('body[data-preview-mode="light"]', '.export-surface[data-preview-mode="light"]')
         .replaceAll('body[data-preview-mode="dark"]', '.export-surface[data-preview-mode="dark"]');
       const embeddedFonts = await loadFontCss();
-      const markup = `<div xmlns="http://www.w3.org/1999/xhtml" class="export-surface" data-font="${currentFont}" data-preview-mode="transparent" style="width:1000px;height:1000px;background:transparent;overflow:visible"><style>${embeddedFonts}\n${rawCss}\n.canvas{position:relative!important;left:0!important;top:0!important;transform:none!important;box-shadow:none!important;background:transparent!important}</style>${clone.outerHTML}</div>`;
+      const markup = `<div xmlns="http://www.w3.org/1999/xhtml" class="export-surface" data-font="${currentFont}" data-preview-mode="${currentPreviewMode}" style="width:1000px;height:1000px;background:transparent;overflow:visible"><style>${embeddedFonts}\n${rawCss}\n.canvas{position:relative!important;left:0!important;top:0!important;transform:none!important;box-shadow:none!important;background:transparent!important}</style>${clone.outerHTML}</div>`;
       const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000" viewBox="0 0 1000 1000"><foreignObject width="1000" height="1000">${markup}</foreignObject></svg>`;
       const imageUrl = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
       const image = new Image();
@@ -834,7 +1536,14 @@
       button.disabled = true;
       button.dataset.state = 'working';
       try{
-        const png = await exportCard(button.closest('.card'));
+        const card = button.closest('.card');
+        await document.fonts.ready;
+        if(fitCardText(card)){
+          notify('文字仍超出安全区，请缩短文案后再复制');
+          button.dataset.state = 'error';
+          return;
+        }
+        const png = await exportCard(card);
         await navigator.clipboard.write([new ClipboardItem({'image/png':png})]);
         button.dataset.state = 'done';
         notify('已复制 2000×2000 透明 PNG');
@@ -873,14 +1582,24 @@
       ornament.setAttribute('width','101.698');
       ornament.setAttribute('height','29.698');
       ornament.setAttribute('viewBox','0 0 101.698 29.698');
-      ornament.style.setProperty('display','block','important');
+      ornament.style.setProperty('display','block');
       ornament.style.setProperty('width','101.698px','important');
       ornament.style.setProperty('height','29.698px','important');
       ornament.style.setProperty('transform','none','important');
       ornament.style.setProperty('overflow','visible','important');
       ornament.style.setProperty('opacity','1','important');
       ornament.style.setProperty('mix-blend-mode','normal','important');
-      ornament.innerHTML = '<defs><linearGradient x1="0" y1=".5" x2="1" y2=".5" id="canonical-mark-left"><stop offset="0%" stop-color="#D4B875"/><stop offset="100%" stop-color="#D4B875" stop-opacity="0"/></linearGradient><linearGradient x1="0" y1=".5" x2="1" y2=".5" id="canonical-mark-right"><stop offset="0%" stop-color="#D4B875"/><stop offset="100%" stop-color="#D4B875" stop-opacity="0"/></linearGradient></defs><g transform="matrix(-1 0 0 1 49 0)"><path d="M49 15.349H24.5v-1H49Z" fill="url(#canonical-mark-left)"/></g><g transform="matrix(.7071 -.7071 .7071 .7071 -2.153 24.502)"><rect x="29.4" y="15.749" width="19.2" height="19.2" fill="none" stroke="#854C0E" stroke-width="1.8"/></g><g transform="matrix(.7071 -.7071 .7071 .7071 2.241 35.108)"><rect x="44.4" y="15.749" width="19.2" height="19.2" fill="none" stroke="#854C0E" stroke-width="1.8"/></g><path d="M101.698 15.349h-24.5v-1h24.5Z" fill="url(#canonical-mark-right)"/>';
+      ornament.innerHTML = '<path d="M0 14.85H24.5M77.2 14.85H101.7" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" opacity=".62"/><rect x="35.21" y="8.06" width="13.58" height="13.58" transform="rotate(45 42 14.85)" fill="none" stroke="currentColor" stroke-width="1.8"/><rect x="50.21" y="8.06" width="13.58" height="13.58" transform="rotate(45 57 14.85)" fill="none" stroke="currentColor" stroke-width="1.8"/>';
+    }
+
+    function ensureSerifMark(card){
+      const textBox = card?.querySelector('.text-box');
+      if(!textBox || textBox.querySelector('.serif-mark')) return;
+      const ornament = document.createElement('span');
+      ornament.className = 'generated-serif-mark serif-mark css-mark';
+      ornament.setAttribute('aria-hidden','true');
+      ornament.append(document.createElement('i'),document.createElement('i'));
+      textBox.prepend(ornament);
     }
 
     function replaceImportedSerifMark(root){
@@ -962,7 +1681,10 @@
       const sourceCss = [...parsed.querySelectorAll('style')].map(style => style.textContent || '').join('\n');
       const shadow = host.attachShadow({mode:'open'});
       const serifCss = fontStyle === 'serif' ? '.title{-webkit-text-stroke:1.4px currentColor!important;paint-order:stroke fill}.subtitle{-webkit-text-stroke:0!important;font-weight:400!important;color:#9b897f!important}' : '';
-      shadow.innerHTML = `<style>${sourceCss}\n${serifCss}:host{display:block;width:500px;height:500px;overflow:hidden}.import-stage{position:absolute;left:0;top:0;width:1000px;height:1000px;transform:scale(.5);transform-origin:0 0;background:transparent}.import-source{position:relative!important;left:0!important;top:0!important;width:1000px!important;height:1000px!important;transform:none!important;background:transparent!important}.serif-mark,.serif-mark *{opacity:1!important;mix-blend-mode:normal!important}.serif-mark{display:block!important;width:101.698px!important;height:29.698px!important;transform:none!important;overflow:visible!important}[contenteditable=true]{cursor:text}[contenteditable=true]:focus{outline:2px dashed rgba(216,160,68,.55);outline-offset:7px}:host-context(body[data-preview-mode="dark"]) .title,:host-context(body[data-preview-mode="dark"]) h1,:host-context(body[data-preview-mode="dark"]) h2{color:#fff!important;-webkit-text-stroke:1.4px currentColor!important}:host-context(body[data-preview-mode="dark"]) .subtitle{color:#fff!important;background:linear-gradient(135deg,#FBE17B 0%,#fff 34%,#fff 100%)!important;-webkit-background-clip:text!important;background-clip:text!important;-webkit-text-fill-color:transparent!important;font-weight:400!important}:host-context(body[data-preview-mode="dark"]) .serif-mark rect{stroke:#FFE5A8!important}:host-context(body[data-preview-mode="dark"]) .serif-mark path{fill:#D4B875!important}</style><div class="import-stage">${sourceHtml}</div>`;
+      shadow.innerHTML = `<style>${sourceCss}\n${serifCss}:host{display:block;width:500px;height:500px;overflow:hidden}.import-stage{position:absolute;left:0;top:0;width:1000px;height:1000px;transform:scale(.5);transform-origin:0 0;background:transparent}.import-source{position:relative!important;left:0!important;top:0!important;width:1000px!important;height:1000px!important;transform:none!important;background:transparent!important}.title,.subtitle,.icon-label,h1,h2,p{text-shadow:none!important}.serif-mark,.serif-mark *{opacity:1!important;mix-blend-mode:normal!important}.serif-mark{display:block!important;width:101.698px!important;height:29.698px!important;transform:none!important;overflow:visible!important}[contenteditable=true]{cursor:text}[contenteditable=true]:focus{outline:2px dashed rgba(216,160,68,.55);outline-offset:7px}:host-context(body[data-preview-mode="dark"]) .title,:host-context(body[data-preview-mode="dark"]) h1,:host-context(body[data-preview-mode="dark"]) h2{color:#fff!important;-webkit-text-stroke:1.4px currentColor!important}:host-context(body[data-preview-mode="dark"]) .subtitle{color:#fff!important;background:linear-gradient(135deg,#FBE17B 0%,#fff 34%,#fff 100%)!important;-webkit-background-clip:text!important;background-clip:text!important;-webkit-text-fill-color:transparent!important;font-weight:400!important}:host-context(body[data-preview-mode="dark"]) .serif-mark rect{stroke:#FFE5A8!important}:host-context(body[data-preview-mode="dark"]) .serif-mark path{fill:#D4B875!important}</style><div class="import-stage">${sourceHtml}</div>`;
+      const darkThemeOverride = document.createElement('style');
+      darkThemeOverride.textContent = ':host-context(body[data-preview-mode="dark"]) .serif-mark rect{stroke:var(--accent)!important}:host-context(body[data-preview-mode="dark"]) .serif-mark path{fill:var(--accent)!important}';
+      shadow.append(darkThemeOverride);
       const importedRoot = shadow.querySelector('.import-stage').firstElementChild;
       importedRoot.classList.add('import-source');
       if(fontStyle === 'serif') replaceImportedSerifMark(importedRoot);
@@ -977,6 +1699,8 @@
       meta.innerHTML = `<span class="module-tag">模板库 · ${fontStyle === 'serif' ? '衬线体' : '非衬线体'}</span><div class="caption">${item.name || `导入模板 ${index + 1}`}</div><div class="template-name">标题＋副标题＋装饰 · imported-html</div>`;
       card.append(button,preview,meta);
       gallery.append(card);
+      ensureCardPalettes(card);
+      syncPaletteEditors(currentPalette());
     }
 
     importedTemplates().forEach(renderImportedTemplate);

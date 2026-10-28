@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["modules"],
+  "properties": {
+    "modules": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 12,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["number", "heading", "role", "template", "title", "subtitle", "selling_points", "facts", "source_evidence", "needs_confirmation"],
+        "properties": {
+          "number": { "type": "string" },
+          "heading": { "type": "string" },
+          "role": { "type": "string", "enum": ["hero", "feature", "spec", "instruction"] },
+          "template": { "type": "string", "enum": ["hero", "center", "side", "minimal", "right-divider"] },
+          "title": { "type": "array", "minItems": 1, "maxItems": 2, "items": { "type": "string" } },
+          "subtitle": { "type": "array", "maxItems": 2, "items": { "type": "string" } },
+          "selling_points": { "type": "array", "maxItems": 3, "items": { "type": "string" } },
+          "facts": { "type": "array", "maxItems": 8, "items": { "type": "string" } },
+          "source_evidence": { "type": "array", "maxItems": 8, "items": { "type": "string" } },
+          "needs_confirmation": { "type": "array", "maxItems": 6, "items": { "type": "string" } }
+        }
+      }
+    }
+  }
+}

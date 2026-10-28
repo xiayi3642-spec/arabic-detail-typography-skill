@@ -1,0 +1,23 @@
+{
+  "project": "serif-handwriting-check",
+  "canvas": { "width": 1000, "height": 1000 },
+  "font_style": "serif",
+  "theme": {
+    "ink": "#573725",
+    "muted": "#8A776B",
+    "accent": "#D8A044"
+  },
+  "copy_status": "draft-needs-native-review",
+  "pages": [
+    {
+      "id": "serif-check",
+      "template": "center-divider",
+      "title_lines": ["لحظات دافئة", "بضوء أكثر نعومة"],
+      "subtitle_lines": ["تفاصيل أنيقة تضيف الراحة إلى المكان"],
+      "highlights": ["دافئة", "أنيقة"],
+      "accent": "A glow for every space",
+      "decoration": "diamond",
+      "zh_audit": "温暖时刻，柔和光线｜优雅细节为空间增加舒适感"
+    }
+  ]
+}

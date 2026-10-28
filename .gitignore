@@ -1,0 +1,7 @@
+# Browser verification artifacts
+*-verified.png
+*-verified.jpg
+
+# Local runtime state
+.DS_Store
+node_modules/
