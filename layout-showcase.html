@@ -56,11 +56,11 @@
     .brief-editor textarea{width:100%;min-height:210px;padding:14px;border:1px solid #d9d2cb;border-radius:10px;background:#fff;color:#342f2b;resize:vertical;font:13px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace}
     .brief-actions{display:flex;align-items:center;justify-content:space-between;gap:12px}
     .brief-hint{color:#8f857c;font-size:12px}
-    .brief-buttons{display:flex;align-items:center;gap:8px;flex:0 0 auto}
-    .generate-button,.local-parse-button{padding:9px 16px;border-radius:9px;font-weight:700;cursor:pointer}
-    .generate-button{min-width:142px;border:0;background:#332d28;color:#fff}
+    .brief-buttons{display:flex;align-items:center;flex:0 0 auto}
+    .generate-button{min-width:168px;padding:10px 18px;border:0;border-radius:10px;background:#332d28;color:#fff;font-weight:700;cursor:pointer;box-shadow:0 5px 16px rgba(50,38,28,.12);transition:background .16s ease,transform .16s ease,box-shadow .16s ease}
+    .generate-button:hover{background:#211e1b;box-shadow:0 7px 19px rgba(50,38,28,.16);transform:translateY(-1px)}
+    .generate-button:active{transform:translateY(0);box-shadow:0 3px 10px rgba(50,38,28,.10)}
     .generate-button:disabled{cursor:wait;opacity:.65}
-    .local-parse-button{border:1px solid #d6cec6;background:#fff;color:#6f6760;font-weight:600}
     body[data-generated="true"] .card:not(.generated-card):not(.imported-card){display:none}
 
     .gallery{display:grid;grid-template-columns:repeat(2,524px);gap:24px;justify-content:center;padding:24px 24px 60px}
@@ -357,8 +357,8 @@
 - الجسم المزدوج
 - حلقة التهوية</textarea>
         <div class="brief-actions">
-          <span class="brief-hint">AI 会理解自然语言、表格、会议稿、聊天记录和中阿混排；头图自动提炼 3 个有依据的卖点。</span>
-          <div class="brief-buttons"><button class="local-parse-button" type="button">本地格式解析</button><button class="generate-button" type="button">AI 识别并生成</button></div>
+          <span class="brief-hint">自动判断输入结构：可可靠读取时快速生成，其余内容交给 AI 理解、提炼并排版。</span>
+          <div class="brief-buttons"><button class="generate-button" type="button">智能识别并生成</button></div>
         </div>
       </div>
     </details>
@@ -1444,27 +1444,25 @@
       if(notifyUser) notify(`已识别 ${modules.length} 个模块并完成排版`);
     }
 
-    function applyBriefLocally(){
-      const modules = parseBrief(briefInput.value).map((module,index) => ({
+    function localBriefCandidate(source){
+      const headings = [...source.matchAll(/^##\s*(\d{1,2})(?:\s*[｜|]\s*|\s+)(.+)$/gm)];
+      const parsed = parseBrief(source);
+      const reliable = headings.length > 0 && parsed.length === headings.length && parsed.every(module =>
+        module.title.length > 0 && module.title.every(line => /[\u0600-\u06ff]/.test(line))
+      );
+      const modules = parsed.map((module,index) => ({
         ...module,
         role:index === 0 ? 'hero' : 'feature',
         template:index === 0 ? 'hero' : ['center','side','minimal','right-divider'][(index - 1) % 4]
       }));
-      if(!modules.length){
-        notify('本地解析只支持“## 01 模块名”等结构化格式，请使用 AI 识别');
-        return;
-      }
-      applyModules(modules);
-      notify(`本地解析了 ${modules.length} 个模块`);
+      return {reliable,modules,headingCount:headings.length};
     }
 
-    async function applyBriefWithAI(){
-      const source = briefInput.value.trim();
-      if(!source){ notify('请先粘贴文案或商品资料'); return; }
+    async function applyBriefWithAI(source){
       const previous = generateButton.textContent;
       generateButton.disabled = true;
       generateButton.setAttribute('aria-busy','true');
-      generateButton.textContent = 'AI 正在识别…';
+      generateButton.textContent = 'AI 正在整理…';
       try{
         const response = await fetch('http://127.0.0.1:8765/api/extract-copy',{
           method:'POST',
@@ -1488,7 +1486,7 @@
           needsConfirmation:module.needs_confirmation || []
         }));
         applyModules(modules);
-        notify(`AI 已识别 ${modules.length} 个模块并完成排版`);
+        notify(`输入格式较自由，AI 已整理 ${modules.length} 个模块并完成排版`);
       }catch(error){
         notify(`AI 服务未连接：${error.message}`);
       }finally{
@@ -1498,8 +1496,19 @@
       }
     }
 
-    generateButton.addEventListener('click',applyBriefWithAI);
-    document.querySelector('.local-parse-button').addEventListener('click',applyBriefLocally);
+    async function generateFromBrief(){
+      const source = briefInput.value.trim();
+      if(!source){ notify('请先粘贴文案或商品资料'); return; }
+      const local = localBriefCandidate(source);
+      if(local.reliable){
+        applyModules(local.modules);
+        notify(`结构完整，已快速生成 ${local.modules.length} 个模块`);
+        return;
+      }
+      await applyBriefWithAI(source);
+    }
+
+    generateButton.addEventListener('click',generateFromBrief);
 
     try{
       const savedWork = JSON.parse(localStorage.getItem(MODULES_STORAGE_KEY) || 'null');
