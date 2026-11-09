@@ -46,7 +46,7 @@
     .suite-panel{display:flex;align-items:center;justify-content:space-between;gap:14px;width:1072px;max-width:calc(100vw - 48px);margin:18px auto 0;padding:13px 15px;background:rgba(255,255,255,.76);border:1px solid rgba(78,65,52,.10);border-radius:14px;box-shadow:0 5px 18px rgba(48,39,30,.05)}
     .suite-copy{min-width:0}.suite-copy strong{display:block;font-size:14px}.suite-copy span{display:block;margin-top:4px;color:#8f857c;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .suite-controls{display:flex;align-items:center;gap:10px;flex:0 0 auto}.suite-upload{display:inline-flex;align-items:center;gap:7px;padding:9px 14px;border:0;border-radius:9px;background:#332d28;color:#fff;font-size:13px;font-weight:700;cursor:pointer}.suite-upload input{display:none}
-    .suite-palette{display:none;align-items:center;gap:7px}.suite-palette.show{display:flex}.suite-swatch{width:30px;height:30px;border:2px solid #fff;border-radius:50%;box-shadow:0 0 0 1px rgba(61,48,38,.16)}.suite-mode{padding:5px 8px;border-radius:999px;background:#eee9e3;color:#6d6259;font-size:11px;font-weight:700;white-space:nowrap}
+    .suite-palette{display:flex;align-items:center;gap:7px}.suite-palette.show{display:flex}.suite-color{display:grid;grid-template-columns:30px 68px;align-items:center;gap:6px}.suite-color input[type="color"]{padding:0;cursor:pointer;background:transparent}.suite-color input[type="color"]::-webkit-color-swatch-wrapper{padding:0}.suite-color input[type="color"]::-webkit-color-swatch{border:0;border-radius:50%}.suite-color .suite-hex{width:68px;min-width:0;padding:4px;border:1px solid #ddd4cb;border-radius:5px;font:11px ui-monospace,monospace;color:#3e3731;background:#fff}.suite-color-name{grid-column:1/-1;font-size:11px;color:#756a62}.suite-swatch{width:30px;height:30px;border:2px solid #fff;border-radius:50%;box-shadow:0 0 0 1px rgba(61,48,38,.16)}.suite-mode{padding:5px 8px;border-radius:999px;background:#eee9e3;color:#6d6259;font-size:11px;font-weight:700;white-space:nowrap}
     .brief-panel details{overflow:hidden;background:rgba(255,255,255,.76);border:1px solid rgba(78,65,52,.10);border-radius:14px;box-shadow:0 5px 18px rgba(48,39,30,.05)}
     .brief-panel summary{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;cursor:pointer;font-size:14px;font-weight:700;list-style:none}
     .brief-panel summary::-webkit-details-marker{display:none}
@@ -79,7 +79,7 @@
     [contenteditable="true"]:focus{outline:2px dashed rgba(216,160,68,.55);outline-offset:7px}
 
     .card[data-font-style="serif"] .title,.export-surface[data-font="serif"] .title{font-family:"Arabic Editorial",serif;font-size:80px;font-weight:400;line-height:1.24;-webkit-text-stroke:1.4px currentColor;paint-order:stroke fill}
-    .card[data-font-style="serif"] .subtitle,.export-surface[data-font="serif"] .subtitle{font-family:"Arabic Editorial",serif;font-size:40px;font-weight:400;line-height:1.5;-webkit-text-stroke:0;color:#9b897f}
+    .card[data-font-style="serif"] .subtitle,.export-surface[data-font="serif"] .subtitle{font-family:"Arabic Editorial",serif;font-size:40px;font-weight:400;line-height:1.5;-webkit-text-stroke:0;color:var(--muted)}
     body[data-font="sans"] .card[data-font-style="serif"],body[data-font="serif"] .card[data-font-style="sans"]{display:none}
     body[data-font="serif"] .short-rule{display:none}
 
@@ -159,6 +159,13 @@
     .canvas.randomized-layout.content-center .text-box{top:184px;right:auto;left:50%;width:796px;transform:translateX(-50%);text-align:center}
     .canvas.randomized-layout.content-center .title,.canvas.randomized-layout.content-center .subtitle{text-align:center}
     .canvas.randomized-layout.content-center .text-box::before{margin-right:auto;margin-left:auto}
+    .canvas.manual-align-center .text-box{right:auto!important;left:50%!important;transform:translateX(-50%)!important;text-align:center!important}
+    .canvas.manual-align-center .title,.canvas.manual-align-center .subtitle{text-align:center!important;margin-right:auto!important;margin-left:auto!important}
+    .canvas.manual-align-center .text-box::before{margin-right:auto!important;margin-left:auto!important}
+    .canvas.manual-align-right .text-box{right:18px!important;left:auto!important;transform:none!important;text-align:right!important}
+    .canvas.manual-align-right.manual-hero .text-box{right:0!important}
+    .canvas.manual-align-right .title,.canvas.manual-align-right .subtitle{text-align:right!important}
+    .canvas.manual-align-right .text-box::before{margin-right:0!important;margin-left:auto!important}
     .center-ornament stop:first-child,.gradient-rule stop:first-child,.between-rule stop:last-child{stop-color:var(--accent)}
     .serif-mark rect:nth-of-type(even){stroke:var(--accent-2)}
     .meta{display:grid;grid-template-columns:max-content minmax(0,1fr) auto;align-items:center;gap:8px;margin-top:10px;direction:ltr}
@@ -170,6 +177,8 @@
     .palette-value:focus{border-color:var(--field-color,#8f8277);box-shadow:inset 4px 0 0 var(--field-color,#8f8277),0 0 0 2px color-mix(in srgb,var(--field-color,#8f8277) 22%,transparent)}
     .copy-button,.random-button{position:absolute;top:22px;z-index:10;display:grid;place-items:center;width:36px;height:36px;padding:0;border:1px solid rgba(87,55,37,.16);border-radius:8px;background:rgba(255,255,255,.90);color:#554a42;box-shadow:0 2px 8px rgba(50,38,28,.10);cursor:pointer;backdrop-filter:blur(8px)}
     .copy-button{right:22px}.random-button{right:66px}
+    .alignment-select{position:absolute;top:22px;right:110px;z-index:10;width:82px;height:36px;padding:0 9px;border:1px solid rgba(87,55,37,.16);border-radius:8px;background:rgba(255,255,255,.94);color:#554a42;box-shadow:0 2px 8px rgba(50,38,28,.10);font:600 12px/1 system-ui,sans-serif;cursor:pointer;backdrop-filter:blur(8px)}
+    .alignment-select:hover,.alignment-select:focus{border-color:rgba(216,160,68,.6);outline:none}
     .copy-button svg,.random-button svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
     .copy-button:hover,.random-button:hover{background:#fff;border-color:rgba(216,160,68,.6);color:var(--accent)}
     .copy-button[data-state="done"]{color:#317b49}
@@ -200,11 +209,18 @@
     body[data-preview-mode="dark"] .canvas{--ink:var(--ink-on-dark);--muted:var(--muted-on-dark);--text-shadow:none}
     body[data-preview-mode="light"] .title,body[data-preview-mode="light"] .subtitle,body[data-preview-mode="light"] .icon-label,
     body[data-preview-mode="dark"] .title,body[data-preview-mode="dark"] .subtitle,body[data-preview-mode="dark"] .icon-label{text-shadow:none!important}
-    body[data-preview-mode="dark"] .subtitle{color:#fff;background:linear-gradient(135deg,#FBE17B 0%,#fff 34%,#fff 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-    body[data-preview-mode="dark"] .icon-label{color:#ddd0c7}
+    body[data-preview-mode="dark"] .subtitle{color:var(--muted)}
+    body[data-preview-mode="dark"] .icon-label{color:var(--muted)}
     body[data-preview-mode="dark"] .serif-mark rect{stroke:var(--accent)}
     body[data-preview-mode="dark"] .serif-mark path{fill:var(--accent)}
     body[data-preview-mode="dark"] .gradient-rule path,body[data-preview-mode="dark"] .between-rule path{filter:none}
+
+    /* All ornaments use the global decoration role, including SVG presentation attributes. */
+    .canvas :is(.short-rule,.orb,.center-ornament,.between-rule,.gradient-rule,.feature-icon,.serif-mark,.icon){color:var(--accent-2)!important}
+    .canvas :is(.orb,.center-ornament,.between-rule,.gradient-rule,.serif-mark) stop{stop-color:var(--accent-2)!important}
+    .canvas :is(.center-ornament,.serif-mark) [fill]:not([fill="none"]):not([fill^="url("]){fill:var(--accent-2)!important}
+    .canvas :is(.serif-mark,.feature-icon,.icon) [stroke]:not([stroke="none"]){stroke:var(--accent-2)!important}
+    .canvas.randomized-layout .text-box::before,.canvas .serif-mark.css-mark i:last-child{color:var(--accent-2)!important}
 
     @media(max-width:1100px){.gallery{width:100%;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding-inline:12px}.card{width:auto;min-width:0}.preview{width:100%;height:auto;aspect-ratio:1}.toolbar{align-items:flex-start;gap:16px}.toolbar p{display:none}}
     @media(max-width:580px){:root{--scale:.34}.suite-panel{align-items:flex-start;flex-direction:column}.suite-controls{width:100%;justify-content:space-between}.gallery{grid-template-columns:364px}.card{width:364px}.preview{width:340px;height:340px}.toolbar{padding:12px 14px}.toolbar h1{font-size:16px}.font-switch button{min-width:auto;padding:8px 11px}}
@@ -225,7 +241,7 @@
   <section class="suite-panel" aria-label="套图配色分析">
     <div class="suite-copy"><strong>上传套图，自动设计文字配色</strong><span id="suite-status">分析图片头部明暗，从原图提取正文色、关键词色和装饰色</span></div>
     <div class="suite-controls">
-      <div class="suite-palette" id="suite-palette"><span class="suite-mode" id="suite-mode"></span><i class="suite-swatch" data-swatch="ink" title="正文色"></i><i class="suite-swatch" data-swatch="accent" title="关键词色"></i><i class="suite-swatch" data-swatch="accent2" title="装饰色"></i></div>
+      <div class="suite-palette" id="suite-palette"><span class="suite-mode" id="suite-mode"></span><label class="suite-color"><span class="suite-color-name">正文色</span><input type="color" class="suite-swatch" data-swatch="ink" data-global-role="ink" aria-label="全局正文色选色" value="#573725"><input type="text" class="suite-hex" data-global-role="ink" aria-label="全局正文色HEX" value="#573725" maxlength="7" spellcheck="false"></label><label class="suite-color"><span class="suite-color-name">关键词色</span><input type="color" class="suite-swatch" data-swatch="accent" data-global-role="accent" aria-label="全局关键词色选色" value="#D8A044"><input type="text" class="suite-hex" data-global-role="accent" aria-label="全局关键词色HEX" value="#D8A044" maxlength="7" spellcheck="false"></label><label class="suite-color"><span class="suite-color-name">装饰色</span><input type="color" class="suite-swatch" data-swatch="accent2" data-global-role="accent2" aria-label="全局装饰色选色" value="#6BB9E8"><input type="text" class="suite-hex" data-global-role="accent2" aria-label="全局装饰色HEX" value="#6BB9E8" maxlength="7" spellcheck="false"></label></div>
       <label class="suite-upload">上传套图<input id="suite-images" type="file" accept="image/*" multiple></label>
     </div>
   </section>
@@ -323,7 +339,19 @@
 بوضوح
 
 **阿语副标题**
-هيكل من الفولاذ المقاوم للصدأ مع حقيبة شبكية</textarea>
+هيكل من الفولاذ المقاوم للصدأ مع حقيبة شبكية
+
+**中文标签**
+- 三角支架
+- 炉灰盘
+- 双层炉身
+- 进风圈
+
+**阿语标签**
+- الحامل الثلاثي
+- صينية الرماد
+- الجسم المزدوج
+- حلقة التهوية</textarea>
         <div class="brief-actions">
           <span class="brief-hint">AI 会理解自然语言、表格、会议稿、聊天记录和中阿混排；头图自动提炼 3 个有依据的卖点。</span>
           <div class="brief-buttons"><button class="local-parse-button" type="button">本地格式解析</button><button class="generate-button" type="button">AI 识别并生成</button></div>
@@ -574,6 +602,7 @@
     const toast = document.querySelector('.toast');
     let fontCssPromise;
     let activeSuiteTheme = null;
+    let previewPalette = null;
 
     function syncResponsiveScale(){
       const preview = [...document.querySelectorAll('.preview')].find(element => element.getBoundingClientRect().width > 0);
@@ -717,6 +746,7 @@
     }
 
     function applySuiteTheme(theme){
+      previewPalette = null;
       activeSuiteTheme = theme;
       const root = document.documentElement;
       root.style.setProperty('--ink',rgbHex(theme.ink));
@@ -732,10 +762,11 @@
       cards.forEach((card,index) => {
         const image = theme.perImage[index % theme.perImage.length];
         const mode = theme.mixed ? image.mode : theme.globalMode;
-        const cardInk = mode === 'dark' ? theme.perImage[0].darkContrast >= 1 ? theme.ink : theme.ink : paletteLight(theme);
-        card.style.setProperty('--ink',rgbHex(cardInk));
-        card.style.setProperty('--muted',rgbHex(mixColor(cardInk,image.topAverage,mode === 'dark' ? .38 : .28)));
-        card.style.setProperty('--text-shadow','none');
+        const cardInk = theme.mixed ? (mode === 'dark' ? theme.darkest : theme.lightest) : theme.ink;
+        setCardPalette(card,{
+          ink:rgbHex(cardInk),muted:theme.mixed ? rgbHex(mixColor(cardInk,image.topAverage,mode === 'dark' ? .38 : .28)) : rgbHex(theme.muted),
+          accent:rgbHex(theme.accent),accent2:rgbHex(theme.accent2)
+        });
       });
       document.body.dataset.previewMode = 'transparent';
       syncPaletteEditors(paletteFromTheme(theme));
@@ -756,9 +787,7 @@
       const topLight = Number.isFinite(theme.topLight) ? theme.topLight : Math.round(relativeLuminance(theme.topAverage) * 100);
       const modeText = theme.mixed ? '逐图深浅适配' : theme.globalMode === 'dark' ? '深色正文' : '浅色正文';
       suiteMode.textContent = modeText;
-      suitePalette.querySelector('[data-swatch="ink"]').style.background = rgbHex(theme.ink);
-      suitePalette.querySelector('[data-swatch="accent"]').style.background = rgbHex(theme.accent);
-      suitePalette.querySelector('[data-swatch="accent2"]').style.background = rgbHex(theme.accent2);
+      syncGlobalPalette(paletteFromTheme(theme));
       suitePalette.classList.add('show');
       suiteStatus.textContent = `${count} 张图 · 头部亮度约 ${topLight}% · 正文 ${rgbHex(theme.ink)} · 关键词 ${rgbHex(theme.accent)} · 装饰 ${rgbHex(theme.accent2)}`;
     }
@@ -774,6 +803,7 @@
     }
 
     function currentPalette(){
+      if(previewPalette) return {...previewPalette};
       if(activeSuiteTheme) return paletteFromTheme(activeSuiteTheme);
       const style = getComputedStyle(document.documentElement);
       return {
@@ -783,7 +813,21 @@
       };
     }
 
+    function syncGlobalPalette(palette){
+      suitePalette.querySelectorAll('[data-global-role]').forEach(input => {
+        input.value = palette[input.dataset.globalRole];
+      });
+    }
+
+    // Set the canvas too: preview backgrounds must not override a chosen palette.
+    function setCardPalette(card,palette){
+      [card,...card.querySelectorAll('.canvas')].forEach(target => {
+        Object.entries({ink:palette.ink,muted:palette.muted,accent:palette.accent,'accent-2':palette.accent2,'text-shadow':'none'}).forEach(([key,value]) => target.style.setProperty(`--${key}`,value));
+      });
+    }
+
     function syncPaletteEditors(palette=currentPalette()){
+      syncGlobalPalette(palette);
       document.querySelectorAll('.palette-value').forEach(input => {
         const value = palette[input.dataset.colorRole];
         if(!value) return;
@@ -793,6 +837,7 @@
     }
 
     function applyPaletteValues(palette,{persist=true}={}){
+      previewPalette = null;
       const normalized = {
         ink:normalizeHex(palette.ink),accent:normalizeHex(palette.accent),accent2:normalizeHex(palette.accent2)
       };
@@ -801,18 +846,18 @@
       root.style.setProperty('--ink',normalized.ink);
       root.style.setProperty('--accent',normalized.accent);
       root.style.setProperty('--accent-2',normalized.accent2);
-      gallery.querySelectorAll('.card').forEach(card => {
-        card.style.setProperty('--ink',normalized.ink);
-        card.style.setProperty('--accent',normalized.accent);
-        card.style.setProperty('--accent-2',normalized.accent2);
-      });
+      const muted = rgbHex(mixColor(hexColor(normalized.ink),activeSuiteTheme?.topAverage || {r:255,g:255,b:255},.28));
+      root.style.setProperty('--muted',muted);
+      gallery.querySelectorAll('.card').forEach(card => setCardPalette(card,{...normalized,muted}));
       if(activeSuiteTheme){
         activeSuiteTheme.ink = hexColor(normalized.ink);
+        activeSuiteTheme.globalMode = relativeLuminance(activeSuiteTheme.ink) > .45 ? 'light' : 'dark';
+        activeSuiteTheme.mixed = false;
         activeSuiteTheme.accent = hexColor(normalized.accent);
         activeSuiteTheme.accent2 = hexColor(normalized.accent2);
         if(activeSuiteTheme.globalMode === 'dark') activeSuiteTheme.darkest = activeSuiteTheme.ink;
         else activeSuiteTheme.lightest = activeSuiteTheme.ink;
-        activeSuiteTheme.muted = mixColor(activeSuiteTheme.ink,activeSuiteTheme.topAverage,activeSuiteTheme.globalMode === 'dark' ? .38 : .28);
+        activeSuiteTheme.muted = hexColor(muted);
         root.style.setProperty('--muted',rgbHex(activeSuiteTheme.muted));
         root.style.setProperty('--ink-on-light',rgbHex(activeSuiteTheme.darkest));
         root.style.setProperty('--ink-on-dark',rgbHex(activeSuiteTheme.lightest));
@@ -823,6 +868,20 @@
       syncPaletteEditors(normalized);
       return true;
     }
+
+    suitePalette.addEventListener('input',event => {
+      const input = event.target.closest('[data-global-role]');
+      if(!input) return;
+      const value = normalizeHex(input.value);
+      if(value) applyPaletteValues({...currentPalette(),[input.dataset.globalRole]:value});
+    });
+    suitePalette.addEventListener('change',event => {
+      if(!event.target.matches('[data-global-role]')) return;
+      if(!normalizeHex(event.target.value)){
+        syncGlobalPalette(currentPalette());
+        notify('请输入 6 位 HEX 色值，例如 #946A32');
+      } else notify('已更新并保存全套文字配色');
+    });
 
     suiteImages.addEventListener('change',async () => {
       const files = [...suiteImages.files];
@@ -886,6 +945,42 @@
       });
     }
 
+    function cardIsHero(card){
+      const canvas = card.querySelector('.canvas');
+      return Boolean(canvas && (canvas.classList.contains('hero') || canvas.querySelector('.icon-row') || card._moduleData?.role === 'hero'));
+    }
+
+    function currentAlignment(card){
+      const canvas = card.querySelector('.canvas');
+      if(!canvas) return 'right';
+      if(canvas.classList.contains('manual-align-center') || canvas.classList.contains('hero-center') || canvas.classList.contains('content-center')) return 'center';
+      if(canvas.classList.contains('manual-align-right') || canvas.classList.contains('hero-right') || canvas.classList.contains('content-right')) return 'right';
+      return ['center','serif-center','minimal','center-divider'].some(name => canvas.classList.contains(name)) ? 'center' : 'right';
+    }
+
+    function ensureAlignmentControls(root=document){
+      root.querySelectorAll('.card').forEach(card => {
+        if(card.querySelector('.alignment-select') || !card.querySelector('.canvas')) return;
+        const select = document.createElement('select');
+        select.className = 'alignment-select';
+        select.setAttribute('aria-label','选择文字对齐方式');
+        select.title = '只切换文字居右或完全居中，不改变文案与装饰';
+        select.innerHTML = '<option value="right">居右</option><option value="center">完全居中</option>';
+        select.value = currentAlignment(card);
+        const random = card.querySelector('.random-button');
+        random ? random.before(select) : card.prepend(select);
+      });
+    }
+
+    function applyManualAlignment(card,mode){
+      const canvas = card.querySelector('.canvas');
+      if(!canvas){ notify('导入模板暂不支持对齐切换'); return; }
+      canvas.classList.remove('manual-align-right','manual-align-center','manual-hero','manual-content');
+      canvas.classList.add(`manual-align-${mode}`,cardIsHero(card) ? 'manual-hero' : 'manual-content');
+      requestAnimationFrame(() => fitCardText(card));
+      notify(mode === 'center' ? '已设为完全居中，文案与装饰保持不变' : '已设为居右，文案与装饰保持不变');
+    }
+
     function ensureCardPalettes(root=document){
       const palette = currentPalette();
       const fields = [
@@ -916,6 +1011,7 @@
 
     makeEditable();
     ensureRandomButtons();
+    ensureAlignmentControls();
     ensureCardPalettes();
     try{
       const savedPalette = JSON.parse(localStorage.getItem(PALETTE_STORAGE_KEY) || 'null');
@@ -1320,9 +1416,10 @@
       if(explicitlySerif) document.querySelector('[data-font-button="serif"]').click();
       document.body.dataset.generated = 'true';
       ensureRandomButtons(gallery);
+      ensureAlignmentControls(gallery);
       ensureCardPalettes(gallery);
       if(activeSuiteTheme) applySuiteTheme(activeSuiteTheme);
-      else syncPaletteEditors(currentPalette());
+      else applyPaletteValues(currentPalette(),{persist:false});
       makeEditable();
       if(persist){
         localStorage.setItem(BRIEF_STORAGE_KEY,briefInput.value);
@@ -1409,7 +1506,7 @@
       const card = button.closest('.card');
       const canvas = card.querySelector('.canvas');
       if(!canvas){ notify('导入模板暂不支持视觉变体切换'); return; }
-      const isHero = canvas.classList.contains('hero') || Boolean(canvas.querySelector('.icon-row')) || card._moduleData?.role === 'hero';
+      const isHero = cardIsHero(card);
       const alignments = isHero ? ['hero-right','hero-center'] : ['content-right','content-center'];
       const decorations = card.dataset.fontStyle === 'serif'
         ? ['decor-line','decor-diamond','decor-dots','decor-serif-mark']
@@ -1419,12 +1516,19 @@
       const choices = combinations.filter(item => item !== current);
       const next = choices[Math.floor(Math.random() * choices.length)];
       const [alignment,decoration] = next.split('|');
-      canvas.classList.remove('hero-right','hero-center','content-right','content-center','decor-line','decor-diamond','decor-dots','decor-serif-mark');
+      canvas.classList.remove('hero-right','hero-center','content-right','content-center','decor-line','decor-diamond','decor-dots','decor-serif-mark','manual-align-right','manual-align-center','manual-hero','manual-content');
       if(decoration === 'decor-serif-mark') ensureSerifMark(card);
       canvas.classList.add('randomized-layout',alignment,decoration);
       card.dataset.visualVariant = next;
+      const select = card.querySelector('.alignment-select');
+      if(select) select.value = alignment.endsWith('center') ? 'center' : 'right';
       requestAnimationFrame(() => fitCardText(card));
       notify(isHero ? '已切换首屏居右/居中与装饰，3 个卖点保持不变' : '已切换标题对齐与装饰，文案保持不变');
+    });
+
+    gallery.addEventListener('change',event => {
+      const select = event.target.closest('.alignment-select');
+      if(select) applyManualAlignment(select.closest('.card'),select.value);
     });
 
     document.querySelectorAll('[data-font-button]').forEach(button => {
@@ -1441,11 +1545,74 @@
       });
     });
 
+    function matchPreviewColor(value,background,minimum){
+      const original = hexColor(value);
+      const destination = relativeLuminance(background) > .5 ? {r:0,g:0,b:0} : {r:255,g:255,b:255};
+      if(contrastRatio(original,background) >= minimum) return value;
+      for(let step=1;step<=100;step++){
+        const candidate = mixColor(original,destination,step/100);
+        if(contrastRatio(candidate,background) >= minimum) return rgbHex(candidate);
+      }
+      return rgbHex(destination);
+    }
+
+    function enforcePreviewLuminance(value,{minimum=null,maximum=null}={}){
+      const original = hexColor(value);
+      const luminance = relativeLuminance(original);
+      if((minimum === null || luminance >= minimum) && (maximum === null || luminance <= maximum)) return rgbHex(original);
+      const destination = minimum !== null ? {r:255,g:255,b:255} : {r:0,g:0,b:0};
+      for(let step=1;step<=100;step++){
+        const candidate = mixColor(original,destination,step/100);
+        const nextLuminance = relativeLuminance(candidate);
+        if((minimum === null || nextLuminance >= minimum) && (maximum === null || nextLuminance <= maximum)) return rgbHex(candidate);
+      }
+      return rgbHex(destination);
+    }
+
+    function previewTheme(base,mode){
+      const dark = mode === 'dark';
+      const background = dark ? {r:0,g:0,b:0} : {r:255,g:255,b:255};
+      const contrastAdjusted = {
+        ink:matchPreviewColor(base.ink,background,7),
+        accent:matchPreviewColor(base.accent,background,4.5),
+        accent2:matchPreviewColor(base.accent2,background,3)
+      };
+      const themed = dark ? {
+        ink:enforcePreviewLuminance(contrastAdjusted.ink,{minimum:.68}),
+        accent:enforcePreviewLuminance(contrastAdjusted.accent,{minimum:.52}),
+        accent2:enforcePreviewLuminance(contrastAdjusted.accent2,{minimum:.62})
+      } : {
+        ink:enforcePreviewLuminance(contrastAdjusted.ink,{maximum:.10}),
+        accent:enforcePreviewLuminance(contrastAdjusted.accent,{maximum:.18}),
+        accent2:enforcePreviewLuminance(contrastAdjusted.accent2,{maximum:.22})
+      };
+      const mutedSeed = rgbHex(mixColor(hexColor(themed.ink),background,dark ? .10 : .22));
+      const muted = dark
+        ? enforcePreviewLuminance(mutedSeed,{minimum:.42})
+        : enforcePreviewLuminance(mutedSeed,{maximum:.20});
+      return {...themed,muted};
+    }
+
+    function applyPreviewMode(mode){
+      // Always derive from the saved suite palette, so toggling never accumulates color drift.
+      previewPalette = null;
+      const base = currentPalette();
+      document.body.dataset.previewMode = mode;
+      if(mode === 'transparent'){
+        if(activeSuiteTheme) applySuiteTheme(activeSuiteTheme);
+        else applyPaletteValues(base,{persist:false});
+      } else {
+        previewPalette = previewTheme(base,mode);
+        gallery.querySelectorAll('.card').forEach(card => setCardPalette(card,previewPalette));
+        syncPaletteEditors(previewPalette);
+        suiteMode.textContent = mode === 'light' ? '亮底自动配色' : '暗底自动配色';
+        suiteStatus.textContent = `已切换为${mode === 'light' ? '深色文字' : '浅色文字'}配色 · 正文 ${previewPalette.ink} · 关键词 ${previewPalette.accent} · 装饰 ${previewPalette.accent2}`;
+      }
+      document.querySelectorAll('[data-preview-button]').forEach(item => item.setAttribute('aria-pressed',String(item.dataset.previewButton === mode)));
+    }
+
     document.querySelectorAll('[data-preview-button]').forEach(button => {
-      button.addEventListener('click', () => {
-        document.body.dataset.previewMode = button.dataset.previewButton;
-        document.querySelectorAll('[data-preview-button]').forEach(item => item.setAttribute('aria-pressed',String(item === button)));
-      });
+      button.addEventListener('click', () => applyPreviewMode(button.dataset.previewButton));
     });
 
     function blobToDataUrl(blob){

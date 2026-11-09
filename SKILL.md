@@ -1,6 +1,6 @@
 ---
 name: arabic-detail-typography
-description: Extract layout-ready ecommerce copy from arbitrarily formatted source material, then turn it into coordinated transparent Arabic typography PNG layers using real local fonts and HTML/CSS. Use for 阿语商详文字排版、文案提炼、透明文字图层、阿语标题套版 or when stable Arabic font rendering is required; do not use for generating product scenes or compositing the final product image.
+description: Extract layout-ready ecommerce copy from arbitrarily formatted source material, then create, preview, recolor, randomize, and export coordinated transparent Arabic typography layers using real local fonts and HTML/CSS. Use for 阿语商详文字排版、文案提炼、透明文字图层、阿语标题套版、套图自动配色 or when stable Arabic font rendering is required; do not use for generating product scenes or compositing the final product image.
 ---
 
 # 阿语商详文字排版
@@ -36,20 +36,26 @@ description: Extract layout-ready ecommerce copy from arbitrarily formatted sour
    - 主标题最多 2 个视觉行；副标题最多 2 个视觉行。标题行可保持不换行，但副标题不得全局强制 `nowrap`，应在词间自然换行。
    - 维护页在生成、浏览器记忆恢复、随机切换、手工编辑和复制前都必须重新检查主标题与副标题；自动适配达到最小字号后仍越过安全区时，必须显式报错并禁止复制，不能依赖预览容器裁切来假装合格。
 10. 把页面计划写成 JSON。普通任务参考 [输入格式](references/input-schema.md)；需要调整字级和阿语规则时再读 [字体与版式系统](references/typography-system.md)。
-11. 运行：
+11. 需要交互维护时，从 Skill 根目录运行 `zsh ./start-ai-layout.command`，再访问 `http://127.0.0.1:8765/`。维护页完整保留以下能力：
+   - 粘贴任意格式内容后使用 AI 语义识别，或对结构化 Markdown 使用本地解析；
+   - 每张卡片可明确选择居右或完全居中；“随机”按钮另外随机切换对齐与横线、菱形、圆点、双菱形等装饰，不改变文案；
+   - 上传一张或多张套图，按头部明暗自动选择深浅正文，并提取正文色、关键词色和装饰色；
+   - 手动修改全局或卡片 HEX 配色，在透明、亮底、暗底之间切换；暗底必须进入明显的浅色文字体系，亮底必须进入深色文字体系，不能只做到勉强通过对比度；
+   - 自动适配字号、检查安全区、保存浏览器状态，并复制继承当前字体、配色和预览模式的 2× 透明 PNG。
+12. 需要批量确定性渲染时运行：
 
    ```bash
    node scripts/render.mjs input.json --out output-directory
    ```
 
-12. 读取 `audit.json` 并查看 `contact-sheet.png`。出现 `spills`、`clipped` 或 `fontLoaded: false` 时必须修复后重跑。
-13. 交付独立 PNG 与 HTML；清楚标记哪些阿语仍待语言审核。
+13. 读取 `audit.json` 并查看 `contact-sheet.png`。出现 `spills`、`clipped` 或 `fontLoaded: false` 时必须修复后重跑。
+14. 交付独立 PNG 与 HTML；清楚标记哪些阿语仍待语言审核。
 
 ## 输入与提取原则
 
 - 不向用户索要特定字段顺序、标题符号或 Markdown 模板；缺少结构时由大模型按语义补结构。
 - “自动识别”指大模型理解上下文，不是用正则猜字段。HTML 中的本地解析器只能作为已整理文本的快速导入或离线兜底，不能承担卖点判断。
-- 使用维护页的“AI 识别并生成”时，必须通过本地 AI 服务打开页面，而不是直接打开 `file://`：运行 `详情页工坊/文字排版HTML模板/arabic-typography-skill-demo-v2/start-ai-layout.command`，再访问 `http://127.0.0.1:8765/`。该服务用已登录的 Codex CLI 做只读、临时、结构化识别，不在 HTML 中保存 API Key。
+- 使用维护页的“AI 识别并生成”时，必须通过本地 AI 服务打开页面，而不是直接打开 `file://`：在 Skill 根目录运行 `zsh ./start-ai-layout.command`，再访问 `http://127.0.0.1:8765/`。该服务用已登录的 Codex CLI 做只读、临时、结构化识别，不在 HTML 中保存 API Key。
 - 维护页要在当前浏览器中持久保存原始输入、最后一次识别后的模块计划和当前配色，刷新页面不得要求用户重新识别。每张卡片底部应显示可选中复制、可直接修改的正文/关键词/装饰 HEX 色值，所有卡片共享并同步更新。
 - 对输入先去噪再提炼：删除会议寒暄、流程说明、重复版本、设计备注和与商品无关的对话，但保留否定条件、限制条件、单位与数量。
 - 同一事实有冲突时，不静默选一个；优先使用用户最后明确确认的版本，否则标记 `needs_confirmation`，不要渲染成确定事实。
@@ -94,4 +100,7 @@ description: Extract layout-ready ecommerce copy from arbitrarily formatted sour
 - 套图明暗与配色：`references/image-theme-analysis.md`
 - 字体：默认 `Almarai-{Light,Regular,Bold,ExtraBold}.ttf`；衬线模式使用 `ae_AlYermook.ttf`，并条件启用 `Stay-Dreaming.otf`
 - 渲染脚本：`scripts/render.mjs`
-- AI 维护页启动器：`详情页工坊/文字排版HTML模板/arabic-typography-skill-demo-v2/start-ai-layout.command`
+- 交互维护页：`layout-showcase.html`
+- AI 维护页服务：`ai-copy-server.mjs`
+- AI 结构化输出约束：`copy-modules.schema.json`
+- AI 维护页启动器：`start-ai-layout.command`
