@@ -175,12 +175,16 @@
     .card-palette{display:flex;align-items:center;gap:4px;direction:ltr}
     .palette-value{width:58px;height:26px;padding:0 3px 0 7px;border:1px solid #ddd4cb;border-radius:6px;background:#fff;color:#3e3731;box-shadow:inset 4px 0 0 var(--field-color,#8f8277);font:10px/1 ui-monospace,SFMono-Regular,Menlo,monospace;text-align:center;text-transform:uppercase;box-sizing:border-box;outline:none}
     .palette-value:focus{border-color:var(--field-color,#8f8277);box-shadow:inset 4px 0 0 var(--field-color,#8f8277),0 0 0 2px color-mix(in srgb,var(--field-color,#8f8277) 22%,transparent)}
-    .copy-button,.random-button{position:absolute;top:22px;z-index:10;display:grid;place-items:center;width:36px;height:36px;padding:0;border:1px solid rgba(87,55,37,.16);border-radius:8px;background:rgba(255,255,255,.90);color:#554a42;box-shadow:0 2px 8px rgba(50,38,28,.10);cursor:pointer;backdrop-filter:blur(8px)}
+    .copy-button,.random-button{position:absolute;top:22px;z-index:10;display:grid;place-items:center;width:36px;height:36px;padding:0;border:1px solid rgba(91,73,59,.13);border-radius:10px;background:rgba(250,248,245,.96);color:#62564d;box-shadow:0 5px 16px rgba(50,38,28,.08);cursor:pointer;backdrop-filter:blur(10px);transition:border-color .16s ease,background .16s ease,color .16s ease,transform .16s ease,box-shadow .16s ease}
     .copy-button{right:22px}.random-button{right:66px}
-    .alignment-select{position:absolute;top:22px;right:110px;z-index:10;width:82px;height:36px;padding:0 9px;border:1px solid rgba(87,55,37,.16);border-radius:8px;background:rgba(255,255,255,.94);color:#554a42;box-shadow:0 2px 8px rgba(50,38,28,.10);font:600 12px/1 system-ui,sans-serif;cursor:pointer;backdrop-filter:blur(8px)}
-    .alignment-select:hover,.alignment-select:focus{border-color:rgba(216,160,68,.6);outline:none}
+    .alignment-control{position:absolute;top:22px;right:110px;z-index:10;display:flex;width:112px;height:36px;padding:3px;border:1px solid rgba(91,73,59,.13);border-radius:10px;background:rgba(239,235,230,.92);box-shadow:0 5px 16px rgba(50,38,28,.07);box-sizing:border-box;backdrop-filter:blur(10px)}
+    .alignment-option{flex:1;min-width:0;padding:0;border:0;border-radius:7px;background:transparent;color:#7b6f66;font:600 12px/1 system-ui,sans-serif;cursor:pointer;transition:background .16s ease,color .16s ease,box-shadow .16s ease}
+    .alignment-option:hover{color:#4f443c}
+    .alignment-option[aria-pressed="true"]{background:#fff;color:#5f4938;box-shadow:0 1px 5px rgba(59,45,34,.12),inset 0 0 0 1px rgba(190,145,86,.18)}
+    .alignment-option:focus-visible{outline:2px solid rgba(190,145,86,.46);outline-offset:1px}
     .copy-button svg,.random-button svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
-    .copy-button:hover,.random-button:hover{background:#fff;border-color:rgba(216,160,68,.6);color:var(--accent)}
+    .copy-button:hover,.random-button:hover{background:#fff;border-color:rgba(190,145,86,.38);color:#7c5739;box-shadow:0 7px 18px rgba(50,38,28,.11);transform:translateY(-1px)}
+    .copy-button:active,.random-button:active{transform:translateY(0);box-shadow:0 3px 10px rgba(50,38,28,.08)}
     .copy-button[data-state="done"]{color:#317b49}
     .card[data-overflow="true"] .preview{outline:2px solid #d75546;outline-offset:3px}
     .add-template-button{position:fixed;right:24px;bottom:24px;z-index:30;width:54px;height:54px;border:0;border-radius:50%;background:#332d28;color:#fff;font-size:30px;line-height:1;box-shadow:0 10px 28px rgba(30,22,16,.25);cursor:pointer}
@@ -960,15 +964,22 @@
 
     function ensureAlignmentControls(root=document){
       root.querySelectorAll('.card').forEach(card => {
-        if(card.querySelector('.alignment-select') || !card.querySelector('.canvas')) return;
-        const select = document.createElement('select');
-        select.className = 'alignment-select';
-        select.setAttribute('aria-label','选择文字对齐方式');
-        select.title = '只切换文字居右或完全居中，不改变文案与装饰';
-        select.innerHTML = '<option value="right">居右</option><option value="center">完全居中</option>';
-        select.value = currentAlignment(card);
+        if(card.querySelector('.alignment-control') || !card.querySelector('.canvas')) return;
+        const control = document.createElement('div');
+        control.className = 'alignment-control';
+        control.setAttribute('role','group');
+        control.setAttribute('aria-label','选择文字对齐方式');
+        control.title = '只切换文字位置，不改变文案与装饰';
+        control.innerHTML = '<button class="alignment-option" type="button" data-alignment="right">居右</button><button class="alignment-option" type="button" data-alignment="center">居中</button>';
+        syncAlignmentControl(card,currentAlignment(card),control);
         const random = card.querySelector('.random-button');
-        random ? random.before(select) : card.prepend(select);
+        random ? random.before(control) : card.prepend(control);
+      });
+    }
+
+    function syncAlignmentControl(card,mode,control=card.querySelector('.alignment-control')){
+      control?.querySelectorAll('.alignment-option').forEach(button => {
+        button.setAttribute('aria-pressed',String(button.dataset.alignment === mode));
       });
     }
 
@@ -977,6 +988,7 @@
       if(!canvas){ notify('导入模板暂不支持对齐切换'); return; }
       canvas.classList.remove('manual-align-right','manual-align-center','manual-hero','manual-content');
       canvas.classList.add(`manual-align-${mode}`,cardIsHero(card) ? 'manual-hero' : 'manual-content');
+      syncAlignmentControl(card,mode);
       requestAnimationFrame(() => fitCardText(card));
       notify(mode === 'center' ? '已设为完全居中，文案与装饰保持不变' : '已设为居右，文案与装饰保持不变');
     }
@@ -1501,6 +1513,11 @@
     }
 
     gallery.addEventListener('click',event => {
+      const alignmentButton = event.target.closest('.alignment-option');
+      if(alignmentButton){
+        applyManualAlignment(alignmentButton.closest('.card'),alignmentButton.dataset.alignment);
+        return;
+      }
       const button = event.target.closest('.random-button');
       if(!button) return;
       const card = button.closest('.card');
@@ -1520,15 +1537,9 @@
       if(decoration === 'decor-serif-mark') ensureSerifMark(card);
       canvas.classList.add('randomized-layout',alignment,decoration);
       card.dataset.visualVariant = next;
-      const select = card.querySelector('.alignment-select');
-      if(select) select.value = alignment.endsWith('center') ? 'center' : 'right';
+      syncAlignmentControl(card,alignment.endsWith('center') ? 'center' : 'right');
       requestAnimationFrame(() => fitCardText(card));
       notify(isHero ? '已切换首屏居右/居中与装饰，3 个卖点保持不变' : '已切换标题对齐与装饰，文案保持不变');
-    });
-
-    gallery.addEventListener('change',event => {
-      const select = event.target.closest('.alignment-select');
-      if(select) applyManualAlignment(select.closest('.card'),select.value);
     });
 
     document.querySelectorAll('[data-font-button]').forEach(button => {
