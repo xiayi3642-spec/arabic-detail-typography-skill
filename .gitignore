@@ -5,3 +5,4 @@
 # Local runtime state
 .DS_Store
 node_modules/
+arabic-typography-ai.local.json

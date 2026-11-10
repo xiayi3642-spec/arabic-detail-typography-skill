@@ -26,4 +26,15 @@ For the maintenance page, run:
 
 Then open `http://127.0.0.1:8765/`.
 
-Open **AI 模型设置** in the page and provide an API Base URL, model name, and API Key. Presets are included for Doubao/Volcano Ark and OpenAI; other OpenAI Chat Completions compatible providers can use the custom option. The local server forwards requests without writing API keys to disk. Keys remain in browser session storage unless the user explicitly enables local remembering.
+AI requests read `arabic-typography-ai.local.json` from the Skill directory or one of its parent directories. Keep that file outside Git and use this shape:
+
+```json
+{
+  "provider": "doubao",
+  "baseUrl": "https://ark.cn-beijing.volces.com/api/v3",
+  "model": "your-model-id",
+  "apiKey": "your-api-key"
+}
+```
+
+The page contains no API settings. Distribute the local config separately when the same managed key should be shared with a team. `ARABIC_TYPOGRAPHY_AI_CONFIG` may point to a different config path.

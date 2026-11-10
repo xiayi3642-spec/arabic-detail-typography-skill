@@ -53,16 +53,6 @@
     .brief-panel summary::after{content:"";width:7px;height:7px;margin-right:3px;border-right:1.5px solid #8d8177;border-bottom:1.5px solid #8d8177;transform:rotate(45deg);transform-origin:center}
     .brief-panel details[open] summary::after{transform:rotate(225deg)}
     .brief-editor{display:grid;gap:10px;padding:0 14px 14px}
-    .ai-config{overflow:hidden;border:1px solid #ddd6cf;border-radius:10px;background:#f7f4f1}
-    .ai-settings-toggle{display:flex;align-items:center;justify-content:space-between;width:100%;padding:10px 12px;border:0;background:transparent;color:#4a423c;cursor:pointer;text-align:left}
-    .ai-settings-title{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700}.ai-settings-title::before{content:"";width:7px;height:7px;border-right:1.5px solid #8d8177;border-bottom:1.5px solid #8d8177;transform:rotate(-45deg);transition:transform .16s ease}.ai-settings-toggle[aria-expanded="true"] .ai-settings-title::before{transform:rotate(45deg)}
-    .ai-provider-pill{padding:4px 8px;border-radius:999px;background:#ebe5df;color:#756a62;font-size:11px;font-weight:700}
-    .ai-provider-pill.ready{background:#e4eee7;color:#456650}
-    .ai-settings{display:grid;grid-template-columns:150px minmax(220px,1fr) minmax(180px,.7fr);gap:10px;padding:0 12px 12px;border-top:1px solid #e5ded8}
-    .ai-settings[hidden]{display:none}
-    .ai-field{display:grid;gap:5px;padding-top:10px}.ai-field label{color:#746a62;font-size:11px;font-weight:700}.ai-field input,.ai-field select{width:100%;height:36px;padding:0 10px;border:1px solid #d8d0c8;border-radius:8px;background:#fff;color:#3e3731;font:12px/1.2 ui-sans-serif,system-ui,sans-serif}
-    .ai-field-wide{grid-column:1/-1}.api-key-row{display:flex;gap:7px}.api-key-row input{min-width:0}.reveal-key{flex:0 0 auto;padding:0 11px;border:1px solid #d8d0c8;border-radius:8px;background:#fff;color:#70665e;font-size:12px;cursor:pointer}
-    .ai-settings-foot{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:12px;color:#8a7f76;font-size:11px}.remember-key{display:flex;align-items:center;gap:6px;white-space:nowrap}.remember-key input{width:14px;height:14px;accent-color:#403832}.ai-config-note{margin:0;text-align:right}
     .brief-editor textarea{width:100%;min-height:210px;padding:14px;border:1px solid #d9d2cb;border-radius:10px;background:#fff;color:#342f2b;resize:vertical;font:13px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace}
     .brief-actions{display:flex;align-items:center;justify-content:space-between;gap:12px}
     .brief-hint{color:#8f857c;font-size:12px}
@@ -236,8 +226,8 @@
     .canvas :is(.serif-mark,.feature-icon,.icon) [stroke]:not([stroke="none"]){stroke:var(--accent-2)!important}
     .canvas.randomized-layout .text-box::before,.canvas .serif-mark.css-mark i:last-child{color:var(--accent-2)!important}
 
-    @media(max-width:1100px){.gallery{width:100%;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding-inline:12px}.card{width:auto;min-width:0}.preview{width:100%;height:auto;aspect-ratio:1}.toolbar{align-items:flex-start;gap:16px}.toolbar p{display:none}.ai-settings{grid-template-columns:140px 1fr}.ai-field-wide{grid-column:1/-1}}
-    @media(max-width:580px){:root{--scale:.34}.suite-panel{align-items:flex-start;flex-direction:column}.suite-controls{width:100%;justify-content:space-between}.gallery{grid-template-columns:364px}.card{width:364px}.preview{width:340px;height:340px}.toolbar{padding:12px 14px}.toolbar h1{font-size:16px}.font-switch button{min-width:auto;padding:8px 11px}.ai-settings{grid-template-columns:1fr}.ai-field-wide{grid-column:auto}.ai-settings-foot,.brief-actions{align-items:flex-start;flex-direction:column}.ai-config-note{text-align:left}.brief-buttons,.generate-button{width:100%}}
+    @media(max-width:1100px){.gallery{width:100%;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding-inline:12px}.card{width:auto;min-width:0}.preview{width:100%;height:auto;aspect-ratio:1}.toolbar{align-items:flex-start;gap:16px}.toolbar p{display:none}}
+    @media(max-width:580px){:root{--scale:.34}.suite-panel{align-items:flex-start;flex-direction:column}.suite-controls{width:100%;justify-content:space-between}.gallery{grid-template-columns:364px}.card{width:364px}.preview{width:340px;height:340px}.toolbar{padding:12px 14px}.toolbar h1{font-size:16px}.font-switch button{min-width:auto;padding:8px 11px}}
   </style>
 </head>
 <body data-font="sans" data-preview-mode="transparent">
@@ -264,38 +254,6 @@
     <details open>
       <summary>粘贴任意格式内容，AI 识别并排版</summary>
       <div class="brief-editor">
-        <div class="ai-config">
-          <button class="ai-settings-toggle" type="button" aria-expanded="false" aria-controls="ai-settings">
-            <span class="ai-settings-title">AI 模型设置</span>
-            <span class="ai-provider-pill" id="ai-provider-status">豆包 · 待配置</span>
-          </button>
-          <div class="ai-settings" id="ai-settings" hidden>
-            <div class="ai-field">
-              <label for="ai-provider">模型服务</label>
-              <select id="ai-provider">
-                <option value="doubao">豆包 / 火山方舟</option>
-                <option value="openai">OpenAI</option>
-                <option value="custom">其他兼容接口</option>
-              </select>
-            </div>
-            <div class="ai-field">
-              <label for="ai-base-url">API Base URL</label>
-              <input id="ai-base-url" type="url" inputmode="url" autocomplete="off" spellcheck="false">
-            </div>
-            <div class="ai-field">
-              <label for="ai-model">模型名称</label>
-              <input id="ai-model" type="text" autocomplete="off" spellcheck="false" placeholder="填写控制台中的模型 ID">
-            </div>
-            <div class="ai-field ai-field-wide">
-              <label for="ai-api-key">API Key</label>
-              <div class="api-key-row"><input id="ai-api-key" type="password" autocomplete="off" spellcheck="false" placeholder="仅发送到本机服务，再由本机请求模型接口"><button class="reveal-key" type="button" aria-label="显示 API Key">显示</button></div>
-            </div>
-            <div class="ai-settings-foot">
-              <label class="remember-key"><input id="remember-ai-key" type="checkbox">在这台电脑上记住 API Key</label>
-              <p class="ai-config-note">默认只保留当前浏览器会话；不会写入 Git 或服务端文件。</p>
-            </div>
-          </div>
-        </div>
         <textarea id="brief-input" aria-label="模块文案" spellcheck="false"># 叠放式户外柴火炉｜5模块画面文案
 
 > 目标语言：现代标准阿拉伯语（RTL）
@@ -635,24 +593,12 @@
     const BRIEF_STORAGE_KEY = 'arabic-typography-brief-v1';
     const MODULES_STORAGE_KEY = 'arabic-typography-modules-v1';
     const PALETTE_STORAGE_KEY = 'arabic-typography-palette-v1';
-    const AI_CONFIG_STORAGE_KEY = 'arabic-typography-ai-config-v1';
-    const AI_KEY_STORAGE_KEY = 'arabic-typography-ai-key-v1';
-    const AI_KEY_SESSION_KEY = 'arabic-typography-ai-key-session-v1';
     const gallery = document.querySelector('.gallery');
     const dialog = document.querySelector('#template-dialog');
     const htmlInput = document.querySelector('#template-html');
     const fileInput = document.querySelector('#template-file');
     const briefInput = document.querySelector('#brief-input');
     const generateButton = document.querySelector('.generate-button');
-    const aiSettingsToggle = document.querySelector('.ai-settings-toggle');
-    const aiSettings = document.querySelector('#ai-settings');
-    const aiProvider = document.querySelector('#ai-provider');
-    const aiProviderStatus = document.querySelector('#ai-provider-status');
-    const aiBaseUrl = document.querySelector('#ai-base-url');
-    const aiModel = document.querySelector('#ai-model');
-    const aiApiKey = document.querySelector('#ai-api-key');
-    const rememberAiKey = document.querySelector('#remember-ai-key');
-    const revealKeyButton = document.querySelector('.reveal-key');
     const suiteImages = document.querySelector('#suite-images');
     const suiteStatus = document.querySelector('#suite-status');
     const suitePalette = document.querySelector('#suite-palette');
@@ -662,78 +608,6 @@
     let activeSuiteTheme = null;
     let previewPalette = null;
 
-    const AI_PROVIDERS = {
-      doubao:{label:'豆包',baseUrl:'https://ark.cn-beijing.volces.com/api/v3',modelPlaceholder:'填写火山方舟控制台中的模型 ID'},
-      openai:{label:'OpenAI',baseUrl:'https://api.openai.com/v1',modelPlaceholder:'填写可用的 OpenAI 模型名称'},
-      custom:{label:'兼容接口',baseUrl:'',modelPlaceholder:'填写服务商提供的模型名称'}
-    };
-
-    function aiConfig(){
-      return {
-        provider:aiProvider.value,
-        baseUrl:aiBaseUrl.value.trim(),
-        model:aiModel.value.trim(),
-        apiKey:aiApiKey.value.trim()
-      };
-    }
-
-    function setAiSettingsOpen(open){
-      aiSettings.hidden = !open;
-      aiSettingsToggle.setAttribute('aria-expanded',String(open));
-    }
-
-    function updateAiProviderStatus(){
-      const config = aiConfig();
-      const ready = Boolean(config.apiKey && config.baseUrl && config.model);
-      aiProviderStatus.textContent = `${AI_PROVIDERS[config.provider]?.label || 'AI'} · ${ready ? '已配置' : '待配置'}`;
-      aiProviderStatus.classList.toggle('ready',ready);
-    }
-
-    function persistAiConfig(){
-      const config = aiConfig();
-      localStorage.setItem(AI_CONFIG_STORAGE_KEY,JSON.stringify({
-        provider:config.provider,baseUrl:config.baseUrl,model:config.model,rememberKey:rememberAiKey.checked
-      }));
-      if(config.apiKey) sessionStorage.setItem(AI_KEY_SESSION_KEY,config.apiKey);
-      else sessionStorage.removeItem(AI_KEY_SESSION_KEY);
-      if(rememberAiKey.checked && config.apiKey) localStorage.setItem(AI_KEY_STORAGE_KEY,config.apiKey);
-      else localStorage.removeItem(AI_KEY_STORAGE_KEY);
-      updateAiProviderStatus();
-    }
-
-    function applyAiProvider(provider,{resetModel=false}={}){
-      const preset = AI_PROVIDERS[provider] || AI_PROVIDERS.custom;
-      aiModel.placeholder = preset.modelPlaceholder;
-      if(provider !== 'custom') aiBaseUrl.value = preset.baseUrl;
-      else if(!aiBaseUrl.value || Object.values(AI_PROVIDERS).some(item => item.baseUrl === aiBaseUrl.value)) aiBaseUrl.value = '';
-      if(resetModel) aiModel.value = '';
-      persistAiConfig();
-    }
-
-    function restoreAiConfig(){
-      let saved = {};
-      try { saved = JSON.parse(localStorage.getItem(AI_CONFIG_STORAGE_KEY) || '{}'); }
-      catch { localStorage.removeItem(AI_CONFIG_STORAGE_KEY); }
-      aiProvider.value = AI_PROVIDERS[saved.provider] ? saved.provider : 'doubao';
-      aiBaseUrl.value = saved.baseUrl || AI_PROVIDERS[aiProvider.value].baseUrl;
-      aiModel.value = saved.model || '';
-      rememberAiKey.checked = Boolean(saved.rememberKey);
-      aiApiKey.value = (rememberAiKey.checked ? localStorage.getItem(AI_KEY_STORAGE_KEY) : '') || sessionStorage.getItem(AI_KEY_SESSION_KEY) || '';
-      aiModel.placeholder = AI_PROVIDERS[aiProvider.value].modelPlaceholder;
-      updateAiProviderStatus();
-    }
-
-    restoreAiConfig();
-    aiSettingsToggle.addEventListener('click',() => setAiSettingsOpen(aiSettings.hidden));
-    aiProvider.addEventListener('change',() => applyAiProvider(aiProvider.value,{resetModel:true}));
-    [aiBaseUrl,aiModel,aiApiKey].forEach(input => input.addEventListener('input',persistAiConfig));
-    rememberAiKey.addEventListener('change',persistAiConfig);
-    revealKeyButton.addEventListener('click',() => {
-      const reveal = aiApiKey.type === 'password';
-      aiApiKey.type = reveal ? 'text' : 'password';
-      revealKeyButton.textContent = reveal ? '隐藏' : '显示';
-      revealKeyButton.setAttribute('aria-label',reveal ? '隐藏 API Key' : '显示 API Key');
-    });
 
     function syncResponsiveScale(){
       const preview = [...document.querySelectorAll('.preview')].find(element => element.getBoundingClientRect().width > 0);
@@ -1586,14 +1460,6 @@
     }
 
     async function applyBriefWithAI(source){
-      const config = aiConfig();
-      const missing = !config.apiKey ? aiApiKey : !config.baseUrl ? aiBaseUrl : !config.model ? aiModel : null;
-      if(missing){
-        setAiSettingsOpen(true);
-        missing.focus();
-        notify(!config.apiKey ? '请先填写 API Key' : !config.baseUrl ? '请填写 API Base URL' : '请填写模型名称');
-        return;
-      }
       const previous = generateButton.textContent;
       generateButton.disabled = true;
       generateButton.setAttribute('aria-busy','true');
@@ -1602,7 +1468,7 @@
         const response = await fetch('http://127.0.0.1:8765/api/extract-copy',{
           method:'POST',
           headers:{'content-type':'application/json'},
-          body:JSON.stringify({source,config})
+          body:JSON.stringify({source})
         });
         const payload = await response.json().catch(() => ({}));
         if(!response.ok) throw new Error(payload.error || `服务返回 ${response.status}`);
@@ -1621,7 +1487,7 @@
           needsConfirmation:module.needs_confirmation || []
         }));
         applyModules(modules);
-        notify(`${AI_PROVIDERS[config.provider]?.label || 'AI'} 已整理 ${modules.length} 个模块并完成排版`);
+        notify(`AI 已整理 ${modules.length} 个模块并完成排版`);
       }catch(error){
         notify(`AI 识别失败：${error.message}`);
       }finally{

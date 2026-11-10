@@ -1,11 +1,12 @@
 import http from 'node:http';
 import { readFile, stat } from 'node:fs/promises';
-import { dirname, extname, join, normalize } from 'node:path';
+import { dirname, extname, join, normalize, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = dirname(fileURLToPath(import.meta.url));
 const schemaPath = join(root, 'copy-modules.schema.json');
 const port = Number(process.env.LAYOUT_AI_PORT || 8765);
+const providerConfigName = 'arabic-typography-ai.local.json';
 
 const mime = {
   '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8',
@@ -49,6 +50,34 @@ function extractionPrompt(source) {
 <source_material>
 ${source}
 </source_material>`;
+}
+
+function providerConfigCandidates() {
+  const candidates = [];
+  if (process.env.ARABIC_TYPOGRAPHY_AI_CONFIG) candidates.push(resolve(process.env.ARABIC_TYPOGRAPHY_AI_CONFIG));
+  let directory = root;
+  for (let depth = 0; depth < 7; depth += 1) {
+    candidates.push(join(directory, providerConfigName));
+    const parent = dirname(directory);
+    if (parent === directory) break;
+    directory = parent;
+  }
+  return [...new Set(candidates)];
+}
+
+async function readProviderConfig() {
+  const candidates = providerConfigCandidates();
+  for (const path of candidates) {
+    try {
+      const config = JSON.parse(await readFile(path, 'utf8'));
+      return config;
+    } catch (error) {
+      if (error.code === 'ENOENT') continue;
+      if (error instanceof SyntaxError) throw new Error(`${providerConfigName} 不是有效 JSON`);
+      throw error;
+    }
+  }
+  throw new Error(`未找到 ${providerConfigName}；请把配置文件放在 Skill 目录或其上级目录`);
 }
 
 function chatCompletionsUrl(value) {
@@ -153,7 +182,7 @@ const server = http.createServer(async (req, res) => {
       const payload = JSON.parse(await bodyText(req));
       const source = String(payload.source || '').trim();
       if (!source) return json(res, 400, { error: '请先粘贴文案或商品资料' });
-      return json(res, 200, await runCompatibleApi(extractionPrompt(source), payload.config));
+      return json(res, 200, await runCompatibleApi(extractionPrompt(source), await readProviderConfig()));
     } catch (error) { return json(res, 500, { error: error.message || 'AI 识别失败' }); }
   }
   if (req.method === 'GET') return serveFile(req, res);

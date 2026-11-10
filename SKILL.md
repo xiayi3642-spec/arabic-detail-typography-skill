@@ -38,7 +38,7 @@ description: Extract layout-ready ecommerce copy from arbitrarily formatted sour
 10. 把页面计划写成 JSON。普通任务参考 [输入格式](references/input-schema.md)；需要调整字级和阿语规则时再读 [字体与版式系统](references/typography-system.md)。
 11. 需要交互维护时，从 Skill 根目录运行 `zsh ./start-ai-layout.command`，再访问 `http://127.0.0.1:8765/`。维护页完整保留以下能力：
    - 粘贴内容后只显示一个生成入口：先检测编号模块是否完整且每个模块都能可靠提取阿语主标题；满足条件时本地快速生成，否则自动交给 AI 做语义识别、提炼与排版；
-   - AI 设置支持豆包/火山方舟、OpenAI 和其他 OpenAI Chat Completions 兼容接口；使用者在页面填写 API Base URL、模型名称和自己的 API Key，Key 默认只保留当前浏览器会话，明确勾选后才保存在本机浏览器；
+   - 页面不显示模型或密钥设置；AI 服务从 Skill 目录或其上级目录中的 `arabic-typography-ai.local.json` 读取 OpenAI Chat Completions 兼容接口配置，也可用 `ARABIC_TYPOGRAPHY_AI_CONFIG` 指定文件路径；
    - 每张卡片可明确选择居右或完全居中；“随机”按钮另外随机切换对齐与横线、菱形、圆点、双菱形等装饰，不改变文案；
    - 上传一张或多张套图，按头部明暗自动选择深浅正文，并提取正文色、关键词色和装饰色；
    - 手动修改全局或卡片 HEX 配色，在透明、亮底、暗底之间切换；暗底必须进入明显的浅色文字体系，亮底必须进入深色文字体系，不能只做到勉强通过对比度；
@@ -56,7 +56,7 @@ description: Extract layout-ready ecommerce copy from arbitrarily formatted sour
 
 - 不向用户索要特定字段顺序、标题符号或 Markdown 模板；缺少结构时由大模型按语义补结构。
 - “自动识别”指大模型理解上下文，不是用正则猜字段。HTML 中的本地解析器只能作为已整理文本的快速导入或离线兜底，不能承担卖点判断。
-- 使用维护页的“智能识别并生成”时，必须通过本地 AI 服务打开页面，而不是直接打开 `file://`：在 Skill 根目录运行 `zsh ./start-ai-layout.command`，再访问 `http://127.0.0.1:8765/`。页面把用户填写的 API Key 只交给本机服务，由本机服务请求所选的 OpenAI Chat Completions 兼容接口；服务端不落盘、不记录 Key。豆包预设 Base URL 为 `https://ark.cn-beijing.volces.com/api/v3`，模型名称使用该账号控制台可调用的模型 ID。
+- 使用维护页的“智能识别并生成”时，必须通过本地 AI 服务打开页面，而不是直接打开 `file://`：在 Skill 根目录运行 `zsh ./start-ai-layout.command`，再访问 `http://127.0.0.1:8765/`。真实密钥只放在不提交 Git 的 `arabic-typography-ai.local.json` 中，页面不显示也不接收 Key；服务在每次 AI 请求时重新读取配置，因此更新文件后无需重启。豆包 Base URL 使用 `https://ark.cn-beijing.volces.com/api/v3`，模型名称使用该账号控制台可调用的模型 ID。
 - 维护页要在当前浏览器中持久保存原始输入、最后一次识别后的模块计划和当前配色，刷新页面不得要求用户重新识别。每张卡片底部应显示可选中复制、可直接修改的正文/关键词/装饰 HEX 色值，所有卡片共享并同步更新。
 - 对输入先去噪再提炼：删除会议寒暄、流程说明、重复版本、设计备注和与商品无关的对话，但保留否定条件、限制条件、单位与数量。
 - 同一事实有冲突时，不静默选一个；优先使用用户最后明确确认的版本，否则标记 `needs_confirmation`，不要渲染成确定事实。
