@@ -1,18 +1,11 @@
 import http from 'node:http';
-import { spawn } from 'node:child_process';
 import { readFile, stat } from 'node:fs/promises';
-import { dirname, extname, join, normalize, resolve } from 'node:path';
+import { dirname, extname, join, normalize } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = dirname(fileURLToPath(import.meta.url));
-const workspace = resolve(root, '../../..');
 const schemaPath = join(root, 'copy-modules.schema.json');
 const port = Number(process.env.LAYOUT_AI_PORT || 8765);
-const codexCandidates = [
-  process.env.CODEX_BIN,
-  '/Applications/ChatGPT.app/Contents/Resources/codex-cli/CodexCLI.app/Contents/MacOS/codex',
-  'codex',
-].filter(Boolean);
 
 const mime = {
   '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8',
@@ -22,11 +15,7 @@ const mime = {
 };
 
 function json(res, status, payload) {
-  res.writeHead(status, {
-    'content-type': 'application/json; charset=utf-8',
-    'access-control-allow-origin': '*',
-    'access-control-allow-headers': 'content-type',
-  });
+  res.writeHead(status, { 'content-type': 'application/json; charset=utf-8' });
   res.end(JSON.stringify(payload));
 }
 
@@ -62,40 +51,84 @@ ${source}
 </source_material>`;
 }
 
-function runCodex(prompt) {
-  return new Promise((resolveRun, reject) => {
-    let candidateIndex = 0;
-    const tryCandidate = () => {
-      const command = codexCandidates[candidateIndex++];
-      if (!command) return reject(new Error('未找到 Codex CLI'));
-      const child = spawn(command, [
-        'exec', '--ephemeral', '--sandbox', 'read-only', '--skip-git-repo-check',
-        '--output-schema', schemaPath, '-'
-      ], { cwd: workspace, env: process.env, stdio: ['pipe', 'pipe', 'pipe'] });
-      let stdout = '';
-      let stderr = '';
-      const timer = setTimeout(() => child.kill('SIGTERM'), 180000);
-      child.stdout.on('data', chunk => { stdout += chunk; });
-      child.stderr.on('data', chunk => { stderr += chunk; });
-      child.on('error', error => {
-        clearTimeout(timer);
-        if (error.code === 'ENOENT') return tryCandidate();
-        reject(error);
-      });
-      child.on('close', code => {
-        clearTimeout(timer);
-        if (code !== 0) {
-          const detail = stderr.trim().split('\n').slice(-30).join('\n');
-          console.error(`Codex 调用失败（退出码 ${code}）：\n${detail}`);
-          return reject(new Error(detail || `Codex 退出码 ${code}`));
-        }
-        try { resolveRun(JSON.parse(stdout.trim())); }
-        catch { reject(new Error(`Codex 未返回有效 JSON：${stdout.slice(0, 300)}`)); }
-      });
-      child.stdin.end(prompt);
+function chatCompletionsUrl(value) {
+  const url = new URL(String(value || '').trim());
+  if (!['http:', 'https:'].includes(url.protocol)) throw new Error('接口地址必须使用 http 或 https');
+  if (url.protocol === 'http:' && !['127.0.0.1', 'localhost', '::1'].includes(url.hostname)) throw new Error('远程模型接口必须使用 https');
+  if (url.username || url.password) throw new Error('请勿把账号或密钥写进接口地址');
+  const normalized = url.toString().replace(/\/$/, '');
+  return /\/chat\/completions$/i.test(url.pathname) ? normalized : `${normalized}/chat/completions`;
+}
+
+function modelContent(message) {
+  if (typeof message?.content === 'string') return message.content;
+  if (Array.isArray(message?.content)) {
+    return message.content.map(item => typeof item === 'string' ? item : item?.text || '').join('');
+  }
+  return '';
+}
+
+function parseModelJson(content) {
+  const clean = String(content || '').trim().replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '');
+  try { return JSON.parse(clean); }
+  catch {
+    const start = clean.indexOf('{');
+    const end = clean.lastIndexOf('}');
+    if (start >= 0 && end > start) return JSON.parse(clean.slice(start, end + 1));
+    throw new Error('模型没有返回有效 JSON');
+  }
+}
+
+async function runCompatibleApi(prompt, config) {
+  const apiKey = String(config?.apiKey || '').trim();
+  const model = String(config?.model || '').trim();
+  const endpoint = chatCompletionsUrl(config?.baseUrl);
+  if (!apiKey) throw new Error('请填写 API Key');
+  if (!model) throw new Error('请填写模型名称');
+  const schema = JSON.parse(await readFile(schemaPath, 'utf8'));
+  delete schema.$schema;
+  const formats = [
+    { type: 'json_schema', json_schema: { name: 'arabic_layout_modules', strict: true, schema } },
+    { type: 'json_object' },
+    null,
+  ];
+  let lastError = '';
+  for (const responseFormat of formats) {
+    const body = {
+      model,
+      messages: [
+        { role: 'system', content: '只输出有效 JSON，不要使用 Markdown 代码围栏。' },
+        { role: 'user', content: prompt },
+      ],
+      temperature: 0.2,
     };
-    tryCandidate();
-  });
+    if (responseFormat) body.response_format = responseFormat;
+    let response;
+    try {
+      response = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json', authorization: `Bearer ${apiKey}` },
+        body: JSON.stringify(body),
+        signal: AbortSignal.timeout(180000),
+      });
+    } catch (error) {
+      throw new Error(error.name === 'TimeoutError' ? '模型请求超时' : `无法连接模型接口：${error.message}`);
+    }
+    const raw = await response.text();
+    let envelope;
+    try { envelope = JSON.parse(raw); }
+    catch { envelope = null; }
+    if (!response.ok) {
+      lastError = envelope?.error?.message || envelope?.message || raw.slice(0, 300) || `HTTP ${response.status}`;
+      const unsupportedFormat = response.status === 400 && responseFormat && /response[_ ]?format|json[_ ]?schema|unsupported|不支持/i.test(lastError);
+      if (unsupportedFormat) continue;
+      throw new Error(`模型接口返回 ${response.status}：${lastError}`);
+    }
+    const result = parseModelJson(modelContent(envelope?.choices?.[0]?.message));
+    if (!Array.isArray(result?.modules) || !result.modules.length) throw new Error('模型返回内容缺少 modules');
+    return result;
+  }
+  throw new Error(lastError || '当前模型不支持 JSON 输出');
 }
 
 async function serveFile(req, res) {
@@ -112,20 +145,15 @@ async function serveFile(req, res) {
 }
 
 const server = http.createServer(async (req, res) => {
-  if (req.method === 'OPTIONS') {
-    res.writeHead(204, {
-      'access-control-allow-origin': '*', 'access-control-allow-headers': 'content-type',
-      'access-control-allow-methods': 'GET,POST,OPTIONS',
-    });
-    return res.end();
-  }
+  const origin = req.headers.origin;
+  if (origin && ![`http://127.0.0.1:${port}`, `http://localhost:${port}`].includes(origin)) return json(res, 403, { error: '禁止跨站调用本地服务' });
   if (req.method === 'GET' && req.url === '/health') return json(res, 200, { ok: true, service: 'layout-ai' });
   if (req.method === 'POST' && req.url === '/api/extract-copy') {
     try {
       const payload = JSON.parse(await bodyText(req));
       const source = String(payload.source || '').trim();
       if (!source) return json(res, 400, { error: '请先粘贴文案或商品资料' });
-      return json(res, 200, await runCodex(extractionPrompt(source)));
+      return json(res, 200, await runCompatibleApi(extractionPrompt(source), payload.config));
     } catch (error) { return json(res, 500, { error: error.message || 'AI 识别失败' }); }
   }
   if (req.method === 'GET') return serveFile(req, res);

@@ -25,3 +25,5 @@ For the maintenance page, run:
 ```
 
 Then open `http://127.0.0.1:8765/`.
+
+Open **AI 模型设置** in the page and provide an API Base URL, model name, and API Key. Presets are included for Doubao/Volcano Ark and OpenAI; other OpenAI Chat Completions compatible providers can use the custom option. The local server forwards requests without writing API keys to disk. Keys remain in browser session storage unless the user explicitly enables local remembering.
