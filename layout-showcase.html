@@ -4,6 +4,19 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>阿语商详文字排版｜全部样式</title>
+  <script>
+    (() => {
+      const key = 'arabic-typography-preview-mode-v1';
+      const valid = new Set(['light','dark','transparent']);
+      let mode = 'transparent';
+      try{
+        const saved = localStorage.getItem(key);
+        if(valid.has(saved)) mode = saved;
+      }catch(error){}
+      document.documentElement.dataset.previewMode = mode;
+      document.documentElement.style.colorScheme = mode === 'dark' ? 'dark' : 'light';
+    })();
+  </script>
   <style>
     @font-face{font-family:Almarai;src:url('./fonts/Almarai-Regular.ttf') format('truetype');font-weight:400;font-style:normal;font-display:block}
     @font-face{font-family:Almarai;src:url('./fonts/Almarai-Bold.ttf') format('truetype');font-weight:700;font-style:normal;font-display:block}
@@ -65,11 +78,11 @@
 
     .gallery{display:grid;grid-template-columns:repeat(2,524px);gap:24px;justify-content:center;padding:24px 24px 60px}
     .card{position:relative;padding:12px;background:#fff;border:1px solid rgba(78,65,52,.08);border-radius:16px;box-shadow:0 8px 24px rgba(48,39,30,.06)}
-    .preview{position:relative;width:500px;height:500px;overflow:hidden;background-color:#fff;background-image:linear-gradient(45deg,#f0f0f0 25%,transparent 25%),linear-gradient(-45deg,#f0f0f0 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#f0f0f0 75%),linear-gradient(-45deg,transparent 75%,#f0f0f0 75%);background-size:28px 28px;background-position:0 0,0 14px,14px -14px,-14px 0;border-radius:9px}
-    .canvas{position:absolute;left:0;top:0;width:var(--canvas);height:var(--canvas);transform:scale(var(--scale));transform-origin:0 0;color:var(--ink);direction:rtl;font-family:Almarai,Arial,sans-serif;font-synthesis:none;isolation:isolate}
+    .preview{position:relative;width:500px;height:500px;overflow:hidden;background-color:#fff;background-image:linear-gradient(45deg,#f0f0f0 25%,transparent 25%),linear-gradient(-45deg,#f0f0f0 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#f0f0f0 75%),linear-gradient(-45deg,transparent 75%,#f0f0f0 75%);background-size:28px 28px;background-position:0 0,0 14px,14px -14px,-14px 0;border-radius:9px;transition:background-color .18s ease,box-shadow .18s ease}
+    .canvas{position:absolute;left:0;top:0;width:var(--canvas);height:var(--canvas);transform:scale(var(--scale));transform-origin:0 0;color:var(--ink);direction:rtl;font-family:Almarai,Arial,sans-serif;font-synthesis:none;isolation:isolate;transition:color .18s ease}
     .safe{position:absolute;inset:68px}
     .text-box{position:absolute;z-index:2}
-    .title,.subtitle,.icon-label{margin:0;text-shadow:none!important}
+    .title,.subtitle,.icon-label{margin:0;text-shadow:none!important;transition:color .18s ease}
     .title{font-family:Almarai,Arial,sans-serif;font-size:66px;font-weight:800;line-height:1.38;text-align:right;color:var(--ink)}
     .subtitle{margin-top:28px;font-size:37px;font-weight:400;line-height:1.65;text-align:right;color:var(--muted)}
     .line{display:block;max-width:100%;white-space:nowrap}
@@ -135,7 +148,9 @@
     .minimal .center-ornament{margin:34px auto 24px}
     .minimal .subtitle{margin-top:0}
     .detail-list{position:absolute;top:390px;right:18px;width:812px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px 34px;margin:0;padding:0;list-style:none}
-    .detail-list li{position:relative;min-height:76px;padding:0 28px 18px 0;border-bottom:1px solid rgba(216,160,68,.38);color:var(--muted);font-size:29px;font-weight:400;line-height:1.55;text-align:right}
+    .detail-list.is-dense{grid-template-columns:1fr;gap:14px}
+    .detail-list li{position:relative;min-width:0;min-height:76px;padding:0 28px 18px 0;border-bottom:1px solid rgba(216,160,68,.38);color:var(--muted);font-size:var(--detail-font-size,29px);font-weight:400;line-height:1.55;text-align:right;overflow-wrap:anywhere;transition:color .18s ease,border-color .18s ease}
+    .detail-list.is-dense li{min-height:0;padding-bottom:12px;font-size:var(--detail-font-size,27px);line-height:1.42}
     .detail-list li::before{content:"";position:absolute;top:18px;right:0;width:9px;height:9px;border:2px solid var(--accent);transform:rotate(45deg)}
     .detail-list li:nth-child(even)::before{border-color:var(--accent-2)}
     .canvas.randomized-layout .short-rule,.canvas.randomized-layout .orb,.canvas.randomized-layout .center-ornament,.canvas.randomized-layout .between-rule,.canvas.randomized-layout .gradient-rule,.canvas.randomized-layout .feature-icon,.canvas.randomized-layout .serif-mark{display:none!important}
@@ -203,21 +218,22 @@
     .imported-host{position:absolute;inset:0;display:block;width:500px;height:500px;overflow:hidden;background:transparent}
     .toast{position:fixed;left:50%;bottom:24px;z-index:50;transform:translate(-50%,20px);padding:10px 15px;border-radius:999px;background:#2f2a26;color:#fff;font-size:13px;opacity:0;pointer-events:none;transition:.2s}
     .toast.show{transform:translate(-50%,0);opacity:1}
-    .preview-mode-switch{position:fixed;left:24px;bottom:24px;z-index:30;display:flex;gap:5px;padding:5px;border:1px solid rgba(87,55,37,.14);border-radius:999px;background:rgba(255,255,255,.9);box-shadow:0 7px 24px rgba(30,22,16,.14);backdrop-filter:blur(10px)}
-    .preview-mode-switch button{display:grid;place-items:center;width:34px;height:34px;padding:0;border:0;border-radius:50%;background:transparent;color:#756a62;cursor:pointer}
-    .preview-mode-switch button[aria-pressed="true"]{background:#332d28;color:#fff}
+    .preview-mode-switch{position:fixed;left:24px;bottom:24px;z-index:30;display:flex;gap:5px;padding:5px;border:1px solid rgba(87,55,37,.14);border-radius:999px;background:rgba(255,255,255,.9);box-shadow:0 7px 24px rgba(30,22,16,.14);backdrop-filter:blur(10px);transition:background-color .16s ease,border-color .16s ease,box-shadow .16s ease}
+    .preview-mode-switch button{display:grid;place-items:center;width:34px;height:34px;padding:0;border:0;border-radius:50%;background:transparent;color:#756a62;cursor:pointer;transition:background-color .22s cubic-bezier(.22,1,.36,1),color .16s ease,transform .22s cubic-bezier(.22,1,.36,1),box-shadow .16s ease}
+    .preview-mode-switch button:hover{transform:translateY(-1px)}
+    .preview-mode-switch button[aria-pressed="true"]{background:#332d28;color:#fff;box-shadow:0 2px 8px rgba(38,30,24,.18);transform:none}
     .preview-mode-switch svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
-    body[data-preview-mode="light"] .preview{background:#fff;background-image:none}
-    body[data-preview-mode="dark"] .preview{background:#000;background-image:none}
-    body[data-preview-mode="light"] .canvas{--ink:var(--ink-on-light);--muted:var(--muted-on-light);--text-shadow:none}
-    body[data-preview-mode="dark"] .canvas{--ink:var(--ink-on-dark);--muted:var(--muted-on-dark);--text-shadow:none}
-    body[data-preview-mode="light"] .title,body[data-preview-mode="light"] .subtitle,body[data-preview-mode="light"] .icon-label,
-    body[data-preview-mode="dark"] .title,body[data-preview-mode="dark"] .subtitle,body[data-preview-mode="dark"] .icon-label{text-shadow:none!important}
-    body[data-preview-mode="dark"] .subtitle{color:var(--muted)}
-    body[data-preview-mode="dark"] .icon-label{color:var(--muted)}
-    body[data-preview-mode="dark"] .serif-mark rect{stroke:var(--accent)}
-    body[data-preview-mode="dark"] .serif-mark path{fill:var(--accent)}
-    body[data-preview-mode="dark"] .gradient-rule path,body[data-preview-mode="dark"] .between-rule path{filter:none}
+    html[data-preview-mode="light"] .preview{background-color:#fff;background-image:none}
+    html[data-preview-mode="dark"] .preview{background-color:#000;background-image:none}
+    html[data-preview-mode="light"] .canvas{--ink:var(--ink-on-light);--muted:var(--muted-on-light);--text-shadow:none}
+    html[data-preview-mode="dark"] .canvas{--ink:var(--ink-on-dark);--muted:var(--muted-on-dark);--text-shadow:none}
+    html[data-preview-mode="light"] .title,html[data-preview-mode="light"] .subtitle,html[data-preview-mode="light"] .icon-label,
+    html[data-preview-mode="dark"] .title,html[data-preview-mode="dark"] .subtitle,html[data-preview-mode="dark"] .icon-label{text-shadow:none!important}
+    html[data-preview-mode="dark"] .subtitle{color:var(--muted)}
+    html[data-preview-mode="dark"] .icon-label{color:var(--muted)}
+    html[data-preview-mode="dark"] .serif-mark rect{stroke:var(--accent)}
+    html[data-preview-mode="dark"] .serif-mark path{fill:var(--accent)}
+    html[data-preview-mode="dark"] .gradient-rule path,html[data-preview-mode="dark"] .between-rule path{filter:none}
 
     /* All ornaments use the global decoration role, including SVG presentation attributes. */
     .canvas :is(.short-rule,.orb,.center-ornament,.between-rule,.gradient-rule,.feature-icon,.serif-mark,.icon){color:var(--accent-2)!important}
@@ -593,6 +609,7 @@
     const BRIEF_STORAGE_KEY = 'arabic-typography-brief-v1';
     const MODULES_STORAGE_KEY = 'arabic-typography-modules-v1';
     const PALETTE_STORAGE_KEY = 'arabic-typography-palette-v1';
+    const PREVIEW_MODE_STORAGE_KEY = 'arabic-typography-preview-mode-v1';
     const gallery = document.querySelector('.gallery');
     const dialog = document.querySelector('#template-dialog');
     const htmlInput = document.querySelector('#template-html');
@@ -607,6 +624,8 @@
     let fontCssPromise;
     let activeSuiteTheme = null;
     let previewPalette = null;
+    const initialPreviewMode = document.documentElement.dataset.previewMode || 'transparent';
+    document.body.dataset.previewMode = initialPreviewMode;
 
 
     function syncResponsiveScale(){
@@ -750,7 +769,7 @@
       return {ink,muted,accent,accent2,darkest,lightest,topAverage,globalMode,perImage,mixed:perImage.some(item => item.mode !== globalMode)};
     }
 
-    function applySuiteTheme(theme){
+    function applySuiteTheme(theme,{resetPreview=true}={}){
       previewPalette = null;
       activeSuiteTheme = theme;
       const root = document.documentElement;
@@ -773,9 +792,14 @@
           accent:rgbHex(theme.accent),accent2:rgbHex(theme.accent2)
         });
       });
-      document.body.dataset.previewMode = 'transparent';
+      if(resetPreview){
+        document.body.dataset.previewMode = 'transparent';
+        document.documentElement.dataset.previewMode = 'transparent';
+        document.documentElement.style.colorScheme = 'light';
+        localStorage.setItem(PREVIEW_MODE_STORAGE_KEY,'transparent');
+        document.querySelectorAll('[data-preview-button]').forEach(button => button.setAttribute('aria-pressed',String(button.dataset.previewButton === 'transparent')));
+      }
       syncPaletteEditors(paletteFromTheme(theme));
-      document.querySelectorAll('[data-preview-button]').forEach(button => button.setAttribute('aria-pressed',String(button.dataset.previewButton === 'transparent')));
     }
 
     function compactSuiteTheme(theme){
@@ -911,7 +935,7 @@
     try{
       const savedTheme = JSON.parse(localStorage.getItem(THEME_STORAGE_KEY) || 'null');
       if(savedTheme?.perImage?.length && savedTheme.darkest && savedTheme.lightest){
-        applySuiteTheme(savedTheme);
+        applySuiteTheme(savedTheme,{resetPreview:false});
         showSuiteTheme(savedTheme);
       }
     }catch(error){
@@ -1272,12 +1296,39 @@
         rectsOverlap(titleRect,rect) || rectsOverlap(subtitleRect,rect));
     }
 
+    function fitDetailList(card){
+      const list = card.querySelector('.detail-list');
+      if(!list || !list.getClientRects().length) return false;
+      list.style.removeProperty('--detail-font-size');
+      let size = Number.parseFloat(getComputedStyle(list.querySelector('li')).fontSize);
+      const minimum = list.classList.contains('is-dense') ? 22 : 24;
+      const overflows = () => {
+        const safeRect = card.querySelector('.safe')?.getBoundingClientRect();
+        const listRect = list.getBoundingClientRect();
+        const titleRect = contentRect(card.querySelector('.title'));
+        const subtitleRect = contentRect(card.querySelector('.subtitle'));
+        const itemOverflow = [...list.children].some(item => {
+          const rect = contentRect(item) || item.getBoundingClientRect();
+          return rect.left < listRect.left - 1 || rect.right > listRect.right + 1;
+        });
+        return !safeRect || itemOverflow || listRect.left < safeRect.left - 1 ||
+          listRect.right > safeRect.right + 1 || listRect.bottom > safeRect.bottom + 1 ||
+          rectsOverlap(titleRect,listRect,8) || rectsOverlap(subtitleRect,listRect,8);
+      };
+      while(overflows() && size > minimum){
+        size -= 1;
+        list.style.setProperty('--detail-font-size',`${size}px`);
+      }
+      return overflows();
+    }
+
     function fitCardText(card){
       if(!card || card.classList.contains('imported-card')) return false;
       const serif = card.dataset.fontStyle === 'serif';
       const titleOverflow = fitTextElement(card.querySelector('.title'),{minimum:serif ? 64 : 56,maxLines:2});
       const subtitleOverflow = fitTextElement(card.querySelector('.subtitle'),{minimum:serif ? 31 : 28,maxLines:2});
-      const hasOverflow = titleOverflow || subtitleOverflow || cardStructureOverflows(card);
+      const detailOverflow = fitDetailList(card);
+      const hasOverflow = titleOverflow || subtitleOverflow || detailOverflow || cardStructureOverflows(card);
       card.dataset.overflow = String(hasOverflow);
       return hasOverflow;
     }
@@ -1377,13 +1428,17 @@
         const detailCopy = [...module.labels,...module.facts];
         const usesHeroIcons = index === 0 && card.querySelector('.canvas.hero');
         const usesDetailList = !usesHeroIcons && ['spec','instruction'].includes(module.role) && detailCopy.length > 2;
-        let subtitleLines = module.subtitle.length ? module.subtitle : usesDetailList ? [] : detailCopy;
+        // Dense parameter/instruction lists own the body area; a simultaneous subtitle would overlap them.
+        let subtitleLines = usesDetailList ? [] : (module.subtitle.length ? module.subtitle : detailCopy);
         setLines(subtitle,subtitleLines,{max:2});
 
         card.querySelector('.detail-list')?.remove();
         if(usesDetailList){
           const list = document.createElement('ul');
           list.className = 'detail-list';
+          const totalCharacters = detailCopy.reduce((sum,copy) => sum + copy.length,0);
+          const needsDenseLayout = detailCopy.length >= 5 || totalCharacters > 135 || detailCopy.some(copy => copy.length > 38);
+          list.classList.toggle('is-dense',needsDenseLayout);
           detailCopy.forEach(copy => {
             const item = document.createElement('li');
             item.textContent = copy;
@@ -1431,7 +1486,7 @@
       ensureRandomButtons(gallery);
       ensureAlignmentControls(gallery);
       ensureCardPalettes(gallery);
-      if(activeSuiteTheme) applySuiteTheme(activeSuiteTheme);
+      if(activeSuiteTheme) applySuiteTheme(activeSuiteTheme,{resetPreview:false});
       else applyPaletteValues(currentPalette(),{persist:false});
       makeEditable();
       if(persist){
@@ -1614,13 +1669,16 @@
       return {...themed,muted};
     }
 
-    function applyPreviewMode(mode){
+    function applyPreviewMode(mode,{persist=true}={}){
+      if(!['light','dark','transparent'].includes(mode)) mode = 'transparent';
       // Always derive from the saved suite palette, so toggling never accumulates color drift.
       previewPalette = null;
       const base = currentPalette();
       document.body.dataset.previewMode = mode;
+      document.documentElement.dataset.previewMode = mode;
+      document.documentElement.style.colorScheme = mode === 'dark' ? 'dark' : 'light';
       if(mode === 'transparent'){
-        if(activeSuiteTheme) applySuiteTheme(activeSuiteTheme);
+        if(activeSuiteTheme) applySuiteTheme(activeSuiteTheme,{resetPreview:false});
         else applyPaletteValues(base,{persist:false});
       } else {
         previewPalette = previewTheme(base,mode);
@@ -1630,11 +1688,13 @@
         suiteStatus.textContent = `已切换为${mode === 'light' ? '深色文字' : '浅色文字'}配色 · 正文 ${previewPalette.ink} · 关键词 ${previewPalette.accent} · 装饰 ${previewPalette.accent2}`;
       }
       document.querySelectorAll('[data-preview-button]').forEach(item => item.setAttribute('aria-pressed',String(item.dataset.previewButton === mode)));
+      if(persist) localStorage.setItem(PREVIEW_MODE_STORAGE_KEY,mode);
     }
 
     document.querySelectorAll('[data-preview-button]').forEach(button => {
       button.addEventListener('click', () => applyPreviewMode(button.dataset.previewButton));
     });
+    applyPreviewMode(initialPreviewMode,{persist:false});
 
     function blobToDataUrl(blob){
       return new Promise((resolve,reject) => {
@@ -1703,6 +1763,8 @@
         .replace(/@font-face\s*\{[^}]*\}/g,'')
         .replaceAll('body[data-font="sans"]', '.export-surface[data-font="sans"]')
         .replaceAll('body[data-font="serif"]', '.export-surface[data-font="serif"]')
+        .replaceAll('html[data-preview-mode="light"]', '.export-surface[data-preview-mode="light"]')
+        .replaceAll('html[data-preview-mode="dark"]', '.export-surface[data-preview-mode="dark"]')
         .replaceAll('body[data-preview-mode="light"]', '.export-surface[data-preview-mode="light"]')
         .replaceAll('body[data-preview-mode="dark"]', '.export-surface[data-preview-mode="dark"]');
       const embeddedFonts = await loadFontCss();
