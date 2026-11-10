@@ -32,8 +32,8 @@
       --accent-2:#6bb9e8;
       --ink-on-light:#573725;
       --muted-on-light:#8a776b;
-      --ink-on-dark:#ffffff;
-      --muted-on-dark:#ddd0c7;
+      --ink-on-dark:#f7f5f4;
+      --muted-on-dark:#989593;
       --text-shadow:none;
       --paper:#fff;
       --workspace:#e8e5df;
@@ -78,11 +78,11 @@
 
     .gallery{display:grid;grid-template-columns:repeat(2,524px);gap:24px;justify-content:center;padding:24px 24px 60px}
     .card{position:relative;padding:12px;background:#fff;border:1px solid rgba(78,65,52,.08);border-radius:16px;box-shadow:0 8px 24px rgba(48,39,30,.06)}
-    .preview{position:relative;width:500px;height:500px;overflow:hidden;background-color:#fff;background-image:linear-gradient(45deg,#f0f0f0 25%,transparent 25%),linear-gradient(-45deg,#f0f0f0 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#f0f0f0 75%),linear-gradient(-45deg,transparent 75%,#f0f0f0 75%);background-size:28px 28px;background-position:0 0,0 14px,14px -14px,-14px 0;border-radius:9px;transition:background-color .18s ease,box-shadow .18s ease}
-    .canvas{position:absolute;left:0;top:0;width:var(--canvas);height:var(--canvas);transform:scale(var(--scale));transform-origin:0 0;color:var(--ink);direction:rtl;font-family:Almarai,Arial,sans-serif;font-synthesis:none;isolation:isolate;transition:color .18s ease}
+    .preview{position:relative;width:500px;height:500px;overflow:hidden;background-color:#fff;background-image:linear-gradient(45deg,#f0f0f0 25%,transparent 25%),linear-gradient(-45deg,#f0f0f0 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#f0f0f0 75%),linear-gradient(-45deg,transparent 75%,#f0f0f0 75%);background-size:28px 28px;background-position:0 0,0 14px,14px -14px,-14px 0;border-radius:9px;transition:box-shadow .18s ease}
+    .canvas{position:absolute;left:0;top:0;width:var(--canvas);height:var(--canvas);transform:scale(var(--scale));transform-origin:0 0;color:var(--ink);direction:rtl;font-family:Almarai,Arial,sans-serif;font-synthesis:none;isolation:isolate}
     .safe{position:absolute;inset:68px}
     .text-box{position:absolute;z-index:2}
-    .title,.subtitle,.icon-label{margin:0;text-shadow:none!important;transition:color .18s ease}
+    .title,.subtitle,.icon-label{margin:0;text-shadow:none!important}
     .title{font-family:Almarai,Arial,sans-serif;font-size:66px;font-weight:800;line-height:1.38;text-align:right;color:var(--ink)}
     .subtitle{margin-top:28px;font-size:37px;font-weight:400;line-height:1.65;text-align:right;color:var(--muted)}
     .line{display:block;max-width:100%;white-space:nowrap}
@@ -149,7 +149,7 @@
     .minimal .subtitle{margin-top:0}
     .detail-list{position:absolute;top:390px;right:18px;width:812px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px 34px;margin:0;padding:0;list-style:none}
     .detail-list.is-dense{grid-template-columns:1fr;gap:14px}
-    .detail-list li{position:relative;min-width:0;min-height:76px;padding:0 28px 18px 0;border-bottom:1px solid rgba(216,160,68,.38);color:var(--muted);font-size:var(--detail-font-size,29px);font-weight:400;line-height:1.55;text-align:right;overflow-wrap:anywhere;transition:color .18s ease,border-color .18s ease}
+    .detail-list li{position:relative;min-width:0;min-height:76px;padding:0 28px 18px 0;border-bottom:1px solid rgba(216,160,68,.38);color:var(--muted);font-size:var(--detail-font-size,29px);font-weight:400;line-height:1.55;text-align:right;overflow-wrap:anywhere}
     .detail-list.is-dense li{min-height:0;padding-bottom:12px;font-size:var(--detail-font-size,27px);line-height:1.42}
     .detail-list li::before{content:"";position:absolute;top:18px;right:0;width:9px;height:9px;border:2px solid var(--accent);transform:rotate(45deg)}
     .detail-list li:nth-child(even)::before{border-color:var(--accent-2)}
@@ -1632,41 +1632,20 @@
       return rgbHex(destination);
     }
 
-    function enforcePreviewLuminance(value,{minimum=null,maximum=null}={}){
-      const original = hexColor(value);
-      const luminance = relativeLuminance(original);
-      if((minimum === null || luminance >= minimum) && (maximum === null || luminance <= maximum)) return rgbHex(original);
-      const destination = minimum !== null ? {r:255,g:255,b:255} : {r:0,g:0,b:0};
-      for(let step=1;step<=100;step++){
-        const candidate = mixColor(original,destination,step/100);
-        const nextLuminance = relativeLuminance(candidate);
-        if((minimum === null || nextLuminance >= minimum) && (maximum === null || nextLuminance <= maximum)) return rgbHex(candidate);
-      }
-      return rgbHex(destination);
-    }
-
     function previewTheme(base,mode){
       const dark = mode === 'dark';
       const background = dark ? {r:0,g:0,b:0} : {r:255,g:255,b:255};
-      const contrastAdjusted = {
-        ink:matchPreviewColor(base.ink,background,7),
-        accent:matchPreviewColor(base.accent,background,4.5),
-        accent2:matchPreviewColor(base.accent2,background,3)
+      const minimum = dark
+        ? {ink:19,accent:7,accent2:4.5,muted:7}
+        : {ink:12,accent:4.5,accent2:3,muted:5.5};
+      const ink = matchPreviewColor(base.ink,background,minimum.ink);
+      const mutedSeed = rgbHex(mixColor(hexColor(ink),background,dark ? .38 : .22));
+      return {
+        ink,
+        muted:matchPreviewColor(mutedSeed,background,minimum.muted),
+        accent:matchPreviewColor(base.accent,background,minimum.accent),
+        accent2:matchPreviewColor(base.accent2,background,minimum.accent2)
       };
-      const themed = dark ? {
-        ink:enforcePreviewLuminance(contrastAdjusted.ink,{minimum:.68}),
-        accent:enforcePreviewLuminance(contrastAdjusted.accent,{minimum:.52}),
-        accent2:enforcePreviewLuminance(contrastAdjusted.accent2,{minimum:.62})
-      } : {
-        ink:enforcePreviewLuminance(contrastAdjusted.ink,{maximum:.10}),
-        accent:enforcePreviewLuminance(contrastAdjusted.accent,{maximum:.18}),
-        accent2:enforcePreviewLuminance(contrastAdjusted.accent2,{maximum:.22})
-      };
-      const mutedSeed = rgbHex(mixColor(hexColor(themed.ink),background,dark ? .10 : .22));
-      const muted = dark
-        ? enforcePreviewLuminance(mutedSeed,{minimum:.42})
-        : enforcePreviewLuminance(mutedSeed,{maximum:.20});
-      return {...themed,muted};
     }
 
     function applyPreviewMode(mode,{persist=true}={}){
@@ -1685,7 +1664,7 @@
         gallery.querySelectorAll('.card').forEach(card => setCardPalette(card,previewPalette));
         syncPaletteEditors(previewPalette);
         suiteMode.textContent = mode === 'light' ? '亮底自动配色' : '暗底自动配色';
-        suiteStatus.textContent = `已切换为${mode === 'light' ? '深色文字' : '浅色文字'}配色 · 正文 ${previewPalette.ink} · 关键词 ${previewPalette.accent} · 装饰 ${previewPalette.accent2}`;
+        suiteStatus.textContent = `已切换为${mode === 'light' ? '深色文字' : '浅色文字'}配色 · 正文 ${previewPalette.ink} · 次级 ${previewPalette.muted} · 关键词 ${previewPalette.accent} · 装饰 ${previewPalette.accent2}`;
       }
       document.querySelectorAll('[data-preview-button]').forEach(item => item.setAttribute('aria-pressed',String(item.dataset.previewButton === mode)));
       if(persist) localStorage.setItem(PREVIEW_MODE_STORAGE_KEY,mode);
