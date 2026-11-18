@@ -56,10 +56,48 @@
     .font-switch button[aria-pressed="true"]{background:#fff;color:#2f2b28;box-shadow:0 1px 5px rgba(45,36,27,.13)}
 
     .brief-panel{width:1072px;max-width:calc(100vw - 48px);margin:18px auto 0;padding:0}
-    .suite-panel{display:flex;align-items:center;justify-content:space-between;gap:14px;width:1072px;max-width:calc(100vw - 48px);margin:18px auto 0;padding:13px 15px;background:rgba(255,255,255,.76);border:1px solid rgba(78,65,52,.10);border-radius:14px;box-shadow:0 5px 18px rgba(48,39,30,.05)}
-    .suite-copy{min-width:0}.suite-copy strong{display:block;font-size:14px}.suite-copy span{display:block;margin-top:4px;color:#8f857c;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .suite-controls{display:flex;align-items:center;gap:10px;flex:0 0 auto}.suite-upload{display:inline-flex;align-items:center;gap:7px;padding:9px 14px;border:0;border-radius:9px;background:#332d28;color:#fff;font-size:13px;font-weight:700;cursor:pointer}.suite-upload input{display:none}
-    .suite-palette{display:flex;align-items:center;gap:7px}.suite-palette.show{display:flex}.suite-color{display:grid;grid-template-columns:30px 68px;align-items:center;gap:6px}.suite-color input[type="color"]{padding:0;cursor:pointer;background:transparent}.suite-color input[type="color"]::-webkit-color-swatch-wrapper{padding:0}.suite-color input[type="color"]::-webkit-color-swatch{border:0;border-radius:50%}.suite-color .suite-hex{width:68px;min-width:0;padding:4px;border:1px solid #ddd4cb;border-radius:5px;font:11px ui-monospace,monospace;color:#3e3731;background:#fff}.suite-color-name{grid-column:1/-1;font-size:11px;color:#756a62}.suite-swatch{width:30px;height:30px;border:2px solid #fff;border-radius:50%;box-shadow:0 0 0 1px rgba(61,48,38,.16)}.suite-mode{padding:5px 8px;border-radius:999px;background:#eee9e3;color:#6d6259;font-size:11px;font-weight:700;white-space:nowrap}
+    .suite-panel{display:flex;flex-direction:column;align-items:stretch;gap:16px;box-sizing:border-box;width:1072px;max-width:calc(100vw - 48px);margin:18px auto 0;padding:18px 20px;background:#faf9f7;border:1px solid #e5e0d9;border-radius:14px;box-shadow:none;color:#342f2b;color-scheme:light}
+    .suite-head{display:flex;align-items:center;justify-content:space-between;gap:16px;min-width:0}
+    .suite-copy{display:flex;align-items:center;flex-wrap:wrap;gap:10px;min-width:0}
+    .suite-copy strong{font-size:14px;line-height:1.5;font-weight:650}
+    .suite-mode{font-size:12px;color:#756b62;line-height:1.5;white-space:nowrap}
+    .suite-mode:empty{display:none}
+    .suite-controls{display:flex;align-items:center;gap:8px;flex:0 0 auto}
+    .suite-upload,.suite-save summary{display:inline-flex;align-items:center;justify-content:center;gap:7px;box-sizing:border-box;min-height:36px;margin:0;padding:8px 13px;border:1px solid transparent;border-radius:8px;background:#342f2b;color:#fff;font:500 13px/18px inherit;white-space:nowrap;cursor:pointer;transition:background .16s ease,border-color .16s ease}
+    .suite-upload{font-family:inherit;font-size:13px;line-height:18px}
+    .suite-upload:hover{background:#4c443d}.suite-upload:active{background:#211e1a}
+    .suite-upload input{display:none}
+    .suite-save{position:relative}
+    .suite-save summary{list-style:none;border-color:#ded7cf;background:transparent;color:#574d44;font-family:inherit;font-size:13px;line-height:18px}
+    .suite-save summary::-webkit-details-marker,.suite-diagnostics summary::-webkit-details-marker{display:none}
+    .suite-save summary::after{content:'';width:5px;height:5px;margin-left:4px;border-right:1px solid currentColor;border-bottom:1px solid currentColor;transform:translateY(-2px) rotate(45deg)}
+    .suite-save summary:hover,.suite-save[open] summary{background:#eeeae4;border-color:#d4cbc1}
+    .suite-save-menu{position:absolute;right:0;top:calc(100% + 8px);z-index:30;display:grid;gap:4px;width:224px;padding:8px;background:#fff;border:1px solid #e0d8cf;border-radius:10px;box-shadow:0 12px 32px #30271e1a;animation:suite-menu-in .14s ease-out}
+    .suite-save-menu button{width:100%;min-height:36px;padding:8px 10px;border:0;border-radius:6px;background:transparent;color:#342f2b;font:400 13px/20px inherit;font-family:inherit;font-size:13px;line-height:20px;text-align:left;cursor:pointer}
+    .suite-save-menu button:hover{background:#f4f1ec}
+    .suite-library{display:grid;gap:7px;margin-top:4px;padding:10px 8px 4px;border-top:1px solid #eee9e2;font-size:12px;color:#807469}
+    #saved-palettes{box-sizing:border-box;width:100%;height:34px;padding:5px 8px;border:1px solid #e0d8cf;border-radius:6px;background:#faf9f7;color:#443c35;font-family:inherit;font-size:13px;color-scheme:light}
+    .suite-palette,.suite-palette.show{display:flex;align-items:center;flex-wrap:wrap;gap:10px}
+    .suite-color{display:grid;grid-template-columns:22px auto 65px;align-items:center;gap:8px;padding:8px 11px;background:#fff;border:1px solid #e6e0d9;border-radius:8px}
+    .suite-color-name{font-size:12px;color:#6e645c;line-height:20px;white-space:nowrap;order:1}
+    .suite-color input[type="color"]{box-sizing:border-box;width:22px;height:22px;min-width:0;padding:0;border:1px solid #d8d0c7;border-radius:50%;background:transparent;cursor:pointer;order:0;overflow:hidden}
+    .suite-color input[type="color"]::-webkit-color-swatch-wrapper{padding:0}
+    .suite-color input[type="color"]::-webkit-color-swatch{border:0;border-radius:50%}
+    .suite-color .suite-hex{box-sizing:border-box;width:65px;min-width:0;padding:2px 0;border:0;border-radius:3px;background:transparent;color:#3e3731;font:12px/20px ui-monospace,SFMono-Regular,Menlo,monospace;order:2}
+    .suite-panel :is(button,summary,input,select):focus-visible{outline:2px solid #9c7c56;outline-offset:3px}
+    .suite-diagnostics{font-size:12px;color:#81766b}
+    .suite-diagnostics summary{display:inline-flex;align-items:center;gap:5px;list-style:none;cursor:pointer;line-height:20px}
+    .suite-diagnostics summary::after{content:'＋';font-size:12px}
+    .suite-diagnostics[open] summary::after{content:'−'}
+    .suite-diagnostics #suite-status{max-width:680px;margin:8px 0 0;padding:10px 12px;border-left:2px solid #d5c7b6;color:#74695e;font:12px/1.8 ui-monospace,SFMono-Regular,Menlo,monospace;overflow-wrap:anywhere;white-space:normal}
+    .suite-bottom{display:flex;align-items:flex-start;justify-content:space-between;gap:14px}
+    .suite-diagnostics{flex:0 1 auto;align-self:center;text-align:right}.suite-diagnostics[open]{max-width:100%;text-align:left}
+    .suite-bottom:has(.suite-diagnostics[open]){flex-wrap:wrap}
+    #product-samples canvas{max-width:100%;touch-action:none;cursor:crosshair;border:1px solid #c9beb3}
+    @keyframes suite-menu-in{from{opacity:0;transform:translateY(-3px)}to{opacity:1;transform:translateY(0)}}
+    @media(max-width:700px){.suite-panel{padding:15px;gap:14px}.suite-copy{gap:4px 10px}.suite-head{align-items:flex-start}.suite-copy strong{width:100%}.suite-bottom{flex-direction:column;gap:10px}.suite-diagnostics{align-self:flex-start;text-align:left}.suite-palette,.suite-palette.show{gap:7px}.suite-color{gap:6px;padding:7px 9px}.suite-controls{width:auto;justify-content:flex-end}.suite-color-name{font-size:12px}}
+    @media(max-width:400px){.suite-panel{max-width:calc(100vw - 24px);padding:12px}.suite-head{gap:10px}.suite-controls{gap:5px}.suite-upload,.suite-save summary{padding:7px 9px}.suite-palette,.suite-palette.show{display:grid;grid-template-columns:1fr;width:100%}.suite-color{grid-template-columns:22px 1fr 65px}}
+    @media(prefers-reduced-motion:reduce){.suite-save-menu{animation:none}.suite-upload,.suite-save summary{transition:none}}
     .brief-panel details{overflow:hidden;background:rgba(255,255,255,.76);border:1px solid rgba(78,65,52,.10);border-radius:14px;box-shadow:0 5px 18px rgba(48,39,30,.05)}
     .brief-panel summary{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;cursor:pointer;font-size:14px;font-weight:700;list-style:none}
     .brief-panel summary::-webkit-details-marker{display:none}
@@ -243,7 +281,7 @@
     .canvas.randomized-layout .text-box::before,.canvas .serif-mark.css-mark i:last-child{color:var(--accent-2)!important}
 
     @media(max-width:1100px){.gallery{width:100%;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding-inline:12px}.card{width:auto;min-width:0}.preview{width:100%;height:auto;aspect-ratio:1}.toolbar{align-items:flex-start;gap:16px}.toolbar p{display:none}}
-    @media(max-width:580px){:root{--scale:.34}.suite-panel{align-items:flex-start;flex-direction:column}.suite-controls{width:100%;justify-content:space-between}.gallery{grid-template-columns:364px}.card{width:364px}.preview{width:340px;height:340px}.toolbar{padding:12px 14px}.toolbar h1{font-size:16px}.font-switch button{min-width:auto;padding:8px 11px}}
+    @media(max-width:580px){:root{--scale:.34}.suite-panel{align-items:flex-start;flex-direction:column}.suite-panel .suite-controls{width:auto;justify-content:flex-end}.gallery{grid-template-columns:364px}.card{width:364px}.preview{width:340px;height:340px}.toolbar{padding:12px 14px}.toolbar h1{font-size:16px}.font-switch button{min-width:auto;padding:8px 11px}}
   </style>
 </head>
 <body data-font="sans" data-preview-mode="transparent">
@@ -259,12 +297,27 @@
   </header>
 
   <section class="suite-panel" aria-label="套图配色分析">
-    <div class="suite-copy"><strong>上传套图，自动设计文字配色</strong><span id="suite-status">分析图片头部明暗，从原图提取正文色、关键词色和装饰色</span></div>
-    <div class="suite-controls">
-      <div class="suite-palette" id="suite-palette"><span class="suite-mode" id="suite-mode"></span><label class="suite-color"><span class="suite-color-name">正文色</span><input type="color" class="suite-swatch" data-swatch="ink" data-global-role="ink" aria-label="全局正文色选色" value="#573725"><input type="text" class="suite-hex" data-global-role="ink" aria-label="全局正文色HEX" value="#573725" maxlength="7" spellcheck="false"></label><label class="suite-color"><span class="suite-color-name">关键词色</span><input type="color" class="suite-swatch" data-swatch="accent" data-global-role="accent" aria-label="全局关键词色选色" value="#D8A044"><input type="text" class="suite-hex" data-global-role="accent" aria-label="全局关键词色HEX" value="#D8A044" maxlength="7" spellcheck="false"></label><label class="suite-color"><span class="suite-color-name">装饰色</span><input type="color" class="suite-swatch" data-swatch="accent2" data-global-role="accent2" aria-label="全局装饰色选色" value="#6BB9E8"><input type="text" class="suite-hex" data-global-role="accent2" aria-label="全局装饰色HEX" value="#6BB9E8" maxlength="7" spellcheck="false"></label></div>
-      <label class="suite-upload">上传套图<input id="suite-images" type="file" accept="image/*" multiple></label>
+    <div class="suite-head">
+      <div class="suite-copy"><strong>套图配色</strong><span class="suite-mode" id="suite-mode"></span></div>
+      <div class="suite-controls">
+        <details class="suite-save" id="suite-save-menu">
+          <summary>保存与载入</summary>
+          <div class="suite-save-menu">
+            <button type="button" id="save-palette">保存配色…</button>
+            <button type="button" id="save-html">保存当前 HTML…</button>
+            <label class="suite-library">已存配色<select id="saved-palettes" aria-label="已保存配色"><option value="">选择配色</option></select></label>
+          </div>
+        </details>
+        <label class="suite-upload">上传套图<input id="suite-images" type="file" accept="image/*" multiple></label>
+      </div>
+    </div>
+    <div class="suite-bottom">
+      <div class="suite-palette" id="suite-palette"><label class="suite-color"><span class="suite-color-name">主色</span><input type="color" class="suite-swatch" data-swatch="ink" data-global-role="ink" aria-label="全局正文色选色" value="#573725"><input type="text" class="suite-hex" data-global-role="ink" aria-label="全局正文色HEX" value="#573725" maxlength="7" spellcheck="false"></label><label class="suite-color"><span class="suite-color-name">辅助色</span><input type="color" class="suite-swatch" data-swatch="accent" data-global-role="accent" aria-label="全局关键词色选色" value="#D8A044"><input type="text" class="suite-hex" data-global-role="accent" aria-label="全局关键词色HEX" value="#D8A044" maxlength="7" spellcheck="false"></label><label class="suite-color"><span class="suite-color-name">点缀色</span><input type="color" class="suite-swatch" data-swatch="accent2" data-global-role="accent2" aria-label="全局装饰色选色" value="#6BB9E8"><input type="text" class="suite-hex" data-global-role="accent2" aria-label="全局装饰色HEX" value="#6BB9E8" maxlength="7" spellcheck="false"></label></div>
+      <details class="suite-diagnostics"><summary>取色详情</summary><p id="suite-status" role="status">上传套图后生成配色，可框选产品进一步取色。</p></details>
     </div>
   </section>
+
+  <section id="product-samples" style="display:flex;flex-wrap:wrap;gap:16px;padding:0 24px" aria-label="框选产品取色"></section>
 
   <section class="brief-panel">
     <details open>
@@ -620,6 +673,15 @@
     const suiteStatus = document.querySelector('#suite-status');
     const suitePalette = document.querySelector('#suite-palette');
     const suiteMode = document.querySelector('#suite-mode');
+    const suiteSaveMenu = document.querySelector('#suite-save-menu');
+    document.addEventListener('click',event => {
+      if(!suiteSaveMenu.contains(event.target)) suiteSaveMenu.open=false;
+      else if(event.target.closest('#save-palette,#save-html')) suiteSaveMenu.open=false;
+    });
+    document.addEventListener('keydown',event => {
+      if(event.key === 'Escape' && suiteSaveMenu.open){suiteSaveMenu.open=false;suiteSaveMenu.querySelector('summary').focus();}
+    });
+
     const toast = document.querySelector('.toast');
     let fontCssPromise;
     let activeSuiteTheme = null;
@@ -748,25 +810,32 @@
 
     function designSuiteTheme(results){
       const samples = results.flatMap(result => result.all);
-      const palette = paletteBins(samples);
+      if(!samples.length) throw new Error('图片没有可取色的不透明像素');
+      const productSamples = results.flatMap(result => result.product || []);
+      const palette = paletteBins(productSamples);
+      const ordered = [...samples].sort((a,b) => relativeLuminance(b)-relativeLuminance(a));
+      // Nearest-rank 80th percentile, ordered from light to dark; retain the actual image color.
+      const ink = ordered[Math.max(0,Math.ceil(ordered.length * .8)-1)];
       const topAverage = averageColor(results.map(result => result.topAverage));
-      const darkest = [...palette].sort((a,b) => relativeLuminance(a)-relativeLuminance(b))[0] || {r:30,g:30,b:30};
-      const lightest = [...palette].sort((a,b) => relativeLuminance(b)-relativeLuminance(a))[0] || {r:250,g:250,b:250};
-      const perImage = results.map(result => {
-        const darkContrast = contrastRatio(darkest,result.topAverage);
-        const lightContrast = contrastRatio(lightest,result.topAverage);
-        return {...result,mode:darkContrast >= lightContrast ? 'dark' : 'light',darkContrast,lightContrast};
-      });
-      const darkCount = perImage.filter(item => item.mode === 'dark').length;
-      const globalMode = darkCount >= Math.ceil(perImage.length / 2) ? 'dark' : 'light';
-      const ink = globalMode === 'dark' ? darkest : lightest;
-      const accentCandidates = palette.filter(color => saturation(color) > .34 && relativeLuminance(color) > .06 && relativeLuminance(color) < .82);
-      const accentScore = color => saturation(color) * Math.log2(color.count + 2) * (colorDistance(color,topAverage) + 40) * Math.min(contrastRatio(color,topAverage),5);
-      const accent = [...accentCandidates].sort((a,b) => accentScore(b)-accentScore(a))[0] || {r:216,g:160,b:68};
-      const secondCandidates = accentCandidates.filter(color => colorDistance(color,accent) > 85 && hueDistance(color,accent) > 55 && relativeLuminance(color) < .72);
-      const accent2 = [...secondCandidates].sort((a,b) => accentScore(b)-accentScore(a))[0] || mixColor(accent,globalMode === 'dark' ? lightest : darkest,.45);
-      const muted = mixColor(ink,topAverage,globalMode === 'dark' ? .38 : .28);
-      return {ink,muted,accent,accent2,darkest,lightest,topAverage,globalMode,perImage,mixed:perImage.some(item => item.mode !== globalMode)};
+      const chromatic = palette.filter(color => saturation(color) >= .30 &&
+        Math.max(color.r,color.g,color.b)-Math.min(color.r,color.g,color.b) >= 35 &&
+        relativeLuminance(color) > .04 && relativeLuminance(color) < .9);
+      const score = color => color.count * saturation(color);
+      const obvious = chromatic.filter(color => color.count / productSamples.length >= .01);
+      const warm = paletteBins(samples).filter(color => hue(color) >= 20 && hue(color) <= 75 && saturation(color) >= .12);
+      const accent = [...obvious].sort((a,b) => score(b)-score(a))[0] ||
+        [...warm].sort((a,b) => hueDistance(a,{r:255,g:210,b:0})-hueDistance(b,{r:255,g:210,b:0}) || score(b)-score(a))[0] ||
+        [...chromatic].sort((a,b) => score(b)-score(a))[0] || ink;
+      // RGB complement of the original dark main color, never of its white mode variant.
+      const complementary = {r:255-ink.r,g:255-ink.g,b:255-ink.b};
+      const productContrast = obvious.filter(color => colorDistance(color,accent) > 85 && hueDistance(color,accent) > 45)
+        .sort((a,b) => score(b)-score(a))[0];
+      const yellowFallback = !obvious.length;
+      const accent2 = yellowFallback ? accent : (productContrast || complementary);
+      const muted = ink;
+      const perImage = results.map(result => ({...result,mode:'dark'}));
+      return {ink,muted,accent,accent2,darkest:ink,lightest:{r:255,g:255,b:255},topAverage,
+        globalMode:'dark',perImage,mixed:false};
     }
 
     function applySuiteTheme(theme,{resetPreview=true}={}){
@@ -800,6 +869,8 @@
         document.querySelectorAll('[data-preview-button]').forEach(button => button.setAttribute('aria-pressed',String(button.dataset.previewButton === 'transparent')));
       }
       syncPaletteEditors(paletteFromTheme(theme));
+      const mode = document.body.dataset.previewMode;
+      if(mode === 'light' || mode === 'dark') applyPreviewMode(mode,{persist:false});
     }
 
     function compactSuiteTheme(theme){
@@ -866,16 +937,19 @@
     }
 
     function applyPaletteValues(palette,{persist=true}={}){
+      const visible = previewPalette;
+      const savedInk = activeSuiteTheme ? rgbHex(activeSuiteTheme.ink) : normalizeHex(getComputedStyle(document.documentElement).getPropertyValue('--ink'));
       previewPalette = null;
       const normalized = {
         ink:normalizeHex(palette.ink),accent:normalizeHex(palette.accent),accent2:normalizeHex(palette.accent2)
       };
+      if(visible && document.body.dataset.previewMode === 'dark' && normalized.ink === visible.ink) normalized.ink = savedInk;
       if(!normalized.ink || !normalized.accent || !normalized.accent2) return false;
       const root = document.documentElement;
       root.style.setProperty('--ink',normalized.ink);
       root.style.setProperty('--accent',normalized.accent);
       root.style.setProperty('--accent-2',normalized.accent2);
-      const muted = rgbHex(mixColor(hexColor(normalized.ink),activeSuiteTheme?.topAverage || {r:255,g:255,b:255},.28));
+      const muted = normalized.ink;
       root.style.setProperty('--muted',muted);
       gallery.querySelectorAll('.card').forEach(card => setCardPalette(card,{...normalized,muted}));
       if(activeSuiteTheme){
@@ -895,6 +969,7 @@
       }
       if(persist) localStorage.setItem(PALETTE_STORAGE_KEY,JSON.stringify(normalized));
       syncPaletteEditors(normalized);
+      if(document.body.dataset.previewMode !== 'transparent') applyPreviewMode(document.body.dataset.previewMode,{persist:false});
       return true;
     }
 
@@ -912,6 +987,131 @@
       } else notify('已更新并保存全套文字配色');
     });
 
+    const PALETTE_LIBRARY_KEY = 'arabic-typography-palette-library-v1';
+    const savedPalettes = document.querySelector('#saved-palettes');
+    function readPaletteLibrary(){
+      try { const value = JSON.parse(localStorage.getItem(PALETTE_LIBRARY_KEY) || '[]'); return Array.isArray(value) ? value : []; }
+      catch { return []; }
+    }
+    function refreshPaletteLibrary(){
+      savedPalettes.replaceChildren(new Option('选择配色',''));
+      readPaletteLibrary().forEach(item => savedPalettes.add(new Option(item.name,item.name)));
+    }
+    document.querySelector('#save-palette').addEventListener('click',() => {
+      const name = prompt('为这套配色命名（同名将覆盖）');
+      if(!name?.trim()) return;
+      // Store the original dark main color, even when currently viewing white text.
+      const style = getComputedStyle(document.documentElement);
+      const palette = activeSuiteTheme ? paletteFromTheme(activeSuiteTheme) : {
+        ink:normalizeHex(style.getPropertyValue('--ink')),
+        accent:normalizeHex(style.getPropertyValue('--accent')),
+        accent2:normalizeHex(style.getPropertyValue('--accent-2'))
+      };
+      const items = readPaletteLibrary().filter(item => item.name !== name.trim());
+      items.push({name:name.trim(),palette,mode:document.body.dataset.previewMode});
+      try {
+        localStorage.setItem(PALETTE_LIBRARY_KEY,JSON.stringify(items));
+        refreshPaletteLibrary(); savedPalettes.value = name.trim(); notify('配色已保存在此浏览器');
+      } catch { notify('保存失败：浏览器存储空间不足或不可用'); }
+    });
+    savedPalettes.addEventListener('change',() => {
+      const item = readPaletteLibrary().find(item => item.name === savedPalettes.value);
+      if(!item) return;
+      suiteSaveMenu.open=false;
+      previewPalette = null;
+      if(!applyPaletteValues(item.palette)) return;
+      applyPreviewMode(item.mode); notify('已载入保存的配色');
+    });
+    refreshPaletteLibrary();
+
+    let productPickerVersion = 0;
+    async function renderProductPickers(files,results){
+      const version = ++productPickerVersion;
+      const container = document.querySelector('#product-samples');
+      container.replaceChildren();
+      for(const [index,file] of files.entries()){
+        const bitmap = await createImageBitmap(file);
+        if(version !== productPickerVersion){ bitmap.close(); return; }
+        const box = document.createElement('div');
+        const label = document.createElement('p');
+        label.textContent = `${file.name}：拖动框选产品本体（避开文字和标注）`;
+        const canvas = document.createElement('canvas');
+        canvas.width = 240; canvas.height = Math.round(240*bitmap.height/bitmap.width);
+        const context = canvas.getContext('2d',{willReadFrequently:true});
+        context.drawImage(bitmap,0,0,canvas.width,canvas.height); bitmap.close();
+        const original = context.getImageData(0,0,canvas.width,canvas.height);
+        box.append(label,canvas); container.append(box);
+        let origin;
+        const point = event => {
+          const rect = canvas.getBoundingClientRect();
+          return {x:Math.max(0,Math.min(canvas.width-1,(event.clientX-rect.left)*canvas.width/rect.width)),
+            y:Math.max(0,Math.min(canvas.height-1,(event.clientY-rect.top)*canvas.height/rect.height))};
+        };
+        canvas.addEventListener('pointerdown',event => { origin=point(event); canvas.setPointerCapture(event.pointerId); });
+        canvas.addEventListener('pointermove',event => {
+          if(!origin) return;
+          const end=point(event); context.putImageData(original,0,0);
+          context.strokeStyle='#29A4FF'; context.lineWidth=2;
+          context.strokeRect(origin.x,origin.y,end.x-origin.x,end.y-origin.y);
+        });
+        canvas.addEventListener('pointercancel',() => { origin=null; context.putImageData(original,0,0); });
+        canvas.addEventListener('pointerup',event => {
+          if(!origin) return;
+          const end=point(event),start=origin; origin=null;
+          if(Math.abs(end.x-start.x)<4 || Math.abs(end.y-start.y)<4) return;
+          const product=[];
+          for(let y=Math.floor(Math.min(start.y,end.y));y<Math.max(start.y,end.y);y++){
+            for(let x=Math.floor(Math.min(start.x,end.x));x<Math.max(start.x,end.x);x++){
+              const at=(y*canvas.width+x)*4;
+              if(original.data[at+3]>=220) product.push({r:original.data[at],g:original.data[at+1],b:original.data[at+2]});
+            }
+          }
+          results[index].product=product;
+          const theme=designSuiteTheme(results); theme.fileCount=files.length;
+          applySuiteTheme(theme); showSuiteTheme(theme); applyPreviewMode('dark');
+          localStorage.setItem(THEME_STORAGE_KEY,JSON.stringify(compactSuiteTheme(theme)));
+          localStorage.setItem(PALETTE_STORAGE_KEY,JSON.stringify(paletteFromTheme(theme)));
+          suiteStatus.textContent += ' · 已按框选产品取色，可继续修改 HEX';
+        });
+      }
+    }
+
+    document.querySelector('#save-html').addEventListener('click',async () => {
+      const name=prompt('保存产品页面名称','阿语排版-产品');
+      if(!name?.trim()) return;
+      try{
+        const fonts=await loadFontCss();
+        const clone=document.documentElement.cloneNode(true);
+        clone.querySelector('#suite-save-menu').removeAttribute('open');
+        clone.querySelector('#product-samples').replaceChildren();
+        clone.querySelectorAll('.imported-card').forEach(card => card.remove());
+        clone.querySelectorAll('input,textarea,select').forEach((input,index) => {
+          const current=document.querySelectorAll('input,textarea,select')[index];
+          if(input.tagName==='TEXTAREA') input.textContent=current.value;
+          else if(input.type!=='file') input.setAttribute('value',current.value);
+        });
+        const fontStyle=document.createElement('style'); fontStyle.dataset.embeddedFonts='true'; fontStyle.textContent=fonts;
+        clone.querySelectorAll('style').forEach(style => { style.textContent=style.textContent.replace(/@font-face\s*\{[^}]*\}/g,''); });
+        clone.querySelector('head').append(fontStyle);
+        clone.querySelector('[data-project-snapshot]')?.remove();
+        const prefix=`arabic-typography-product-${crypto.randomUUID()}-`;
+        const state={};
+        [STORAGE_KEY,THEME_STORAGE_KEY,BRIEF_STORAGE_KEY,PALETTE_STORAGE_KEY,PREVIEW_MODE_STORAGE_KEY,PALETTE_LIBRARY_KEY].forEach(key => {
+          const value=key===BRIEF_STORAGE_KEY ? briefInput.value : localStorage.getItem(key);
+          if(value!==null) state[key.replace('arabic-typography-',prefix)]=value;
+        });
+        clone.querySelectorAll('script').forEach(script => { script.textContent=script.textContent.replaceAll('arabic-typography-',prefix); });
+        const restore=document.createElement('script'); restore.dataset.projectSnapshot='true';
+        const encodedState=btoa(Array.from(new TextEncoder().encode(JSON.stringify(state)),byte=>String.fromCharCode(byte)).join(''));
+        restore.textContent=`try{Object.entries(JSON.parse(new TextDecoder().decode(Uint8Array.from(atob('${encodedState}'),c=>c.charCodeAt(0))))).forEach(([key,value])=>localStorage.setItem(key,value));}catch(error){console.error(error);}`;
+        clone.querySelector('head').prepend(restore);
+        clone.querySelector('title').textContent=name.trim();
+        const url=URL.createObjectURL(new Blob(['<!doctype html>\n'+clone.outerHTML],{type:'text/html;charset=utf-8'}));
+        const link=document.createElement('a'); link.href=url; link.download=name.trim().replace(/[\\/:*?"<>|]/g,'_')+'.html'; link.click();
+        setTimeout(()=>URL.revokeObjectURL(url),1000); notify('已保存独立 HTML（含字体、文案与当前配色）');
+      }catch(error){ notify(`保存失败：${error.message}`); }
+    });
+
     suiteImages.addEventListener('change',async () => {
       const files = [...suiteImages.files];
       if(!files.length) return;
@@ -923,9 +1123,12 @@
         theme.topLight = Math.round(relativeLuminance(theme.topAverage) * 100);
         applySuiteTheme(theme);
         showSuiteTheme(theme);
+        applyPreviewMode('dark');
         localStorage.setItem(THEME_STORAGE_KEY,JSON.stringify(compactSuiteTheme(theme)));
         localStorage.setItem(PALETTE_STORAGE_KEY,JSON.stringify(paletteFromTheme(theme)));
-        notify('已根据套图应用文字配色');
+        renderProductPickers(files,results);
+        suiteStatus.textContent += ' · 请框选产品，确认辅助色来源';
+        notify('已生成候选配色；框选产品后细化');
       }catch(error){
         suiteStatus.textContent = `套图分析失败：${error.message}`;
         notify('套图分析失败');
@@ -1633,19 +1836,8 @@
     }
 
     function previewTheme(base,mode){
-      const dark = mode === 'dark';
-      const background = dark ? {r:0,g:0,b:0} : {r:255,g:255,b:255};
-      const minimum = dark
-        ? {ink:19,accent:7,accent2:4.5,muted:7}
-        : {ink:12,accent:4.5,accent2:3,muted:5.5};
-      const ink = matchPreviewColor(base.ink,background,minimum.ink);
-      const mutedSeed = rgbHex(mixColor(hexColor(ink),background,dark ? .38 : .22));
-      return {
-        ink,
-        muted:matchPreviewColor(mutedSeed,background,minimum.muted),
-        accent:matchPreviewColor(base.accent,background,minimum.accent),
-        accent2:matchPreviewColor(base.accent2,background,minimum.accent2)
-      };
+      const ink = mode === 'dark' ? '#FFFFFF' : base.ink;
+      return {...base,ink,muted:ink};
     }
 
     function applyPreviewMode(mode,{persist=true}={}){
@@ -1663,10 +1855,11 @@
         previewPalette = previewTheme(base,mode);
         gallery.querySelectorAll('.card').forEach(card => setCardPalette(card,previewPalette));
         syncPaletteEditors(previewPalette);
-        suiteMode.textContent = mode === 'light' ? '亮底自动配色' : '暗底自动配色';
+        suiteMode.textContent = mode === 'light' ? '亮底 · 图片主色' : '暗底 · 白色主色';
         suiteStatus.textContent = `已切换为${mode === 'light' ? '深色文字' : '浅色文字'}配色 · 正文 ${previewPalette.ink} · 次级 ${previewPalette.muted} · 关键词 ${previewPalette.accent} · 装饰 ${previewPalette.accent2}`;
       }
       document.querySelectorAll('[data-preview-button]').forEach(item => item.setAttribute('aria-pressed',String(item.dataset.previewButton === mode)));
+      if(mode === 'light' && contrastRatio(hexColor(base.ink),{r:255,g:255,b:255}) < 4.5) suiteStatus.textContent += ' · 主色偏浅，请手动调整或更换文字位置';
       if(persist) localStorage.setItem(PREVIEW_MODE_STORAGE_KEY,mode);
     }
 
@@ -1685,6 +1878,8 @@
     }
 
     function loadFontCss(){
+      const embedded=document.querySelector('style[data-embedded-fonts]');
+      if(embedded) return Promise.resolve(embedded.textContent);
       if(fontCssPromise) return fontCssPromise;
       const fonts = [
         ['Almarai','./fonts/Almarai-Regular.ttf',400],
